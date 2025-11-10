@@ -34,35 +34,149 @@ export interface JobTemplate {
   primaryColor: string;
   secondaryColor: string;
   fontFamily: string;
+  fontSize?: {
+    title?: string;
+    subtitle?: string;
+    body?: string;
+  };
+  headerStyle?: string;
   // Add more styling properties as needed
 }
 
 export const JOB_TEMPLATES: JobTemplate[] = [
+  // MINIMALIST HIGH CONTRAST
   {
     id: 'template1',
-    name: 'Classic Blue',
-    backgroundColor: '#F0F8FF', // AliceBlue
-    textColor: '#2F4F4F', // DarkSlateGray
-    primaryColor: '#4682B4', // SteelBlue
-    secondaryColor: '#B0C4DE', // LightSteelBlue
-    fontFamily: 'Arial, sans-serif',
+    name: 'Bold Minimalist',
+    backgroundColor: '#0A0A0A', // Near black
+    textColor: '#FFFFFF',
+    primaryColor: '#FFFFFF',
+    secondaryColor: '#666666',
+    fontFamily: 'Inter, -apple-system, sans-serif',
+    headerStyle: 'uppercase',
+    fontSize: {
+      title: '48px',
+      subtitle: '24px',
+      body: '16px'
+    }
   },
+
+  // DRAMATIC GRADIENT DARK
   {
     id: 'template2',
-    name: 'Modern Green',
-    backgroundColor: '#F5FFFA', // MintCream
-    textColor: '#2E8B57', // SeaGreen
-    primaryColor: '#3CB371', // MediumSeaGreen
-    secondaryColor: '#90EE90', // LightGreen
-    fontFamily: 'Verdana, sans-serif',
+    name: 'Midnight Purple',
+    backgroundColor: '#1A0B2E', // Deep purple black
+    textColor: '#E6E6FA',
+    primaryColor: '#7B2CBF',
+    secondaryColor: '#C77DFF',
+    fontFamily: 'Montserrat, sans-serif',
+    headerStyle: 'bold',
+    fontSize: {
+      title: '52px',
+      subtitle: '22px',
+      body: '15px'
+    }
   },
+
+  // TECH FUTURISTIC
   {
     id: 'template3',
-    name: 'Warm Orange',
-    backgroundColor: '#FFF5EE', // Seashell
-    textColor: '#A0522D', // Sienna
-    primaryColor: '#FF8C00', // DarkOrange
-    secondaryColor: '#FFDAB9', // PeachPuff
-    fontFamily: 'Georgia, serif',
+    name: 'Cyber Blue',
+    backgroundColor: '#0D1117', // GitHub dark
+    textColor: '#C9D1D9',
+    primaryColor: '#58A6FF',
+    secondaryColor: '#1F6FEB',
+    fontFamily: 'Space Grotesk, monospace',
+    headerStyle: 'tech',
+    fontSize: {
+      title: '56px',
+      subtitle: '20px',
+      body: '14px'
+    }
   },
+
+  // WARM PREMIUM DARK
+  {
+    id: 'template4',
+    name: 'Golden Hour',
+    backgroundColor: '#1C1410', // Dark brown
+    textColor: '#F5E6D3',
+    primaryColor: '#FFB627',
+    secondaryColor: '#FF8C42',
+    fontFamily: 'Playfair Display, serif',
+    headerStyle: 'elegant',
+    fontSize: {
+      title: '50px',
+      subtitle: '24px',
+      body: '16px'
+    }
+  },
+
+  // DARK MODERN GREEN
+  {
+    id: 'template5',
+    name: 'Matrix Green',
+    backgroundColor: '#0F1419', // Dark slate
+    textColor: '#ECEFF4',
+    primaryColor: '#00FF41',
+    secondaryColor: '#39FF14',
+    fontFamily: 'Roboto Mono, monospace',
+    headerStyle: 'tech-mono',
+    fontSize: {
+      title: '54px',
+      subtitle: '20px',
+      body: '15px'
+    }
+  },
+
+  // SLATE PROFESSIONAL
+  {
+    id: 'template6',
+    name: 'Corporate Slate',
+    backgroundColor: '#1E293B', // Slate 800
+    textColor: '#F1F5F9',
+    primaryColor: '#38BDF8',
+    secondaryColor: '#0EA5E9',
+    fontFamily: 'Work Sans, sans-serif',
+    headerStyle: 'corporate',
+    fontSize: {
+      title: '46px',
+      subtitle: '22px',
+      body: '16px'
+    }
+  },
+
+  // VIBRANT CONTRAST
+  {
+    id: 'template7',
+    name: 'Neon Coral',
+    backgroundColor: '#0B0C10', // Charcoal black
+    textColor: '#FFFFFF',
+    primaryColor: '#FF6B6B',
+    secondaryColor: '#EE5A6F',
+    fontFamily: 'Bebas Neue, sans-serif',
+    headerStyle: 'display',
+    fontSize: {
+      title: '64px',
+      subtitle: '26px',
+      body: '16px'
+    }
+  },
+
+  // DARK LUXURY
+  {
+    id: 'template8',
+    name: 'Royal Navy',
+    backgroundColor: '#0A192F', // Navy dark
+    textColor: '#CCD6F6',
+    primaryColor: '#64FFDA',
+    secondaryColor: '#8892B0',
+    fontFamily: 'Oswald, sans-serif',
+    headerStyle: 'strong',
+    fontSize: {
+      title: '58px',
+      subtitle: '24px',
+      body: '15px'
+    }
+  }
 ];
