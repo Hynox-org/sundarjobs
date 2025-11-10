@@ -1,12 +1,12 @@
-import { JobPostFormData, JobTemplate } from '@/constants/jobTemplates';
+import { JobPostFormData, TemplateStyle } from '@/constants/jobTemplates';
 
 interface HtmlTemplateProps {
   formData: JobPostFormData;
-  template: JobTemplate;
+  templateStyle: TemplateStyle;
 }
 
-export default function generateHtmlTemplate({ formData, template }: HtmlTemplateProps): string {
-  if (!formData || !template) return '<h1>Loading...</h1>';
+export default function generateHtmlTemplate({ formData, templateStyle }: HtmlTemplateProps): string {
+  if (!formData || !templateStyle) return '<h1>Loading...</h1>';
 
   return `
     <!DOCTYPE html>
@@ -22,9 +22,9 @@ export default function generateHtmlTemplate({ formData, template }: HtmlTemplat
           }
 
           body {
-            font-family: ${template.fontFamily};
-            background-color: ${template.backgroundColor};
-            color: ${template.textColor};
+            font-family: ${templateStyle.fontFamily};
+            background-color: ${templateStyle.backgroundColor};
+            color: ${templateStyle.textColor};
             line-height: 1.4;
             padding: 0;
           }
@@ -33,7 +33,7 @@ export default function generateHtmlTemplate({ formData, template }: HtmlTemplat
             width: 793px;
             height: 1122px;
             margin: 0 auto;
-            background: ${template.backgroundColor};
+            background: ${templateStyle.backgroundColor};
             position: relative;
             overflow: hidden;
             display: flex;
@@ -45,8 +45,8 @@ export default function generateHtmlTemplate({ formData, template }: HtmlTemplat
             padding: 50px 40px 35px;
             position: relative;
             text-align: center;
-            background: linear-gradient(135deg, ${template.backgroundColor} 0%, ${template.primaryColor}15 100%);
-            border-bottom: 3px solid ${template.primaryColor};
+            background: linear-gradient(135deg, ${templateStyle.backgroundColor} 0%, ${templateStyle.primaryColor}15 100%);
+            border-bottom: 3px solid ${templateStyle.primaryColor};
           }
 
           .hero::before {
@@ -56,7 +56,7 @@ export default function generateHtmlTemplate({ formData, template }: HtmlTemplat
             left: 0;
             right: 0;
             height: 6px;
-            background: linear-gradient(90deg, ${template.primaryColor} 0%, ${template.secondaryColor} 100%);
+            background: linear-gradient(90deg, ${templateStyle.primaryColor} 0%, ${templateStyle.secondaryColor} 100%);
           }
 
           .we-are-hiring {
@@ -64,26 +64,26 @@ export default function generateHtmlTemplate({ formData, template }: HtmlTemplat
             font-weight: 700;
             letter-spacing: 3px;
             text-transform: uppercase;
-            color: ${template.primaryColor};
+            color: ${templateStyle.primaryColor};
             margin-bottom: 12px;
             opacity: 0.9;
           }
 
           h1 {
-            font-size: ${template.fontSize?.title || '48px'};
+            font-size: ${templateStyle.fontSize?.title || '48px'};
             font-weight: 900;
             line-height: 1;
             margin-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: -1px;
-            color: ${template.textColor};
+            color: ${templateStyle.textColor};
             text-shadow: 0 2px 6px rgba(0,0,0,0.3);
           }
 
           .company-name {
-            font-size: ${template.fontSize?.subtitle || '20px'};
+            font-size: ${templateStyle.fontSize?.subtitle || '20px'};
             font-weight: 600;
-            color: ${template.primaryColor};
+            color: ${templateStyle.primaryColor};
             margin-bottom: 18px;
             letter-spacing: 0.5px;
           }
@@ -98,14 +98,14 @@ export default function generateHtmlTemplate({ formData, template }: HtmlTemplat
 
           .quick-badge {
             padding: 8px 18px;
-            background: ${template.primaryColor}20;
-            border: 2px solid ${template.primaryColor};
+            background: ${templateStyle.primaryColor}20;
+            border: 2px solid ${templateStyle.primaryColor};
             border-radius: 3px;
             font-size: 13px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: ${template.textColor};
+            color: ${templateStyle.textColor};
           }
 
           /* Compact content sections */
@@ -126,9 +126,9 @@ export default function generateHtmlTemplate({ formData, template }: HtmlTemplat
             font-weight: 700;
             letter-spacing: 2px;
             text-transform: uppercase;
-            color: ${template.primaryColor};
+            color: ${templateStyle.primaryColor};
             margin-bottom: 6px;
-            border-left: 3px solid ${template.primaryColor};
+            border-left: 3px solid ${templateStyle.primaryColor};
             padding-left: 10px;
           }
 
@@ -136,7 +136,7 @@ export default function generateHtmlTemplate({ formData, template }: HtmlTemplat
             font-size: 26px;
             font-weight: 900;
             margin-bottom: 15px;
-            color: ${template.textColor};
+            color: ${templateStyle.textColor};
             line-height: 1.1;
           }
 
@@ -149,8 +149,8 @@ export default function generateHtmlTemplate({ formData, template }: HtmlTemplat
           }
 
           .detail-box {
-            background: ${template.primaryColor}10;
-            border-left: 3px solid ${template.primaryColor};
+            background: ${templateStyle.primaryColor}10;
+            border-left: 3px solid ${templateStyle.primaryColor};
             padding: 12px 15px;
             position: relative;
           }
@@ -160,7 +160,7 @@ export default function generateHtmlTemplate({ formData, template }: HtmlTemplat
             font-weight: 700;
             letter-spacing: 1.5px;
             text-transform: uppercase;
-            color: ${template.primaryColor};
+            color: ${templateStyle.primaryColor};
             margin-bottom: 5px;
             opacity: 0.85;
           }
@@ -168,15 +168,15 @@ export default function generateHtmlTemplate({ formData, template }: HtmlTemplat
           .detail-value {
             font-size: 18px;
             font-weight: 700;
-            color: ${template.textColor};
+            color: ${templateStyle.textColor};
             line-height: 1.2;
           }
 
           /* Compact description */
           .description {
-            font-size: ${template.fontSize?.body || '13px'};
+            font-size: ${templateStyle.fontSize?.body || '13px'};
             line-height: 1.6;
-            color: ${template.textColor};
+            color: ${templateStyle.textColor};
             opacity: 0.9;
             white-space: pre-wrap;
             max-height: 200px;
@@ -195,15 +195,15 @@ export default function generateHtmlTemplate({ formData, template }: HtmlTemplat
             align-items: center;
             gap: 15px;
             padding: 12px 15px;
-            background: ${template.primaryColor}08;
-            border-left: 3px solid ${template.primaryColor};
+            background: ${templateStyle.primaryColor}08;
+            border-left: 3px solid ${templateStyle.primaryColor};
           }
 
           .contact-icon {
             width: 38px;
             height: 38px;
-            background: ${template.primaryColor};
-            color: ${template.backgroundColor};
+            background: ${templateStyle.primaryColor};
+            color: ${templateStyle.backgroundColor};
             border-radius: 3px;
             display: flex;
             align-items: center;
@@ -222,14 +222,14 @@ export default function generateHtmlTemplate({ formData, template }: HtmlTemplat
             font-weight: 700;
             letter-spacing: 1.5px;
             text-transform: uppercase;
-            color: ${template.primaryColor};
+            color: ${templateStyle.primaryColor};
             margin-bottom: 3px;
           }
 
           .contact-value {
             font-size: 14px;
             font-weight: 600;
-            color: ${template.textColor};
+            color: ${templateStyle.textColor};
             line-height: 1.3;
           }
 
@@ -237,8 +237,8 @@ export default function generateHtmlTemplate({ formData, template }: HtmlTemplat
           .footer {
             padding: 25px 40px;
             text-align: center;
-            background: ${template.primaryColor}05;
-            border-top: 3px solid ${template.primaryColor};
+            background: ${templateStyle.primaryColor}05;
+            border-top: 3px solid ${templateStyle.primaryColor};
             margin-top: auto;
           }
 
@@ -247,20 +247,20 @@ export default function generateHtmlTemplate({ formData, template }: HtmlTemplat
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            color: ${template.primaryColor};
+            color: ${templateStyle.primaryColor};
             margin-bottom: 8px;
           }
 
           .deadline {
             font-size: 13px;
-            color: ${template.textColor};
+            color: ${templateStyle.textColor};
             opacity: 0.7;
           }
 
           /* Minimal decorative elements */
           .accent-line {
             height: 2px;
-            background: linear-gradient(90deg, transparent 0%, ${template.primaryColor} 50%, transparent 100%);
+            background: linear-gradient(90deg, transparent 0%, ${templateStyle.primaryColor} 50%, transparent 100%);
             margin: 20px 0;
           }
 

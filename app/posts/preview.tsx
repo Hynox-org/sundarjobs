@@ -16,13 +16,14 @@ import WebView from 'react-native-webview';
 import { Ionicons } from '@expo/vector-icons';
 import * as Print from 'expo-print';
 import { shareAsync } from 'expo-sharing';
-import { JOB_TEMPLATES, JobTemplate, JobPostFormData } from '@/constants/jobTemplates';
+import { HTML_TEMPLATES, HtmlTemplate, JobPostFormData, TemplateStyle } from '@/constants/jobTemplates';
 import generateHtmlTemplate from '@/components/HtmlTemplate';
 
 export default function PreviewScreen() {
-  const { jobPostData, templateId } = useLocalSearchParams();
+  const { jobPostData, templateId, styleId } = useLocalSearchParams();
   const [formData, setFormData] = useState<JobPostFormData | null>(null);
-  const [selectedTemplate, setSelectedTemplate] = useState<JobTemplate | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<HtmlTemplate | null>(null);
+  const [selectedTemplateStyle, setSelectedTemplateStyle] = useState<TemplateStyle | null>(null);
   const [loading, setLoading] = useState(true);
   const [zoom, setZoom] = useState(1);
   const [webViewKey, setWebViewKey] = useState(0);
@@ -38,11 +39,18 @@ export default function PreviewScreen() {
       setFormData(JSON.parse(jobPostData as string));
     }
     if (templateId) {
-      const template = JOB_TEMPLATES.find(t => t.id === templateId);
+      const template = HTML_TEMPLATES.find((t: HtmlTemplate) => t.id === templateId);
       setSelectedTemplate(template || null);
+
+      if (template && styleId) {
+        const style = template.styles.find(s => s.id === styleId);
+        setSelectedTemplateStyle(style || null);
+      } else if (template && template.styles.length > 0) {
+        setSelectedTemplateStyle(template.styles[0]); // Fallback to first style if styleId is missing
+      }
     }
     setLoading(false);
-  }, [jobPostData, templateId]);
+  }, [jobPostData, templateId, styleId]);
 
   const handleZoomIn = () => {
     setZoom(prev => Math.min(prev + 0.1, 2));
@@ -58,7 +66,7 @@ export default function PreviewScreen() {
 
   const handleShare = async () => {
     try {
-      const htmlContent = formData && selectedTemplate ? generateHtmlTemplate({ formData, template: selectedTemplate }) : '<h1>Loading...</h1>';
+  const htmlContent = formData && selectedTemplate && selectedTemplateStyle ? generateHtmlTemplate({ formData, templateStyle: selectedTemplateStyle }) : '<h1>Loading...</h1>';
       if (!htmlContent) {
         Alert.alert('Error', 'Job post content not ready');
         return;
@@ -81,7 +89,7 @@ export default function PreviewScreen() {
     router.push({ pathname: '/(tabs)' });
   };
 
-  if (loading || !formData || !selectedTemplate) {
+  if (loading || !formData || !selectedTemplate || !selectedTemplateStyle) {
     return (
       <View style={[styles.centeredContainer, { backgroundColor: colors.background }]}>
         <ActivityIndicator size="large" color={colors.tint} />
@@ -92,7 +100,7 @@ export default function PreviewScreen() {
     );
   }
 
-  if (!formData || !selectedTemplate) {
+  if (!formData || !selectedTemplate || !selectedTemplateStyle) {
     return (
       <View style={[styles.centeredContainer, { backgroundColor: colors.background }]}>
         <Ionicons name="warning" size={48} color={colors.secondaryText} style={{ marginBottom: 10 }} />
@@ -104,7 +112,7 @@ export default function PreviewScreen() {
     );
   }
 
-  const htmlContent = formData && selectedTemplate ? generateHtmlTemplate({ formData, template: selectedTemplate }) : '<h1>Loading...</h1>';
+  const htmlContent = formData && selectedTemplate && selectedTemplateStyle ? generateHtmlTemplate({ formData, templateStyle: selectedTemplateStyle }) : '<h1>Loading...</h1>';
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
