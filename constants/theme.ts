@@ -21,6 +21,9 @@ export const Colors = {
     icon: Palette.accent, // Using accent for general icons
     tabIconDefault: Palette.text, // Default tab icon color
     tabIconSelected: Palette.primary, // Selected tab icon color
+    secondaryText: '#6c757d', // A softer text color for secondary information
+    cardBackground: '#ffffff', // Background for cards and elevated surfaces
+    border: '#e0e0e0', // Border color for separators and outlines
   },
   dark: {
     // For dark mode, we might want to adjust these or define a separate dark palette if needed.
@@ -32,6 +35,9 @@ export const Colors = {
     icon: Palette.accent,
     tabIconDefault: Palette.text,
     tabIconSelected: Palette.primary,
+    secondaryText: '#a0a0a0', // A softer text color for secondary information in dark mode
+    cardBackground: '#1e1e1e', // Background for cards and elevated surfaces in dark mode
+    border: '#3a3a3a', // Border color for separators and outlines in dark mode
   },
 };
 

@@ -150,6 +150,13 @@ export default function TabLayout() {
             tabBarIcon: ({ color }) => <Ionicons name="information-circle" size={28} color={color} />,
           }}
         />
+        <Tabs.Screen
+          name="posts/templates"
+          options={{
+            title: 'Templates',
+            tabBarIcon: ({ color }) => <Ionicons name="document-text" size={28} color={color} />,
+          }}
+        />
       </Tabs>
       <FullScreenMenu isVisible={isMenuVisible} onClose={handleCloseMenu} onMenuItemPress={handleMenuItemPress} />
     </>

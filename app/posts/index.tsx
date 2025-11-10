@@ -3,6 +3,8 @@ import SelectionModal from "@/components/ui/SelectionModal";
 import { JOB_CATEGORIES } from "@/constants/jobCategories";
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
@@ -18,6 +20,7 @@ import {
 } from "react-native";
 
 interface FormData {
+  id?: string; // Add an optional ID for unique identification
   title: string;
   jobTitle: string;
   vacancy: string;
@@ -78,7 +81,7 @@ export default function PostJobsScreen() {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => { // Mark as async
     const required: (keyof FormData)[] = [
       "title",
       "jobTitle",
@@ -114,6 +117,39 @@ export default function PostJobsScreen() {
       Alert.alert("Success", "Form submitted successfully!");
     }
     console.log("Form Data:", form);
+
+    // Store data in local storage
+    try {
+      const storageKey = "jobPosts";
+      let existingPosts: FormData[] = [];
+
+      if (Platform.OS === "web") {
+        const storedData = localStorage.getItem(storageKey);
+        if (storedData) {
+          existingPosts = JSON.parse(storedData);
+        }
+      } else {
+        const storedData = await AsyncStorage.getItem(storageKey);
+        if (storedData) {
+          existingPosts = JSON.parse(storedData);
+        }
+      }
+
+      const updatedPosts = [...existingPosts, { ...form, id: Date.now().toString() }]; // Add a unique ID
+      const jsonValue = JSON.stringify(updatedPosts);
+
+      if (Platform.OS === "web") {
+        localStorage.setItem(storageKey, jsonValue);
+      } else {
+        await AsyncStorage.setItem(storageKey, jsonValue);
+      }
+      console.log("Job post saved to local storage.");
+    } catch (e) {
+      console.error("Error saving job post to local storage:", e);
+    }
+
+    // Navigate to the template page
+    router.push("/posts/templates");
   };
 
   const containerPadding = isSmallScreen ? 16 : isMediumScreen ? 40 : 80;
@@ -121,6 +157,7 @@ export default function PostJobsScreen() {
   const colorScheme = useColorScheme();
   const backgroundColor = Colors[colorScheme ?? 'light'].background;
   const textColor = Colors[colorScheme ?? 'light'].text;
+  const router = useRouter();
 
   return (
     <KeyboardAvoidingView
