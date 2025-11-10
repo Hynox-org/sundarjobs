@@ -1,3 +1,31 @@
+export interface JobPostFormData {
+  title: string;
+  jobTitle: string;
+  vacancy: string;
+  jobType: string;
+  salary: string;
+  location: string;
+  description: string;
+  requirements: string[];
+  responsibilities: string[];
+  benefits: string[];
+  contactInfo: string;
+  companyName: string;
+  companyLogo?: string;
+  applicationDeadline?: string;
+  sector: string;
+  category: string;
+  experience: string;
+  jobDescription: string;
+  companyAddress: string;
+  website?: string;
+  email?: string;
+  phone?: string;
+  companyEmail?: string;
+  companyPhone?: string;
+  additionalInfo?: string;
+}
+
 export interface JobTemplate {
   id: string;
   name: string;

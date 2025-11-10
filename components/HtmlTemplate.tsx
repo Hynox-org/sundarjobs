@@ -1,26 +1,7 @@
-import React from 'react';
-import { JobTemplate } from '@/constants/jobTemplates';
-
-interface FormData {
-  id?: string;
-  title: string;
-  jobTitle: string;
-  vacancy: string;
-  jobType: string;
-  category: string;
-  experience: string;
-  salary: string;
-  jobDescription: string;
-  companyName: string;
-  companyAddress: string;
-  companyEmail: string;
-  companyPhone: string;
-  applicationDeadline: string;
-  additionalInfo: string;
-}
+import { JobPostFormData, JobTemplate } from '@/constants/jobTemplates';
 
 interface HtmlTemplateProps {
-  formData: FormData;
+  formData: JobPostFormData;
   template: JobTemplate;
 }
 
@@ -41,7 +22,7 @@ export default function generateHtmlTemplate({ formData, template }: HtmlTemplat
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background-color: ${template.backgroundColor || '#ffffff'};
             color: ${template.textColor || '#000000'};
-            padding: 0; /* Remove body padding */
+            padding-top: 40px; /* Remove body padding */
             line-height: 1.6;
           }
           .container {
