@@ -5,25 +5,33 @@
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+export const Palette = {
+  background: '#EDF2F4', // backgrounds, cards, neutral surfaces
+  primary: '#EF233C',    // primary buttons, CTAs, key interactive elements
+  secondary: '#FBB13C',   // secondary actions, highlights, hover states
+  accent: '#8D80AD',     // accent elements, badges, supporting UI components
+  text: '#000000',       // text, borders, strong emphasis
+};
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    text: Palette.text,
+    background: Palette.background,
+    tint: Palette.primary,
+    icon: Palette.accent, // Using accent for general icons
+    tabIconDefault: Palette.text, // Default tab icon color
+    tabIconSelected: Palette.primary, // Selected tab icon color
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+    // For dark mode, we might want to adjust these or define a separate dark palette if needed.
+    // For now, I'll use the same palette but invert text/background if it makes sense.
+    // Given the palette is mostly light, I'll keep it consistent for now.
+    text: Palette.text,
+    background: Palette.background,
+    tint: Palette.primary,
+    icon: Palette.accent,
+    tabIconDefault: Palette.text,
+    tabIconSelected: Palette.primary,
   },
 };
 
