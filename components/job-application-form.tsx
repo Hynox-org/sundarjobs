@@ -1,5 +1,6 @@
 import { Picker } from "@react-native-picker/picker";
 import React, { useState } from "react";
+import { JOB_CATEGORIES } from "@/constants/jobCategories";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -53,23 +54,6 @@ export default function JobForm() {
   });
 
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, boolean>>>({});
-
-  const categories = [
-    "IT",
-    "Electronics",
-    "Mechanical",
-    "Civil",
-    "Chemical",
-    "Management",
-    "Agriculture",
-    "Science",
-    "Mathematics",
-    "Humanities",
-    "Business",
-    "Social Sciences",
-    "Health Sciences",
-    "Other",
-  ];
 
   const jobTypes = [
     "Full Time",
@@ -216,8 +200,7 @@ export default function JobForm() {
                   style={styles.picker}
                   dropdownIconColor="#6B7280"
                 >
-                  <Picker.Item label="Select a category" value="" color="#9CA3AF" />
-                  {categories.map((c) => (
+                  {JOB_CATEGORIES.map((c) => (
                     <Picker.Item key={c} label={c} value={c} />
                   ))}
                 </Picker>
@@ -495,8 +478,8 @@ const styles = StyleSheet.create({
     minHeight: 48,
     ...Platform.select({
       web: {
-        outlineStyle: "none",
-        transition: "border-color 0.2s, box-shadow 0.2s",
+        // outlineStyle: "none", // Removed due to type incompatibility
+        // transition: "border-color 0.2s, box-shadow 0.2s", // Removed due to type incompatibility
       },
     }),
   },

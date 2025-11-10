@@ -72,7 +72,7 @@ export default function TabLayout() {
               <View style={styles.headerContainer}>
                 <View style={styles.headerLeft}>
                   <Image
-                    source={require('@/assets/images/logo.jpg')}
+                    source={require('@/assets/images/logo.png')}
                     style={styles.logo}
                   />
                   <Text style={[styles.headerTitle, { color: textColor }]}>SundarJobs</Text>
@@ -163,6 +163,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 10,
     paddingTop: 40,
+    borderBottomWidth: 0.5,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -182,7 +183,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: 10,
+    padding: 10,
   },
   groupTitle: {
     fontSize: 16,
@@ -200,8 +201,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: 10,
-    marginTop: 10,
+    padding: 10,
+    borderBottomWidth:0.5
   },
   appIconsContainer: {
     flexDirection: 'row',
