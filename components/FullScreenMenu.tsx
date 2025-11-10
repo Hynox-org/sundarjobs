@@ -29,6 +29,7 @@ export default function FullScreenMenu({ isVisible, onClose, onMenuItemPress }: 
     { name: 'Share', icon: 'share', screen: 'share' },
     { name: 'WhatsApp', icon: 'logo-whatsapp', screen: 'whatsapp' },
     { name: 'Mail', icon: 'mail', screen: 'mail' },
+    { name: 'Post Jobs', icon: 'briefcase', screen: 'posts' },
   ];
 
   return (
