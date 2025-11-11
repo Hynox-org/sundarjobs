@@ -66,7 +66,7 @@ export default function PreviewScreen() {
 
   const handleShare = async () => {
     try {
-  const htmlContent = formData && selectedTemplate && selectedTemplateStyle ? generateHtmlTemplate({ formData, templateStyle: selectedTemplateStyle }) : '<h1>Loading...</h1>';
+  const htmlContent = formData && selectedTemplate && selectedTemplateStyle ? generateHtmlTemplate({ formData, template: selectedTemplate, templateStyle: selectedTemplateStyle }) : '<h1>Loading...</h1>';
       if (!htmlContent) {
         Alert.alert('Error', 'Job post content not ready');
         return;
@@ -112,7 +112,7 @@ export default function PreviewScreen() {
     );
   }
 
-  const htmlContent = formData && selectedTemplate && selectedTemplateStyle ? generateHtmlTemplate({ formData, templateStyle: selectedTemplateStyle }) : '<h1>Loading...</h1>';
+  const htmlContent = formData && selectedTemplate && selectedTemplateStyle ? generateHtmlTemplate({ formData, template: selectedTemplate, templateStyle: selectedTemplateStyle }) : '<h1>Loading...</h1>';
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>

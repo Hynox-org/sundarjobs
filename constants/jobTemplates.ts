@@ -51,9 +51,45 @@ export interface HtmlTemplate {
 
 export const HTML_TEMPLATES: HtmlTemplate[] = [
   {
+    id: 'default-template',
+    name: 'Default Template',
+    styles: [
+      {
+        id: 'default-style',
+        name: 'Default Style',
+        backgroundColor: '#FFFFFF',
+        textColor: '#333333',
+        primaryColor: '#007BFF',
+        secondaryColor: '#6C757D',
+        fontFamily: 'Arial, sans-serif',
+        fontSize: {
+          title: '32px',
+          subtitle: '24px',
+          body: '16px'
+        },
+        headerStyle: 'normal'
+      }
+    ]
+  },
+  {
     id: 'compact-hero',
     name: 'Compact Hero Template',
     styles: [
+      {
+        id: 'default-style',
+        name: 'Light Blue',
+        backgroundColor: '#FFFFFF',
+        textColor: '#333333',
+        primaryColor: '#007BFF',
+        secondaryColor: '#6C757D',
+        fontFamily: 'Arial, sans-serif',
+        fontSize: {
+          title: '32px',
+          subtitle: '24px',
+          body: '16px'
+        },
+        headerStyle: 'normal'
+      },
       // MINIMALIST HIGH CONTRAST
       {
         id: 'style1',
