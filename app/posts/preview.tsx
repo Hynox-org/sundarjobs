@@ -78,6 +78,7 @@ export default function PreviewScreen() {
       });
     } catch (error: any) {
       Alert.alert('Share Error', error.message);
+      console.log(error);
     }
   };
 
