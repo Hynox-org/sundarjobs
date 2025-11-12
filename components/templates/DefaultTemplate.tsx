@@ -8,7 +8,12 @@ export function generateDefaultTemplateHtml({ formData, templateStyle }: { formD
     <html>
       <head>
         <style>
-          @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&family=Archivo+Black&family=Bebas+Neue&family=DM+Sans:wght@400;700&display=swap');
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Montserrat:wght@700;900&family=Space+Grotesk:wght@400;700&family=Playfair+Display:wght@700;900&family=Roboto+Mono:wght@400;700&family=Work+Sans:wght@500;700;900&family=Bebas+Neue&family=Oswald:wght@600;700&family=Anton&display=swap');
+
+          @page {
+            size: A4;
+            margin: 0;
+          }
 
           * {
             margin: 0;
@@ -16,484 +21,563 @@ export function generateDefaultTemplateHtml({ formData, templateStyle }: { formD
             box-sizing: border-box;
           }
 
-          body {
-            font-family: 'Space Grotesk', sans-serif;
-            background: ${templateStyle.backgroundColor};
-            color: ${templateStyle.textColor};
-            overflow-x: hidden;
-            position: relative;
-          }
-
-          /* Chaotic Grid System */
-          .poster-brutalist {
-            width: 100vw;
-            min-height: 100vh;
-            position: relative;
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            grid-template-rows: repeat(10, minmax(100px, auto));
-            gap: 0;
+          html, body {
+            width: 210mm;
+            height: 297mm;
+            margin: 0;
             padding: 0;
+            overflow: hidden;
           }
 
-          /* Deconstructed Mega Title - Rotated & Overlapping */
-          .mega-hiring-block {
-            grid-column: 1 / 13;
-            grid-row: 1 / 4;
-            background: ${templateStyle.primaryColor};
+          body {
+            font-family: ${templateStyle.fontFamily};
+            line-height: 1.4;
+          }
+
+          .container {
+            width: 210mm;
+            height: 297mm;
+            margin: 0;
             position: relative;
-            overflow: visible;
-            border: 8px solid ${templateStyle.textColor};
-            clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
+            overflow: hidden;
+            background: ${templateStyle.backgroundColor};
           }
 
-          .hiring-vertical {
+          /* Diagonal split background */
+          .diagonal-split {
             position: absolute;
-            font-size: clamp(120px, 20vw, 280px);
-            font-family: 'Archivo Black', sans-serif;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, 
+              ${templateStyle.backgroundColor} 0%, 
+              ${templateStyle.backgroundColor} 62%, 
+              ${templateStyle.primaryColor} 62%, 
+              ${templateStyle.primaryColor} 100%);
+            z-index: 0;
+          }
+
+          /* Decorative geometric shapes */
+          .shape-circle {
+            position: absolute;
+            top: -70px;
+            right: -70px;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: ${templateStyle.secondaryColor};
+            opacity: 0.13;
+            z-index: 1;
+          }
+
+          .shape-square {
+            position: absolute;
+            bottom: 70px;
+            left: -35px;
+            width: 160px;
+            height: 160px;
+            background: ${templateStyle.primaryColor};
+            opacity: 0.07;
+            transform: rotate(25deg);
+            z-index: 1;
+          }
+
+          /* Main content wrapper */
+          .content-wrapper {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+          }
+
+          /* Hero section - Bigger sizes */
+          .hero-section {
+            padding: 40px 40px 28px;
+            position: relative;
+          }
+
+          .eyebrow-tag {
+            display: inline-block;
+            background: ${templateStyle.primaryColor};
+            color: ${templateStyle.backgroundColor};
+            padding: 8px 24px;
+            font-size: 12px;
             font-weight: 900;
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-            letter-spacing: -8px;
-            color: ${templateStyle.backgroundColor};
+            letter-spacing: 3px;
             text-transform: uppercase;
-            top: -50px;
-            left: 40px;
-            z-index: 5;
-            transform: rotate(-5deg);
-            text-shadow: 
-              8px 8px 0px ${templateStyle.secondaryColor},
-              16px 16px 0px ${templateStyle.textColor};
+            transform: rotate(-2deg);
+            margin-bottom: 16px;
+            box-shadow: 4px 4px 0px ${templateStyle.textColor}20;
           }
 
-          .we-are-hiring {
-            position: absolute;
-            bottom: 20px;
-            right: 30px;
-            font-size: clamp(32px, 6vw, 72px);
-            font-family: 'Bebas Neue', sans-serif;
-            color: ${templateStyle.backgroundColor};
-            letter-spacing: 12px;
-            transform: skewY(-3deg);
-            z-index: 3;
+          /* Bigger headline */
+          .mega-title {
+            font-size: 52px;
+            font-weight: 900;
+            line-height: 0.95;
+            color: ${templateStyle.textColor};
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            margin-bottom: 10px;
+            word-wrap: break-word;
+            text-shadow: 3px 3px 0px ${templateStyle.primaryColor}30;
+            max-height: 110px;
+            overflow: hidden;
           }
 
-          /* Job Title - Aggressive Diagonal Cut */
-          .job-title-slash {
-            grid-column: 1 / 9;
-            grid-row: 4 / 6;
+          .mega-title span {
+            display: block;
+            background: linear-gradient(135deg, ${templateStyle.primaryColor}, ${templateStyle.secondaryColor});
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+          }
+
+          .company-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
             background: ${templateStyle.textColor};
             color: ${templateStyle.backgroundColor};
-            padding: 40px;
-            font-size: clamp(36px, 5vw, 68px);
-            font-weight: 900;
-            display: flex;
-            align-items: center;
-            position: relative;
-            border: 6px solid ${templateStyle.primaryColor};
-            transform: skewX(-8deg);
-            margin-left: -20px;
-            box-shadow: 20px 20px 0px ${templateStyle.primaryColor};
-          }
-
-          .job-title-text {
-            transform: skewX(8deg);
-            text-transform: uppercase;
-            line-height: 1;
-            letter-spacing: -2px;
-          }
-
-          /* Floating Company Badge - Overlapping Design */
-          .company-float {
-            grid-column: 8 / 13;
-            grid-row: 4 / 6;
-            background: ${templateStyle.secondaryColor};
-            border: 6px solid ${templateStyle.textColor};
-            padding: 30px;
-            position: relative;
-            z-index: 10;
-            transform: rotate(2deg);
-            margin-top: -40px;
-          }
-
-          .company-name {
-            font-size: clamp(24px, 3vw, 42px);
-            font-weight: 900;
-            color: ${templateStyle.backgroundColor};
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-          }
-
-          .company-address {
-            font-size: 14px;
-            color: ${templateStyle.backgroundColor};
-            opacity: 0.85;
+            padding: 10px 20px;
+            font-size: 16px;
             font-weight: 700;
+            margin-top: 10px;
+            clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%);
+            max-width: 85%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
           }
 
-          /* Modular Detail Blocks - Puzzle Layout */
-          .detail-puzzle {
-            grid-column: 1 / 13;
-            grid-row: 6 / 8;
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
+          .company-icon {
+            width: 7px;
+            height: 7px;
+            background: ${templateStyle.primaryColor};
+            border-radius: 50%;
+            flex-shrink: 0;
+          }
+
+          /* Quick stats bar */
+          .stats-banner {
+            display: flex;
             gap: 0;
+            margin-top: 22px;
+            transform: rotate(-1deg);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.13);
+          }
+
+          .stat-pill {
+            flex: 1;
+            background: ${templateStyle.primaryColor};
+            color: ${templateStyle.backgroundColor};
+            padding: 14px 16px;
+            text-align: center;
+            border-right: 3px solid ${templateStyle.backgroundColor};
             position: relative;
           }
 
-          .puzzle-piece {
-            border: 4px solid ${templateStyle.textColor};
-            padding: 20px;
+          .stat-pill:last-child {
+            border-right: none;
+          }
+
+          .stat-pill::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: 10px;
+            right: 10px;
+            height: 3px;
+            background: ${templateStyle.secondaryColor};
+          }
+
+          .stat-label {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            opacity: 0.85;
+            display: block;
+            margin-bottom: 5px;
+          }
+
+          .stat-value {
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          /* Divider */
+          .angled-divider {
+            height: 20px;
+            background: linear-gradient(175deg, transparent 49%, ${templateStyle.primaryColor}13 50%);
+            margin: 20px 0;
+          }
+
+          /* Content columns - Bigger text */
+          .two-column-layout {
+            display: flex;
+            gap: 28px;
+            padding: 0 40px;
+            margin-bottom: 18px;
+            flex: 1;
+            overflow: hidden;
+            max-height: 430px;
+          }
+
+          .column-left {
+            flex: 1.2;
+            overflow: hidden;
+          }
+
+          .column-right {
+            flex: 1;
+            overflow: hidden;
+          }
+
+          /* Section styling - Bigger */
+          .section {
+            margin-bottom: 20px;
+          }
+
+          .section-tag {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 2.2px;
+            text-transform: uppercase;
+            color: ${templateStyle.primaryColor};
+            border: 2px solid ${templateStyle.primaryColor};
+            padding: 6px 14px;
+            margin-bottom: 10px;
+          }
+
+          .section-heading {
+            font-size: 24px;
+            font-weight: 900;
+            color: ${templateStyle.textColor};
+            margin-bottom: 12px;
+            letter-spacing: -1px;
+            line-height: 1.1;
+          }
+
+          .description-text {
+            font-size: 13px;
+            line-height: 1.65;
+            color: ${templateStyle.textColor};
+            opacity: 0.88;
+            margin-bottom: 12px;
+            max-height: 145px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 7;
+            -webkit-box-orient: vertical;
+            text-overflow: ellipsis;
+          }
+
+          /* Info cards - Bigger */
+          .info-card-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+          }
+
+          .info-card {
+            background: ${templateStyle.backgroundColor};
+            border-left: 4px solid ${templateStyle.primaryColor};
+            padding: 12px 16px;
+            box-shadow: 3px 3px 0px ${templateStyle.primaryColor}20;
+            position: relative;
+          }
+
+          .info-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, ${templateStyle.primaryColor}07);
+          }
+
+          .info-label {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            color: ${templateStyle.primaryColor};
+            margin-bottom: 5px;
+          }
+
+          .info-value {
+            font-size: 17px;
+            font-weight: 700;
+            color: ${templateStyle.textColor};
+            line-height: 1.2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          /* Single-line horizontal contact bar */
+          .contact-zone {
+            background: ${templateStyle.textColor};
+            color: ${templateStyle.backgroundColor};
+            padding: 28px 40px 24px;
+            position: relative;
+            margin-top: auto;
+          }
+
+          .contact-zone::before {
+            content: '';
+            position: absolute;
+            top: -14px;
+            left: 0;
+            right: 0;
+            height: 14px;
+            background: ${templateStyle.textColor};
+            clip-path: polygon(0 100%, 100% 0, 100% 100%, 0 100%);
+          }
+
+          .contact-header {
+            font-size: 22px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.8px;
+            margin-bottom: 16px;
+            color: ${templateStyle.backgroundColor};
+            text-align: center;
+          }
+
+          /* Horizontal contact bar layout */
+          .contact-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 0;
+            margin-bottom: 18px;
+            border: 3px solid ${templateStyle.primaryColor};
+            background: ${templateStyle.backgroundColor}12;
+          }
+
+          .contact-item {
+            flex: 1;
+            padding: 14px 16px;
+            text-align: center;
+            border-right: 3px solid ${templateStyle.primaryColor};
+            position: relative;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            min-height: 140px;
-            position: relative;
           }
 
-          .puzzle-piece:nth-child(1) { 
-            background: ${templateStyle.primaryColor}; 
-            grid-column: span 2;
-            transform: translateY(-15px);
-          }
-          .puzzle-piece:nth-child(2) { 
-            background: ${templateStyle.secondaryColor}; 
-            grid-column: span 1;
-          }
-          .puzzle-piece:nth-child(3) { 
-            background: ${templateStyle.primaryColor}90; 
-            grid-column: span 2;
-            transform: translateY(15px);
-          }
-          .puzzle-piece:nth-child(4) { 
-            background: ${templateStyle.textColor}; 
-            color: ${templateStyle.backgroundColor};
-            grid-column: span 1;
-          }
-          .puzzle-piece:nth-child(5) { 
-            background: ${templateStyle.secondaryColor}CC; 
-            grid-column: span 3;
-            transform: translateY(-10px);
-          }
-          .puzzle-piece:nth-child(6) { 
-            background: ${templateStyle.primaryColor}; 
-            grid-column: span 3;
-            transform: translateY(10px);
+          .contact-item:last-child {
+            border-right: none;
           }
 
-          .puzzle-label {
-            font-size: 11px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 8px;
-            opacity: 0.7;
-          }
-
-          .puzzle-value {
-            font-size: clamp(18px, 2.5vw, 28px);
-            font-weight: 900;
-            line-height: 1.1;
-            text-transform: uppercase;
-          }
-
-          /* Chaotic Description Section */
-          .description-chaos {
-            grid-column: 1 / 9;
-            grid-row: 8 / 10;
-            background: ${templateStyle.backgroundColor}dd;
-            border: 6px solid ${templateStyle.primaryColor};
-            padding: 40px;
-            position: relative;
-            margin: 20px 0 20px 40px;
-          }
-
-          .description-chaos::before {
-            content: '//';
-            position: absolute;
-            top: -30px;
-            left: -20px;
-            font-size: 120px;
-            font-weight: 900;
-            color: ${templateStyle.primaryColor};
-            opacity: 0.3;
-            z-index: -1;
-          }
-
-          .desc-title {
-            font-size: clamp(28px, 4vw, 48px);
-            font-weight: 900;
-            text-transform: uppercase;
-            color: ${templateStyle.primaryColor};
-            margin-bottom: 20px;
-            letter-spacing: -1px;
-            position: relative;
-          }
-
-          .desc-title::after {
+          .contact-item::before {
             content: '';
-            width: 100px;
-            height: 6px;
-            background: ${templateStyle.secondaryColor};
             position: absolute;
-            bottom: -10px;
+            top: 0;
             left: 0;
-            transform: skewX(-20deg);
-          }
-
-          .desc-text {
-            font-size: 16px;
-            line-height: 1.7;
-            color: ${templateStyle.textColor};
-            font-weight: 400;
-            margin-top: 30px;
-          }
-
-          /* Contact Brutalist Block */
-          .contact-brutalist {
-            grid-column: 9 / 13;
-            grid-row: 8 / 10;
+            right: 0;
+            height: 3px;
             background: ${templateStyle.primaryColor};
-            border: 8px solid ${templateStyle.textColor};
-            padding: 40px 30px;
-            position: relative;
-            transform: rotate(-1deg);
-            margin: 20px 20px 20px 0;
+            opacity: 0.3;
           }
 
-          .contact-stamp {
-            font-size: 16px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 6px;
-            color: ${templateStyle.backgroundColor};
-            margin-bottom: 25px;
-            writing-mode: vertical-rl;
-            position: absolute;
-            right: 10px;
-            top: 20px;
-            opacity: 0.5;
-          }
-
-          .contact-row {
-            margin-bottom: 25px;
-            border-left: 5px solid ${templateStyle.backgroundColor};
-            padding-left: 15px;
-          }
-
-          .contact-row-label {
-            font-size: 11px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: ${templateStyle.backgroundColor};
-            opacity: 0.8;
+          .contact-icon {
+            font-size: 22px;
             margin-bottom: 6px;
           }
 
-          .contact-row-value {
-            font-size: 18px;
-            font-weight: 900;
+          .contact-label {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            opacity: 0.75;
+            margin-bottom: 5px;
             color: ${templateStyle.backgroundColor};
-            word-break: break-word;
           }
 
-          /* Deadline Alarm Block */
-          .deadline-alarm {
-            grid-column: 1 / 13;
-            grid-row: 10 / 11;
-            background: ${templateStyle.textColor};
+          .contact-value {
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.3;
             color: ${templateStyle.backgroundColor};
-            padding: 30px 40px;
-            border-top: 8px solid ${templateStyle.primaryColor};
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 0 5px;
           }
 
-          .deadline-alarm::before {
-            content: '⚠';
-            position: absolute;
-            font-size: 180px;
-            opacity: 0.08;
-            right: 100px;
-            top: 50%;
-            transform: translateY(-50%);
+          /* Call to action */
+          .cta-banner {
+            background: ${templateStyle.primaryColor};
+            color: ${templateStyle.backgroundColor};
+            padding: 16px;
+            text-align: center;
+            transform: rotate(-1deg);
+            margin: 0 -8px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.28);
           }
 
-          .alarm-text {
-            font-size: clamp(20px, 3vw, 36px);
+          .cta-text {
+            font-size: 24px;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
           }
 
-          .alarm-date {
-            font-size: clamp(28px, 4vw, 56px);
-            font-weight: 900;
-            color: ${templateStyle.primaryColor};
-            letter-spacing: -2px;
+          .cta-deadline {
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 4px;
+            opacity: 0.9;
           }
 
-          /* Glitch Effect on Hover */
-          @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-          }
-
-          .mega-hiring-block:hover .hiring-vertical {
-            animation: glitch 0.3s infinite;
-          }
-
-          /* Responsive */
-          @media (max-width: 1024px) {
-            .poster-brutalist {
-              grid-template-columns: repeat(6, 1fr);
-              grid-template-rows: auto;
+          @media print {
+            html, body {
+              width: 210mm;
+              height: 297mm;
+              margin: 0;
+              padding: 0;
             }
-
-            .mega-hiring-block {
-              grid-column: 1 / 7;
-              grid-row: 1 / 3;
-            }
-
-            .job-title-slash {
-              grid-column: 1 / 7;
-              grid-row: 3 / 4;
-              margin-left: 0;
-              transform: skewX(0);
-            }
-
-            .company-float {
-              grid-column: 1 / 7;
-              grid-row: 4 / 5;
-              margin-top: 0;
-            }
-
-            .detail-puzzle {
-              grid-column: 1 / 7;
-              grid-row: 5 / 7;
-              grid-template-columns: repeat(2, 1fr);
-            }
-
-            .puzzle-piece {
-              grid-column: span 1 !important;
-              transform: translateY(0) !important;
-            }
-
-            .description-chaos {
-              grid-column: 1 / 7;
-              grid-row: 7 / 8;
-              margin: 20px;
-            }
-
-            .contact-brutalist {
-              grid-column: 1 / 7;
-              grid-row: 8 / 9;
-              margin: 20px;
-              transform: rotate(0);
-            }
-
-            .deadline-alarm {
-              grid-column: 1 / 7;
-              grid-row: 9 / 10;
+            .container {
+              width: 210mm;
+              height: 297mm;
+              page-break-after: avoid;
+              page-break-inside: avoid;
             }
           }
         </style>
       </head>
       <body>
-        <div class="poster-brutalist">
-          
-          <!-- Deconstructed Mega Hiring Block -->
-          <div class="mega-hiring-block">
-            <div class="hiring-vertical">HIRING</div>
-            <div class="we-are-hiring">NOW OPEN</div>
+        <div class="container">
+          <!-- Background elements -->
+          <div class="diagonal-split"></div>
+          <div class="shape-circle"></div>
+          <div class="shape-square"></div>
+
+          <div class="content-wrapper">
+            <!-- Hero Section -->
+            <div class="hero-section">
+              <div class="eyebrow-tag">★ NOW HIRING ★</div>
+              
+              <h1 class="mega-title">
+                ${formData.jobTitle.split(' ').slice(0, 2).join(' ')}
+                <span>${formData.jobTitle.split(' ').slice(2).join(' ') || ''}</span>
+              </h1>
+
+              <div class="company-badge">
+                <div class="company-icon"></div>
+                ${formData.companyName}
+              </div>
+
+              <div class="stats-banner">
+                <div class="stat-pill">
+                  <span class="stat-label">Openings</span>
+                  <div class="stat-value">${formData.vacancy}</div>
+                </div>
+                <div class="stat-pill">
+                  <span class="stat-label">Type</span>
+                  <div class="stat-value">${formData.jobType.split(' ')[0]}</div>
+                </div>
+                <div class="stat-pill">
+                  <span class="stat-label">Experience</span>
+                  <div class="stat-value">${formData.experience.split(' ')[0]}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="angled-divider"></div>
+
+            <!-- Two Column Content -->
+            <div class="two-column-layout">
+              <!-- Left Column -->
+              <div class="column-left">
+                <div class="section">
+                  <div class="section-tag">ROLE</div>
+                  <h2 class="section-heading">What You'll Do</h2>
+                  <div class="description-text">${formData.jobDescription}</div>
+                </div>
+
+                ${formData.additionalInfo ? `
+                  <div class="section">
+                    <div class="section-tag">PERKS</div>
+                    <div class="description-text" style="max-height: 85px; -webkit-line-clamp: 4;">${formData.additionalInfo}</div>
+                  </div>
+                ` : ''}
+              </div>
+
+              <!-- Right Column -->
+              <div class="column-right">
+                <div class="section">
+                  <div class="section-tag">DETAILS</div>
+                  <h2 class="section-heading">Key Info</h2>
+                  
+                  <div class="info-card-stack">
+                    <div class="info-card">
+                      <div class="info-label">Category</div>
+                      <div class="info-value">${formData.category}</div>
+                    </div>
+                    
+                    <div class="info-card">
+                      <div class="info-label">Salary Range</div>
+                      <div class="info-value">${formData.salary}</div>
+                    </div>
+                    
+                    <div class="info-card">
+                      <div class="info-label">Apply By</div>
+                      <div class="info-value">${formData.applicationDeadline}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Horizontal Contact Bar -->
+            <div class="contact-zone">
+              <h3 class="contact-header">Let's Connect</h3>
+              
+              <div class="contact-bar">
+                <div class="contact-item">
+                  <div class="contact-icon">📍</div>
+                  <div class="contact-label">Location</div>
+                  <div class="contact-value">${formData.companyAddress}</div>
+                </div>
+                
+                <div class="contact-item">
+                  <div class="contact-icon">📧</div>
+                  <div class="contact-label">Email</div>
+                  <div class="contact-value">${formData.companyEmail}</div>
+                </div>
+                
+                <div class="contact-item">
+                  <div class="contact-icon">📞</div>
+                  <div class="contact-label">Phone</div>
+                  <div class="contact-value">${formData.companyPhone}</div>
+                </div>
+                
+                <div class="contact-item">
+                  <div class="contact-icon">⏰</div>
+                  <div class="contact-label">Deadline</div>
+                  <div class="contact-value">${formData.applicationDeadline}</div>
+                </div>
+              </div>
+
+              <div class="cta-banner">
+                <div class="cta-text">Apply Today!</div>
+                <div class="cta-deadline">Join Our Growing Team</div>
+              </div>
+            </div>
           </div>
-
-          <!-- Diagonal Job Title -->
-          <div class="job-title-slash">
-            <div class="job-title-text">${formData.jobTitle}</div>
-          </div>
-
-          <!-- Floating Company Badge -->
-          <div class="company-float">
-            <div class="company-name">${formData.companyName}</div>
-            <div class="company-address">${formData.companyAddress}</div>
-          </div>
-
-          <!-- Modular Puzzle Detail Blocks -->
-          <div class="detail-puzzle">
-            <div class="puzzle-piece">
-              <div class="puzzle-label">Type</div>
-              <div class="puzzle-value">${formData.jobType}</div>
-            </div>
-            
-            <div class="puzzle-piece">
-              <div class="puzzle-label">Vacancy</div>
-              <div class="puzzle-value">${formData.vacancy}</div>
-            </div>
-            
-            <div class="puzzle-piece">
-              <div class="puzzle-label">Category</div>
-              <div class="puzzle-value">${formData.category}</div>
-            </div>
-            
-            <div class="puzzle-piece">
-              <div class="puzzle-label">Experience</div>
-              <div class="puzzle-value">${formData.experience}</div>
-            </div>
-            
-            <div class="puzzle-piece">
-              <div class="puzzle-label">Salary</div>
-              <div class="puzzle-value">${formData.salary}</div>
-            </div>
-            
-            <div class="puzzle-piece">
-              <div class="puzzle-label">Location</div>
-              <div class="puzzle-value">${formData.location}</div>
-            </div>
-          </div>
-
-          <!-- Chaotic Description -->
-          <div class="description-chaos">
-            <h3 class="desc-title">The Role</h3>
-            <div class="desc-text">${formData.jobDescription}</div>
-            
-            ${formData.additionalInfo ? `
-              <h3 class="desc-title" style="margin-top: 35px;">More Info</h3>
-              <div class="desc-text">${formData.additionalInfo}</div>
-            ` : ''}
-          </div>
-
-          <!-- Brutalist Contact Block -->
-          <div class="contact-brutalist">
-            <div class="contact-stamp">APPLY</div>
-            
-            <div class="contact-row">
-              <div class="contact-row-label">Email</div>
-              <div class="contact-row-value">${formData.companyEmail}</div>
-            </div>
-            
-            <div class="contact-row">
-              <div class="contact-row-label">Phone</div>
-              <div class="contact-row-value">${formData.companyPhone}</div>
-            </div>
-          </div>
-
-          <!-- Deadline Alarm -->
-          ${formData.applicationDeadline ? `
-            <div class="deadline-alarm">
-              <div class="alarm-text">Deadline:</div>
-              <div class="alarm-date">${formData.applicationDeadline}</div>
-            </div>
-          ` : ''}
-
         </div>
       </body>
     </html>

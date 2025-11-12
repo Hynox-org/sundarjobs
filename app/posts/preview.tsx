@@ -18,7 +18,7 @@ import * as Print from 'expo-print';
 import { shareAsync } from 'expo-sharing';
 import { HTML_TEMPLATES, HtmlTemplate, JobPostFormData, TemplateStyle } from '@/constants/jobTemplates';
 import generateHtmlTemplate from '@/components/HtmlTemplate';
-
+import { BlurView } from 'expo-blur';
 export default function PreviewScreen() {
   const { jobPostData, templateId, styleId } = useLocalSearchParams();
   const [formData, setFormData] = useState<JobPostFormData | null>(null);
@@ -51,7 +51,22 @@ export default function PreviewScreen() {
     }
     setLoading(false);
   }, [jobPostData, templateId, styleId]);
+  
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const handleLoginRedirect = () => {
+    Alert.alert(
+      'Login Required',
+      'Please log in to view the full preview and request posting.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Login',
+          onPress: () => setIsAuthenticated(true), // Simulate login
+        },
+      ]
+    );
+  };
   const handleZoomIn = () => {
     setZoom(prev => Math.min(prev + 0.1, 2));
   };
@@ -78,6 +93,7 @@ export default function PreviewScreen() {
       });
     } catch (error: any) {
       Alert.alert('Share Error', error.message);
+      console.log(error);
     }
   };
 
@@ -114,7 +130,7 @@ export default function PreviewScreen() {
 
   const htmlContent = formData && selectedTemplate && selectedTemplateStyle ? generateHtmlTemplate({ formData, template: selectedTemplate, templateStyle: selectedTemplateStyle }) : '<h1>Loading...</h1>';
 
-  return (
+    return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Top Control Bar */}
       <View style={[styles.topControls, { backgroundColor: colors.cardBackground, borderBottomColor: colors.border }]}>
@@ -122,6 +138,7 @@ export default function PreviewScreen() {
           <TouchableOpacity
             style={[styles.zoomButton, { backgroundColor: colors.background, borderColor: colors.border }]}
             onPress={handleZoomOut}
+            disabled={!isAuthenticated}
           >
             <Ionicons name="remove-outline" size={20} color={colors.tint} />
           </TouchableOpacity>
@@ -129,12 +146,14 @@ export default function PreviewScreen() {
           <TouchableOpacity
             style={[styles.zoomButton, { backgroundColor: colors.background, borderColor: colors.border }]}
             onPress={handleZoomIn}
+            disabled={!isAuthenticated}
           >
             <Ionicons name="add-circle" size={20} color={colors.tint} />
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.zoomButton, { backgroundColor: colors.background, borderColor: colors.border }]}
             onPress={handleResetZoom}
+            disabled={!isAuthenticated}
           >
             <Text style={[styles.zoomResetText, { color: colors.text }]}>1x</Text>
           </TouchableOpacity>
@@ -144,52 +163,100 @@ export default function PreviewScreen() {
         </Text>
       </View>
 
-      {/* PDF Viewer */}
-      <View style={[styles.pdfContainer, { backgroundColor: colors.background }]}>
+      {/* PDF Viewer with Blur + Login Overlay */}
+      <View style={[styles.pdfContainer, { backgroundColor: colors.background, flex: 1 }]}>
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           scrollEventThrottle={16}
+          scrollEnabled={isAuthenticated}
         >
           <View style={[styles.pdfWrapper, { transform: [{ scale: zoom }] }]}>
             {htmlContent ? (
-              <WebView
-                key={webViewKey}
-                originWhitelist={['*']}
-                source={{ html: htmlContent }}
-                style={styles.webView}
-                scalesPageToFit={true}
-                javaScriptEnabled={true}
-                domStorageEnabled={true}
-                scrollEnabled={false}
-                pinchGestureEnabled={false}
-                startInLoadingState={true}
-                renderLoading={() => (
-                  <View style={styles.loadingOverlay}>
-                    <ActivityIndicator size="small" color={colors.tint} />
-                  </View>
+              <View style={{ position: 'relative' }}>
+                <WebView
+                  key={webViewKey}
+                  originWhitelist={['*']}
+                  source={{ html: htmlContent }}
+                  style={styles.webView}
+                  scalesPageToFit={true}
+                  javaScriptEnabled={true}
+                  domStorageEnabled={true}
+                  scrollEnabled={false}
+                  pinchGestureEnabled={false}
+                  startInLoadingState={true}
+                  renderLoading={() => (
+                    <View style={styles.loadingOverlay}>
+                      <ActivityIndicator size="small" color={colors.tint} />
+                    </View>
+                  )}
+                  onError={(error) => console.log('WebView error:', error)}
+                />
+
+                {/* Blur + Login Prompt */}
+                {!isAuthenticated && (
+                  <>
+                    <BlurView intensity={90} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
+                    <View style={[StyleSheet.absoluteFill, { justifyContent: 'center', alignItems: 'center', padding: 24 }]}>
+                      <Ionicons name="lock-closed" size={56} color={colors.secondaryText} style={{ marginBottom: 16 }} />
+                      <Text style={{ color: colors.text, fontSize: 18, fontWeight: '600', textAlign: 'center', marginBottom: 8 }}>
+                        Login to View Preview
+                      </Text>
+                      <TouchableOpacity
+                        style={{
+                          backgroundColor: colors.tint,
+                          paddingHorizontal: 28,
+                          paddingVertical: 14,
+                          borderRadius: 10,
+                        }}
+                        onPress={handleLoginRedirect}
+                      >
+                        <Text style={{ color: '#fff', fontWeight: '600', fontSize: 16 }}>Login Now</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </>
                 )}
-                onError={(error) => console.log('WebView error:', error)}
-              />
-            ) : (
-              <View style={styles.noContent}>
-                <Text style={{ color: colors.secondaryText }}>No content to display</Text>
               </View>
-            )}
+            ) : null}
+          </View>
+
+          {/* Request to Post Button - BELOW Preview */}
+          <View style={{ paddingTop: 20, paddingBottom: 10 }}>
+            <TouchableOpacity
+              style={[
+                {
+                  backgroundColor: isAuthenticated ? colors.tint : '#ccc',
+                  paddingVertical: 14,
+                  paddingHorizontal: 15,
+                  borderRadius: 10,
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  gap: 8,
+                },
+              ]}
+              onPress={() => isAuthenticated && Alert.alert('Success', 'Request to post sent!')}
+              disabled={!isAuthenticated}
+            >
+              <Ionicons name="paper-plane" size={20} color="#fff" />
+              <Text style={{ color: '#fff', fontWeight: '600', fontSize: 16 }}>
+                Request to Post
+              </Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </View>
 
-      {/* Bottom Action Bar */}
+      {/* Bottom Action Bar (No Request to Post) */}
       <View style={[styles.bottomActions, { backgroundColor: colors.cardBackground, borderTopColor: colors.border }]}>
-        <TouchableOpacity style={styles.actionButton} onPress={handleShare}>
-          <Ionicons name="share-social" size={22} color={colors.tint} />
-          <Text style={[styles.actionButtonText, { color: colors.secondaryText }]}>Share</Text>
+        <TouchableOpacity style={styles.actionButton} onPress={handleShare} disabled={!isAuthenticated}>
+          <Ionicons name="share-social" size={22} color={isAuthenticated ? colors.tint : colors.secondaryText} />
+          <Text style={[styles.actionButtonText, { color: isAuthenticated ? colors.secondaryText : '#888' }]}>Share</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.actionButton} onPress={handleEdit}>
-          <Ionicons name="create" size={22} color={colors.tint} />
-          <Text style={[styles.actionButtonText, { color: colors.secondaryText }]}>Edit</Text>
+        <TouchableOpacity style={styles.actionButton} onPress={handleEdit} disabled={!isAuthenticated}>
+          <Ionicons name="create" size={22} color={isAuthenticated ? colors.tint : colors.secondaryText} />
+          <Text style={[styles.actionButtonText, { color: isAuthenticated ? colors.secondaryText : '#888' }]}>Edit</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.actionButton} onPress={handleBack}>
