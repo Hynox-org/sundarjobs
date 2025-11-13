@@ -30,7 +30,7 @@ export default function PreviewScreen() {
   const router = useRouter();
 
   const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  const isDark = colorScheme === 'light';
   const colors = isDark ? Colors.dark : Colors.light;
   const screenWidth = Dimensions.get('window').width;
 

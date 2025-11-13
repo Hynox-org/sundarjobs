@@ -7,16 +7,15 @@
     "icon": "./assets/images/logo-removebg-preview.png",
     "scheme": "sundarjobs",
     "userInterfaceStyle": "automatic",
-    "developmentClient": true,
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "icon": "./assets/images/ios-light.svg"
+      "icon": "./assets/images/ios-light.png"
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/adaptive-icon.svg"
+        "foregroundImage": "./assets/images/adaptive-icon.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
