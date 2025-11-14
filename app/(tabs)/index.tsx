@@ -1,13 +1,45 @@
-import { StyleSheet, View, FlatList, Alert } from 'react-native';
+import { StyleSheet, View, FlatList, Alert, Platform, Image, TouchableOpacity, Text, Modal } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BUSINESS_SECTORS, BusinessSector } from '@/constants/businessSectors';
 import { BusinessSectorCard } from '@/components/BusinessSectorCard';
+import { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
+import { useRouter } from 'expo-router'; // Import useRouter
+
+interface JobPostFormData {
+  id?: string;
+  title: string;
+  jobTitle: string;
+  vacancy: string;
+  jobType: string;
+  category: string;
+  experience: string;
+  salary: string;
+  jobDescription: string;
+  companyName: string;
+  companyAddress: string;
+  companyEmail: string;
+  companyPhone: string;
+  applicationDeadline: string;
+  additionalInfo: string;
+  isDraft?: boolean;
+  templateId?: string;
+  templateStyle?: string;
+  isPosted?: boolean;
+  posterUrl?: string;
+}
 
 export default function HomeScreen() {
+  const router = useRouter(); // Initialize useRouter
+
   const handleCardPress = (sector: BusinessSector) => {
-    Alert.alert('Sector Selected', `You selected: ${sector.name}`);
-    // Implement navigation or other actions here
+    // Navigate to the new page with the category as a parameter
+    router.push({
+      pathname: "/jobs/[category]",
+      params: { category: sector.name },
+    });
   };
 
   return (

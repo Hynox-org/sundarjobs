@@ -110,6 +110,7 @@ export default function PostJobsLayout() {
         <Stack.Screen name="index" options={{ title: 'Post a New Job' }} />
         <Stack.Screen name="templates" options={{ title: 'Job Templates' }} />
         <Stack.Screen name="preview" options={{ title: 'Job Post Preview' }} />
+        <Stack.Screen name="all" options={{ title: 'All Jobs' }} />
       </Stack>
       <FullScreenMenu isVisible={isMenuVisible} onClose={handleCloseMenu} onMenuItemPress={handleMenuItemPress} />
     </>

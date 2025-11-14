@@ -1,29 +1,23 @@
 export interface JobPostFormData {
+  id?: string;
   title: string;
-  jobTitle: string;
-  vacancy: string;
-  jobType: string;
-  salary: string;
-  location: string;
-  description: string;
-  requirements: string[];
-  responsibilities: string[];
-  benefits: string[];
-  contactInfo: string;
-  companyName: string;
-  companyLogo?: string;
-  applicationDeadline?: string;
-  sector: string;
+  job_title: string;
+  vacancy: number;
+  job_type: string;
   category: string;
   experience: string;
-  jobDescription: string;
-  companyAddress: string;
-  website?: string;
-  email?: string;
-  phone?: string;
-  companyEmail?: string;
-  companyPhone?: string;
-  additionalInfo?: string;
+  salary: string;
+  job_description: string;
+  company_name: string;
+  company_address: string;
+  company_email: string;
+  company_phone: string;
+  application_deadline: string;
+  additional_info: string;
+  is_draft?: boolean;
+  template_id?: string;
+  template_style?: string;
+  poster_url?: string;
 }
 
 export interface TemplateStyle {

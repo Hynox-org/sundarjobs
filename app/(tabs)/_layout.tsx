@@ -6,11 +6,67 @@ import { Ionicons } from '@expo/vector-icons';
 import { Tabs, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Easing, Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { supabase } from '@/lib/supabase'; // Import supabase
+import { Session } from '@supabase/supabase-js'; // Import Session type
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const [isMenuVisible, setMenuVisible] = useState(false);
   const router = useRouter();
+
+  const [session, setSession] = useState<Session | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setSession(session);
+      setIsAuthenticated(!!session);
+
+      if (session) {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .single();
+
+        if (error) {
+          console.error("Error fetching profile:", error);
+        } else if (profile) {
+          setIsAdmin(profile.role === 'admin');
+        }
+      }
+    };
+
+    fetchSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        setSession(session);
+        setIsAuthenticated(!!session);
+        if (session) {
+          const { data: profile, error } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', session.user.id)
+            .single();
+
+          if (error) {
+            console.error("Error fetching profile:", error);
+          } else if (profile) {
+            setIsAdmin(profile.role === 'admin');
+          }
+        } else {
+          setIsAdmin(false);
+        }
+      }
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
 
   const tintColor = Colors[colorScheme ?? 'light'].tint;
   const textColor = Colors[colorScheme ?? 'light'].text;
@@ -127,6 +183,7 @@ export default function TabLayout() {
           options={{
             title: 'Share',
             tabBarIcon: ({ color }) => <Ionicons name="share" size={28} color={color} />,
+            href: (isAuthenticated && isAdmin) ? '/(tabs)/share' : null, // Disable if not authenticated or not admin
           }}
         />
         <Tabs.Screen
@@ -134,6 +191,7 @@ export default function TabLayout() {
           options={{
             title: 'WhatsApp',
             tabBarIcon: ({ color }) => <Ionicons name="logo-whatsapp" size={28} color={color} />,
+            href: (isAuthenticated && isAdmin) ? '/(tabs)/whatsapp' : null, // Disable if not authenticated or not admin
           }}
         />
         <Tabs.Screen
@@ -141,6 +199,7 @@ export default function TabLayout() {
           options={{
             title: 'Mail',
             tabBarIcon: ({ color }) => <Ionicons name="mail" size={28} color={color} />,
+            href: (isAuthenticated && isAdmin) ? '/(tabs)/mail' : null, // Disable if not authenticated or not admin
           }}
         />
         <Tabs.Screen
@@ -155,6 +214,7 @@ export default function TabLayout() {
           options={{
             title: 'Templates',
             tabBarIcon: ({ color }) => <Ionicons name="document-text" size={28} color={color} />,
+            href: (isAuthenticated && isAdmin) ? '/posts/templates' : null, // Disable if not authenticated or not admin
           }}
         />
       </Tabs>

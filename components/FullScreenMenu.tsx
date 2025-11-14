@@ -86,8 +86,10 @@ export default function FullScreenMenu({ isVisible, onClose, onMenuItemPress }: 
     menuLinks.push({ name: 'Profile', icon: 'person', screen: 'profile' });
     if (isAdmin) {
       menuLinks.push(
-        { name: 'Post Jobs', icon: 'briefcase', screen: 'posts' },
-        { name: 'Templates', icon: 'document-text', screen: 'posts/templates' }
+        { name: 'Post Jobs', icon: 'briefcase', screen: 'posts' }
+      );
+      menuLinks.push(
+        { name: 'All Jobs', icon: 'list', screen: 'posts/all' }
       );
     }
     menuLinks.push({ name: 'Logout', icon: 'log-out', screen: 'logout' });

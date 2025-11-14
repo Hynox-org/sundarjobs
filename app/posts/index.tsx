@@ -3,9 +3,10 @@ import SelectionModal from "@/components/ui/SelectionModal";
 import { JOB_CATEGORIES } from "@/constants/jobCategories";
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { supabase } from "@/lib/supabase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -35,6 +36,9 @@ interface FormData {
   companyPhone: string;
   applicationDeadline: string;
   additionalInfo: string;
+  isDraft?: boolean; // Add isDraft flag
+  templateId?: string; // Add templateId for selected template
+  templateStyle?: string; // Add templateStyle for selected template style
 }
 
 export default function PostJobsScreen() {
@@ -61,6 +65,17 @@ export default function PostJobsScreen() {
 
   const [isCategoryModalVisible, setCategoryModalVisible] = useState(false);
   const [isJobTypeModalVisible, setJobTypeModalVisible] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    fetchUser();
+  }, []);
 
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, boolean>>>({});
 
@@ -81,7 +96,7 @@ export default function PostJobsScreen() {
     }
   };
 
-  const handleSubmit = async () => { // Mark as async
+  const handleSaveJob = async (action: "draft" | "template") => {
     const required: (keyof FormData)[] = [
       "title",
       "jobTitle",
@@ -111,45 +126,70 @@ export default function PostJobsScreen() {
       return;
     }
 
-    if (Platform.OS === "web") {
-      alert("Form submitted successfully!");
-    } else {
-      Alert.alert("Success", "Form submitted successfully!");
-    }
-    console.log("Form Data:", form);
+    if (!user) {
+      if (Platform.OS === "web") {
+        alert("You must be logged in to post a job.");
+      } else {
+        Alert.alert("Error", "You must be logged in to post a job.");
+      }
+      return;
+      }
 
-    // Store data in local storage
     try {
-      const storageKey = "jobPosts";
-      let existingPosts: FormData[] = [];
+      const jobData = {
+        title: form.title,
+        job_title: form.jobTitle,
+        vacancy: parseInt(form.vacancy, 10),
+        job_type: form.jobType,
+        category: form.category,
+        experience: form.experience,
+        salary: form.salary,
+        job_description: form.jobDescription,
+        company_name: form.companyName,
+        company_address: form.companyAddress,
+        company_email: form.companyEmail,
+        company_phone: form.companyPhone,
+        application_deadline: form.applicationDeadline || null,
+        additional_info: form.additionalInfo,
+        user_id: user.id,
+        is_draft: true,
+      };
 
-      if (Platform.OS === "web") {
-        const storedData = localStorage.getItem(storageKey);
-        if (storedData) {
-          existingPosts = JSON.parse(storedData);
-        }
-      } else {
-        const storedData = await AsyncStorage.getItem(storageKey);
-        if (storedData) {
-          existingPosts = JSON.parse(storedData);
-        }
+      const { data, error } = await supabase.from("jobs").insert([jobData]).select();
+
+      if (error) {
+        throw error;
       }
 
-      const updatedPosts = [...existingPosts, { ...form, id: Date.now().toString() }]; // Add a unique ID
-      const jsonValue = JSON.stringify(updatedPosts);
+      const newJobId = data?.[0]?.id;
+      console.log("Job post saved to Supabase with ID:", newJobId);
 
-      if (Platform.OS === "web") {
-        localStorage.setItem(storageKey, jsonValue);
-      } else {
-        await AsyncStorage.setItem(storageKey, jsonValue);
+      if (action === "draft") {
+        if (Platform.OS === "web") {
+          alert("Job saved as draft!");
+        } else {
+          Alert.alert("Success", "Job saved as draft!");
+        }
+        router.push("/"); // Redirect to home page
+      } else if (action === "template") {
+        if (Platform.OS === "web") {
+          alert("Proceeding to template selection!");
+        } else {
+          Alert.alert("Success", "Proceeding to template selection!");
+        }
+        router.push({
+          pathname: "/posts/templates",
+          params: { jobId: newJobId },
+        }); // Pass jobId to template page
       }
-      console.log("Job post saved to local storage.");
     } catch (e) {
-      console.error("Error saving job post to local storage:", e);
+      console.error("Error saving job post to Supabase:", e);
+      if (Platform.OS === "web") {
+        alert("Error saving job post.");
+      } else {
+        Alert.alert("Error", "Error saving job post.");
+      }
     }
-
-    // Navigate to the template page
-    router.push("/posts/templates");
   };
 
   const containerPadding = isSmallScreen ? 16 : isMediumScreen ? 40 : 80;
@@ -412,14 +452,24 @@ export default function PostJobsScreen() {
           </View>
         </View>
 
-        {/* Submit Button */}
-        <TouchableOpacity
-          style={styles.submitBtn}
-          onPress={handleSubmit}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.submitText}>Submit Job Posting</Text>
-        </TouchableOpacity>
+        {/* Action Buttons */}
+        <View style={[styles.row, isSmallScreen && styles.column, styles.buttonGroup]}>
+          <TouchableOpacity
+            style={[styles.submitBtn, styles.draftBtn, styles.flex1]}
+            onPress={() => handleSaveJob("draft")}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.submitText}>Save as Draft</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.submitBtn, styles.proceedBtn, styles.flex1]}
+            onPress={() => handleSaveJob("template")}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.submitText}>Proceed with Templates</Text>
+          </TouchableOpacity>
+        </View>
 
         {/* Bottom Padding for mobile */}
         <View style={{ height: 40 }} />
@@ -588,13 +638,16 @@ const styles = StyleSheet.create({
   flex1: {
     flex: 1,
   },
+  buttonGroup: {
+    marginTop: 20,
+    justifyContent: "space-between",
+  },
   submitBtn: {
     backgroundColor: "#2563EB",
     paddingVertical: 16,
     paddingHorizontal: 32,
     borderRadius: 10,
     alignItems: "center",
-    marginTop: 12,
     ...Platform.select({
       ios: {
         shadowColor: "#2563EB",
@@ -611,6 +664,12 @@ const styles = StyleSheet.create({
         transition: "background-color 0.2s, transform 0.1s",
       },
     }),
+  },
+  draftBtn: {
+    backgroundColor: "#6B7280", // A different color for draft
+  },
+  proceedBtn: {
+    backgroundColor: "#2563EB",
   },
   submitText: {
     color: "#FFFFFF",
