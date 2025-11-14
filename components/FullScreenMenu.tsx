@@ -83,7 +83,7 @@ export default function FullScreenMenu({ isVisible, onClose, onMenuItemPress }: 
   const menuLinks = [];
 
   if (session) {
-    menuLinks.push({ name: 'Profile', icon: 'person', screen: 'profile' });
+    // menuLinks.push({ name: 'Profile', icon: 'person', screen: 'profile' });
     if (isAdmin) {
       menuLinks.push(
         { name: 'Post Jobs', icon: 'briefcase', screen: 'posts' }

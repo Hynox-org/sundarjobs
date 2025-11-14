@@ -1,12 +1,11 @@
-import { ThemedView } from '@/components/themed-view';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { supabase } from '@/lib/supabase';
+import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, Alert, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { supabase } from '@/lib/supabase';
 import WebView from 'react-native-webview';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '@/constants/theme';
 
 interface JobPostFormData {
   id: string;
@@ -24,9 +23,7 @@ export default function CategoryJobsScreen() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const colorScheme = useColorScheme();
-  const isDark = false;
-  const colors = isDark ? Colors.dark : Colors.light;
+  const colors = Colors.light;
 
   useEffect(() => {
     const fetchJobsByCategory = async () => {
@@ -43,10 +40,7 @@ export default function CategoryJobsScreen() {
           .eq('category', category as string)
           .eq('is_draft', false);
 
-        if (error) {
-          throw error;
-        }
-
+        if (error) throw error;
         setJobs(data || []);
       } catch (e: any) {
         console.error("Error fetching jobs by category:", e);
@@ -61,55 +55,92 @@ export default function CategoryJobsScreen() {
 
   if (loading) {
     return (
-      <ThemedView style={styles.centeredContainer}>
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={colors.tint} />
-        <Text style={[styles.loadingText, { color: colors.secondaryText }]}>Loading jobs...</Text>
-      </ThemedView>
+        <Text style={[styles.loadingLabel, { color: colors.secondaryText }]}>
+          Loading...
+        </Text>
+      </View>
     );
   }
 
   if (jobs.length === 0) {
     return (
-      <ThemedView style={styles.centeredContainer}>
-        <Ionicons name="information-circle-outline" size={48} color={colors.secondaryText} style={{ marginBottom: 10 }} />
-        <Text style={[styles.noJobsText, { color: colors.text }]}>No jobs found for "{category}".</Text>
-        <TouchableOpacity style={[styles.backButton, { marginTop: 20 }]} onPress={() => router.back()}>
-          <Text style={{ color: colors.tint, fontWeight: '600' }}>Go Back</Text>
-        </TouchableOpacity>
-      </ThemedView>
+      <View style={styles.emptyState}>
+        <View style={styles.emptyContent}>
+          <View style={[styles.redBar, { backgroundColor: colors.tint }]} />
+          
+          <Text style={[styles.emptyTitle, { color: colors.text }]}>
+            NO JOBS{'\n'}AVAILABLE
+          </Text>
+          
+          <Text style={[styles.emptyDescription, { color: colors.secondaryText }]}>
+            No positions in {category} right now.
+          </Text>
+          
+          <TouchableOpacity 
+            onPress={() => router.back()}
+            style={[styles.emptyBackButton, { backgroundColor: colors.text }]}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.emptyBackText}>← BACK</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     );
   }
 
-  const renderJobItem = ({ item }: { item: JobPostFormData }) => (
-    <View style={[styles.jobCard, { backgroundColor: colors.cardBackground, borderColor: colors.border }]}>
-      <Text style={[styles.jobTitle, { color: colors.text }]}>{item.job_title}</Text>
-      <Text style={[styles.jobCategory, { color: colors.secondaryText }]}>Category: {item.category}</Text>
-      
-      {item.poster_url && (
-        <View style={styles.posterPreviewContainer}>
-          <Text style={[styles.posterLabel, { color: colors.secondaryText }]}>Job Poster Preview:</Text>
-          <WebView
-            source={{ 
-              uri: `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(item.poster_url)}` 
-            }}
-            style={styles.pdfWebView}
-            javaScriptEnabled={true}
-            domStorageEnabled={true}
-            scrollEnabled={true}
-            startInLoadingState={true}
-            renderLoading={() => (
-              <View style={styles.loadingContainer}>
-                <ActivityIndicator size="small" color={colors.tint} />
-                <Text style={{ color: colors.secondaryText, marginTop: 8 }}>Loading PDF...</Text>
-              </View>
+  const renderJobItem = ({ item, index }: { item: JobPostFormData; index: number }) => (
+    <View style={styles.magazineCard}>
+      {/* Compact header */}
+      <View style={styles.cardRow}>
+        <View style={[styles.leftBar, { backgroundColor: colors.tint }]} />
+        
+        <View style={styles.cardContent}>
+          {/* Small number indicator */}
+          <View style={styles.numberRow}>
+            <Text style={[styles.compactNumber, { color: colors.tint }]}>
+              {String(index + 1).padStart(2, '0')}
+            </Text>
+            <View style={[styles.horizontalLine, { backgroundColor: colors.border }]} />
+          </View>
+
+          {/* Compact job title */}
+          <Text style={[styles.compactTitle, { color: colors.text }]}>
+            {item.job_title.toUpperCase()}
+          </Text>
+
+          {/* Small category */}
+          <View style={styles.categorySection}>
+            <View style={[styles.verticalBar, { backgroundColor: colors.secondary }]} />
+            <Text style={[styles.categoryLabel, { color: colors.icon }]}>
+              {item.category.toUpperCase()}
+            </Text>
+          </View>
+
+          {/* Job Details as Text */}
+          <View style={styles.detailsSection}>
+            <Text style={[styles.detailsHeading, { color: colors.secondaryText }]}>
+              JOB TITLE
+            </Text>
+            <Text style={[styles.detailText, { color: colors.text }]}>
+              {item.job_title}
+            </Text>
+
+            {item.title && (
+              <>
+                <Text style={[styles.detailsHeading, { color: colors.secondaryText, marginTop: 8 }]}>
+                  DESCRIPTION
+                </Text>
+                <Text style={[styles.detailText, { color: colors.text }]}>
+                  {item.title}
+                </Text>
+              </>
             )}
-            onError={(syntheticEvent) => {
-              const { nativeEvent } = syntheticEvent;
-              console.warn('WebView error: ', nativeEvent);
-            }}
-          />
+          </View>
+
+          {/* Compact CTA */}
           <TouchableOpacity 
-            style={[styles.viewFullButton, { backgroundColor: colors.tint }]}
             onPress={() => router.push({
               pathname: '/posts/preview',
               params: {
@@ -118,94 +149,170 @@ export default function CategoryJobsScreen() {
                 styleId: item.template_style,
               }
             })}
+            activeOpacity={0.8}
+            style={[styles.readMoreButton, { backgroundColor: colors.tint }]}
           >
-            <Ionicons name="eye" size={18} color="#fff" style={{ marginRight: 6 }} />
-            <Text style={styles.viewFullButtonText}>View Full Details</Text>
+            <Text style={styles.readMoreText}>VIEW</Text>
+            <Ionicons name="arrow-forward" size={16} color="white" />
           </TouchableOpacity>
         </View>
-      )}
+      </View>
+
+      {/* Thin bottom stripe */}
+      <LinearGradient
+        colors={[colors.tint, colors.secondary]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={styles.bottomStripe}
+      />
     </View>
   );
 
   return (
-    <ThemedView style={styles.container}>
+    <View style={[styles.mainContainer, { backgroundColor: colors.background }]}>
       <FlatList
         data={jobs}
         renderItem={renderJobItem}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContentContainer}
+        contentContainerStyle={styles.magazineList}
+        showsVerticalScrollIndicator={false}
       />
-    </ThemedView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     flex: 1,
-  },
-  centeredContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  loadingText: {
-    marginTop: 15,
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  noJobsText: {
-    fontSize: 16,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  backButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-  },
-  listContentContainer: {
-    padding: 16,
-    paddingBottom: 20,
-  },
-  jobCard: {
-    borderRadius: 8,
-    borderWidth: 1,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  jobTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  jobCategory: {
-    fontSize: 14,
-    marginBottom: 10,
-  },
-  posterPreviewContainer: {
-    marginTop: 10,
-    borderTopWidth: 1,
-    paddingTop: 10,
-    borderTopColor: '#eee',
-  },
-  posterLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  pdfWebView: {
-    width: '100%',
-    height: 300,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 4,
-    marginBottom: 10,
   },
   loadingContainer: {
+    flex: 1,
+    backgroundColor: '#EDF2F4',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingLabel: {
+    marginTop: 12,
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  emptyState: {
+    flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+  emptyContent: {
+    width: '100%',
+    maxWidth: 320,
+  },
+  redBar: {
+    height: 4,
+    width: 60,
+    marginBottom: 20,
+  },
+  emptyTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 12,
+    lineHeight: 32,
+  },
+  emptyDescription: {
+    fontSize: 14,
+    marginBottom: 24,
+    lineHeight: 20,
+  },
+  emptyBackButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+  },
+  emptyBackText: {
+    color: 'white',
+    fontSize: 13,
+    fontWeight: '700',
+    textAlign: 'center',
+    letterSpacing: 1.2,
+  },
+  magazineList: {
+    padding: 12,
+    paddingTop: 16,
+  },
+  magazineCard: {
+    backgroundColor: 'white',
+    marginBottom: 16,
+    overflow: 'hidden',
+  },
+  cardRow: {
+    flexDirection: 'row',
+  },
+  leftBar: {
+    width: 4,
+  },
+  cardContent: {
+    flex: 1,
+    padding: 14,
+  },
+  numberRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  compactNumber: {
+    fontSize: 24,
+    fontWeight: '700',
+    marginRight: 10,
+  },
+  horizontalLine: {
+    flex: 1,
+    height: 1,
+  },
+  compactTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    marginBottom: 8,
+    lineHeight: 20,
+    letterSpacing: -0.3,
+  },
+  categorySection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  verticalBar: {
+    height: 14,
+    width: 3,
+    marginRight: 8,
+  },
+  categoryLabel: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 1.2,
+  },
+  detailsSection: {
+    marginTop: 4,
+  },
+  detailsHeading: {
+    fontSize: 9,
+    fontWeight: '700',
+    marginBottom: 8,
+    letterSpacing: 1.5,
+  },
+  detailText: {
+    fontSize: 13,
+    lineHeight: 18,
+    marginBottom: 4,
+  },
+  pdfWrapper: {
+    borderRadius: 8,
+    overflow: 'hidden',
+    borderLeftWidth: 3,
+  },
+  compactWebView: {
+    width: '100%',
+    height: 200,
+  },
+  magazineLoading: {
     position: 'absolute',
     top: 0,
     left: 0,
@@ -213,19 +320,23 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
   },
-  viewFullButton: {
+  readMoreButton: {
+    marginTop: 12,
     paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
   },
-  viewFullButtonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 14,
+  readMoreText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 1.5,
+  },
+  bottomStripe: {
+    height: 3,
+    width: '100%',
   },
 });
