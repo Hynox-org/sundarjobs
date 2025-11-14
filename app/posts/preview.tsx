@@ -20,6 +20,7 @@ import {
   Alert,
   Dimensions,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -196,6 +197,28 @@ export default function PreviewScreen() {
   };
 
   const handleShare = async () => {
+    Alert.alert(
+      "Share Job",
+      "Choose a sharing option:",
+      [
+        {
+          text: "Share as PDF",
+          onPress: () => sharePdf(),
+        },
+        {
+          text: "Share on WhatsApp",
+          onPress: () => shareOnWhatsApp(),
+        },
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const sharePdf = async () => {
     try {
       const htmlContent =
         formData && selectedTemplate && selectedTemplateStyle
@@ -213,6 +236,45 @@ export default function PreviewScreen() {
       await shareAsync(uri, {
         UTI: ".pdf",
         mimeType: "application/pdf",
+      });
+    } catch (error: any) {
+      Alert.alert("Share Error", error.message);
+      console.log(error);
+    }
+  };
+
+  const shareOnWhatsApp = async () => {
+    if (!formData) {
+      Alert.alert("Error", "Job data not available.");
+      return;
+    }
+    try {
+      const jobDetails = `
+🌟 *New Job Opportunity!* 🌟
+
+*Job Title:* ${formData.job_title}
+*Category:* ${formData.category}
+*Description:* ${formData.title || 'N/A'}
+*Job Type:* ${formData.job_type || 'N/A'}
+*Vacancy:* ${formData.vacancy || 'N/A'}
+*Experience:* ${formData.experience || 'N/A'}
+*Salary:* ${formData.salary || 'N/A'}
+*Job Description:* ${formData.job_description || 'N/A'}
+*Company Name:* ${formData.company_name || 'N/A'}
+*Company Address:* ${formData.company_address || 'N/A'}
+*Company Email:* ${formData.company_email || 'N/A'}
+*Company Phone:* ${formData.company_phone || 'N/A'}
+*Application Deadline:* ${formData.application_deadline || 'N/A'}
+*Additional Info:* ${formData.additional_info || 'N/A'}
+
+💼 *View more details:* ${formData.poster_url || `https://sundarjobs.com/posts/preview?jobId=${formData.id}&templateId=${formData.template_id || ''}&styleId=${formData.template_style || ''}`}
+
+🚀 *Find more jobs like this on SundarJobs!*
+      `;
+      await Share.share({
+        message: jobDetails,
+      }, {
+        dialogTitle: 'Share Job Post',
       });
     } catch (error: any) {
       Alert.alert("Share Error", error.message);
@@ -628,7 +690,7 @@ export default function PreviewScreen() {
               styles.actionButtonText,
               {
                 color:
-                  isAuthenticated && isAdmin && !formData.is_draft
+                  isAuthenticated && isAdmin
                     ? colors.secondaryText
                     : "#888",
               },

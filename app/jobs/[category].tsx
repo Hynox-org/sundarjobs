@@ -1,17 +1,27 @@
-import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, Alert, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Colors } from '@/constants/theme';
+import { supabase } from '@/lib/supabase';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import WebView from 'react-native-webview';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Colors } from '@/constants/theme';
+import { ActivityIndicator, Alert, FlatList, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface JobPostFormData {
   id: string;
   title: string;
   job_title: string;
+  vacancy: number;
+  job_type?: string;
   category: string;
+  experience: string;
+  salary?: string;
+  job_description: string;
+  company_name?: string;
+  company_address?: string;
+  company_email: string;
+  company_phone?: string;
+  application_deadline?: string;
+  additional_info?: string;
   poster_url?: string;
   template_id?: string;
   template_style?: string;
@@ -36,7 +46,7 @@ export default function CategoryJobsScreen() {
       try {
         const { data, error } = await supabase
           .from('jobs')
-          .select('id, title, job_title, category, poster_url, template_id, template_style')
+          .select('id, title, job_title, vacancy, job_type, category, experience, salary, job_description, company_name, company_address, company_email, company_phone, application_deadline, additional_info, poster_url, template_id, template_style')
           .eq('category', category as string)
           .eq('is_draft', false);
 
@@ -154,6 +164,44 @@ export default function CategoryJobsScreen() {
           >
             <Text style={styles.readMoreText}>VIEW</Text>
             <Ionicons name="arrow-forward" size={16} color="white" />
+          </TouchableOpacity>
+
+          {/* Share with WhatsApp Button */}
+          <TouchableOpacity
+            onPress={() => {
+              const jobDetails = `
+🌟 *New Job Opportunity!* 🌟
+
+*Job Title:* ${item.job_title}
+*Category:* ${item.category}
+*Description:* ${item.title || 'N/A'}
+*Job Type:* ${item.job_type || 'N/A'}
+*Vacancy:* ${item.vacancy || 'N/A'}
+*Experience:* ${item.experience || 'N/A'}
+*Salary:* ${item.salary || 'N/A'}
+*Job Description:* ${item.job_description || 'N/A'}
+*Company Name:* ${item.company_name || 'N/A'}
+*Company Address:* ${item.company_address || 'N/A'}
+*Company Email:* ${item.company_email || 'N/A'}
+*Company Phone:* ${item.company_phone || 'N/A'}
+*Application Deadline:* ${item.application_deadline || 'N/A'}
+*Additional Info:* ${item.additional_info || 'N/A'}
+
+💼 *View more details:* ${item.poster_url || `https://sundarjobs.com/posts/preview?jobId=${item.id}&templateId=${item.template_id || ''}&styleId=${item.template_style || ''}`}
+
+🚀 *Find more jobs like this on SundarJobs!*
+              `;
+              Share.share({
+                message: jobDetails,
+              }, {
+                dialogTitle: 'Share Job Post',
+              });
+            }}
+            activeOpacity={0.8}
+            style={[styles.whatsappShareButton, { backgroundColor: '#25D366' }]}
+          >
+            <FontAwesome name="whatsapp" size={20} color="white" />
+            <Text style={styles.whatsappShareText}>SHARE ON WHATSAPP</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -330,6 +378,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   readMoreText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 1.5,
+  },
+  whatsappShareButton: {
+    marginTop: 8,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    borderRadius: 4,
+    gap: 8,
+  },
+  whatsappShareText: {
     color: 'white',
     fontSize: 12,
     fontWeight: '700',
