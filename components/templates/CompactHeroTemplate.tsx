@@ -273,11 +273,11 @@ export function generateCompactHeroTemplateHtml({ formData, templateStyle }: { f
           <!-- Hero Section -->
           <div class="hero">
             <div class="we-are-hiring">◆ WE ARE HIRING ◆</div>
-            <h1>${formData.jobTitle}</h1>
-            <div class="company-name">${formData.companyName}</div>
+            <h1>${formData.job_title}</h1>
+            <div class="company-name">${formData.company_name}</div>
             
             <div class="quick-info">
-              <div class="quick-badge">${formData.jobType}</div>
+              <div class="quick-badge">${formData.job_type}</div>
               <div class="quick-badge">${formData.category}</div>
               <div class="quick-badge">${formData.vacancy} Openings</div>
             </div>
@@ -303,7 +303,7 @@ export function generateCompactHeroTemplateHtml({ formData, templateStyle }: { f
                 </div>
                 <div class="detail-box">
                   <div class="detail-label">Apply Before</div>
-                  <div class="detail-value">${formData.applicationDeadline}</div>
+                  <div class="detail-value">${formData.application_deadline}</div>
                 </div>
               </div>
             </div>
@@ -314,7 +314,7 @@ export function generateCompactHeroTemplateHtml({ formData, templateStyle }: { f
             <div class="section">
               <div class="section-header">ABOUT THE ROLE</div>
               <div class="section-title">Job Description</div>
-              <div class="description">${formData.jobDescription}</div>
+              <div class="description">${formData.job_description}</div>
             </div>
 
             <div class="accent-line"></div>
@@ -329,7 +329,7 @@ export function generateCompactHeroTemplateHtml({ formData, templateStyle }: { f
                   <div class="contact-icon">📍</div>
                   <div class="contact-content">
                     <div class="contact-label">Location</div>
-                    <div class="contact-value">${formData.companyAddress}</div>
+                    <div class="contact-value">${formData.company_address}</div>
                   </div>
                 </div>
                 
@@ -337,7 +337,7 @@ export function generateCompactHeroTemplateHtml({ formData, templateStyle }: { f
                   <div class="contact-icon">📧</div>
                   <div class="contact-content">
                     <div class="contact-label">Email</div>
-                    <div class="contact-value">${formData.companyEmail}</div>
+                    <div class="contact-value">${formData.company_email}</div>
                   </div>
                 </div>
                 
@@ -345,17 +345,17 @@ export function generateCompactHeroTemplateHtml({ formData, templateStyle }: { f
                   <div class="contact-icon">📞</div>
                   <div class="contact-content">
                     <div class="contact-label">Phone</div>
-                    <div class="contact-value">${formData.companyPhone}</div>
+                    <div class="contact-value">${formData.company_phone}</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            ${formData.additionalInfo ? `
+            ${formData.additional_info ? `
               <div class="accent-line"></div>
               <div class="section">
                 <div class="section-header">ADDITIONAL INFO</div>
-                <div class="description" style="max-height: 80px;">${formData.additionalInfo}</div>
+                <div class="description" style="max-height: 80px;">${formData.additional_info}</div>
               </div>
             ` : ''}
           </div>
@@ -363,7 +363,7 @@ export function generateCompactHeroTemplateHtml({ formData, templateStyle }: { f
           <!-- Footer CTA -->
           <div class="footer">
             <div class="apply-now">APPLY NOW</div>
-            <div class="deadline">Application Deadline: ${formData.applicationDeadline}</div>
+            <div class="deadline">Application Deadline: ${formData.application_deadline}</div>
           </div>
         </div>
       </body>

@@ -46,11 +46,11 @@ export interface HtmlTemplate {
 export const HTML_TEMPLATES: HtmlTemplate[] = [
   {
     id: 'default-template',
-    name: 'Default Template',
+    name: 'Template 1',
     styles: [
       {
         id: 'default-style',
-        name: 'Default Style',
+        name: 'blue',
         backgroundColor: '#FFFFFF',
         textColor: '#333333',
         primaryColor: '#007BFF',
@@ -67,7 +67,7 @@ export const HTML_TEMPLATES: HtmlTemplate[] = [
   },
   {
     id: 'compact-hero',
-    name: 'Compact Hero Template',
+    name: 'Template 2',
     styles: [
       {
         id: 'default-style',
@@ -87,7 +87,7 @@ export const HTML_TEMPLATES: HtmlTemplate[] = [
       // MINIMALIST HIGH CONTRAST
       {
         id: 'style1',
-        name: 'Bold Minimalist',
+        name: 'Black & White',
         backgroundColor: '#0A0A0A', // Near black
         textColor: '#FFFFFF',
         primaryColor: '#FFFFFF',
@@ -138,7 +138,7 @@ export const HTML_TEMPLATES: HtmlTemplate[] = [
       // WARM PREMIUM DARK
       {
         id: 'style4',
-        name: 'Golden Hour',
+        name: 'Golden',
         backgroundColor: '#1C1410', // Dark brown
         textColor: '#F5E6D3',
         primaryColor: '#FFB627',
@@ -155,7 +155,7 @@ export const HTML_TEMPLATES: HtmlTemplate[] = [
       // DARK MODERN GREEN
       {
         id: 'style5',
-        name: 'Matrix Green',
+        name: 'Green',
         backgroundColor: '#0F1419', // Dark slate
         textColor: '#ECEFF4',
         primaryColor: '#00FF41',
@@ -172,7 +172,7 @@ export const HTML_TEMPLATES: HtmlTemplate[] = [
       // SLATE PROFESSIONAL
       {
         id: 'style6',
-        name: 'Corporate Slate',
+        name: 'Matrix Blue',
         backgroundColor: '#1E293B', // Slate 800
         textColor: '#F1F5F9',
         primaryColor: '#38BDF8',

@@ -309,7 +309,7 @@ export default function TemplatesScreen() {
         alert("Error saving template details.");
       } else {
         Alert.alert("Error", "Error saving template details.");
-      }
+      } 
     }
   }, [jobId, selectedTemplate, selectedStyleId, router]);
 
@@ -368,14 +368,29 @@ export default function TemplatesScreen() {
                             style={[
                               styles.templateOption,
                               {
-                                backgroundColor: style.backgroundColor,
-                                borderColor: style.primaryColor,
+                                // backgroundColor: style.backgroundColor,
+                                borderColor: "#ccc",
                                 borderWidth: isStyleSelected ? 3 : 1, // Highlight selected style
                               }
                             ]}
                             onPress={() => handleSelectStyle(style.id)}
                           >
-                            <ThemedText style={[styles.templateOptionText, { color: style.textColor }]}>{style.name}</ThemedText>
+                            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                              {/* Color Box */}
+                              <View
+                                style={{
+                                  width: 20,
+                                  height: 20,
+                                  borderRadius: 4, // remove or change for square/circle
+                                  backgroundColor: style.primaryColor,
+                                  borderWidth: 1,
+                                  borderColor: "#ccc",
+                                }}
+                              />
+
+                              {/* Text */}  
+                              <ThemedText style={[styles.templateOptionText, { color: "#000" }]} > {style.name} </ThemedText>
+                            </View>
                           </TouchableOpacity>
                         );
                       })}

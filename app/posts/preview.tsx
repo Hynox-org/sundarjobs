@@ -179,7 +179,7 @@ export default function PreviewScreen() {
         { text: "Cancel", style: "cancel" },
         {
           text: "Login",
-          onPress: () => router.push("/auth/authenticate"), // Redirect to login page
+          onPress: () => router.push("/auth/authenticate" as any), // Redirect to login page
         },
       ]
     );
@@ -674,7 +674,7 @@ export default function PreviewScreen() {
         <TouchableOpacity
           style={styles.actionButton}
           onPress={handleShare}
-          disabled={!isAuthenticated || !isAdmin || formData.is_draft}
+          disabled={!isAuthenticated || !isAdmin || !formData.is_draft}
         >
           <Ionicons
             name="share-social"

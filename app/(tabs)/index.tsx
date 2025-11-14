@@ -37,7 +37,7 @@ export default function HomeScreen() {
   const handleCardPress = (sector: BusinessSector) => {
     // Navigate to the new page with the category as a parameter
     router.push({
-      pathname: "/jobs/[category]",
+      pathname: "/jobs/[category]" as any,
       params: { category: sector.name },
     });
   };

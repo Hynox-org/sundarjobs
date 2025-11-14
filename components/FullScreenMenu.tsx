@@ -68,7 +68,7 @@ export default function FullScreenMenu({ isVisible, onClose, onMenuItemPress }: 
       console.error('Error logging out:', error);
     } else {
       onClose(); // Close the menu after logout
-      router.replace('/auth/authenticate'); // Redirect to login screen
+      router.replace('/auth/authenticate' as any); // Redirect to login screen
     }
   };
 

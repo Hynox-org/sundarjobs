@@ -471,13 +471,13 @@ export function generateDefaultTemplateHtml({ formData, templateStyle }: { formD
               <div class="eyebrow-tag">★ NOW HIRING ★</div>
               
               <h1 class="mega-title">
-                ${formData.jobTitle.split(' ').slice(0, 2).join(' ')}
-                <span>${formData.jobTitle.split(' ').slice(2).join(' ') || ''}</span>
+                ${formData.job_title.split(' ').slice(0, 2).join(' ')}
+                <span>${formData.job_title.split(' ').slice(2).join(' ') || ''}</span>
               </h1>
 
               <div class="company-badge">
                 <div class="company-icon"></div>
-                ${formData.companyName}
+                ${formData.company_name}
               </div>
 
               <div class="stats-banner">
@@ -487,7 +487,7 @@ export function generateDefaultTemplateHtml({ formData, templateStyle }: { formD
                 </div>
                 <div class="stat-pill">
                   <span class="stat-label">Type</span>
-                  <div class="stat-value">${formData.jobType.split(' ')[0]}</div>
+                  <div class="stat-value">${formData.job_type.split(' ')[0]}</div>
                 </div>
                 <div class="stat-pill">
                   <span class="stat-label">Experience</span>
@@ -505,13 +505,13 @@ export function generateDefaultTemplateHtml({ formData, templateStyle }: { formD
                 <div class="section">
                   <div class="section-tag">ROLE</div>
                   <h2 class="section-heading">What You'll Do</h2>
-                  <div class="description-text">${formData.jobDescription}</div>
+                  <div class="description-text">${formData.job_description}</div>
                 </div>
 
-                ${formData.additionalInfo ? `
+                ${formData.additional_info ? `
                   <div class="section">
                     <div class="section-tag">PERKS</div>
-                    <div class="description-text" style="max-height: 85px; -webkit-line-clamp: 4;">${formData.additionalInfo}</div>
+                    <div class="description-text" style="max-height: 85px; -webkit-line-clamp: 4;">${formData.additional_info}</div>
                   </div>
                 ` : ''}
               </div>
@@ -535,7 +535,7 @@ export function generateDefaultTemplateHtml({ formData, templateStyle }: { formD
                     
                     <div class="info-card">
                       <div class="info-label">Apply By</div>
-                      <div class="info-value">${formData.applicationDeadline}</div>
+                      <div class="info-value">${formData.application_deadline}</div>
                     </div>
                   </div>
                 </div>
@@ -550,25 +550,25 @@ export function generateDefaultTemplateHtml({ formData, templateStyle }: { formD
                 <div class="contact-item">
                   <div class="contact-icon">📍</div>
                   <div class="contact-label">Location</div>
-                  <div class="contact-value">${formData.companyAddress}</div>
+                  <div class="contact-value">${formData.company_address}</div>
                 </div>
                 
                 <div class="contact-item">
                   <div class="contact-icon">📧</div>
                   <div class="contact-label">Email</div>
-                  <div class="contact-value">${formData.companyEmail}</div>
+                  <div class="contact-value">${formData.company_email}</div>
                 </div>
                 
                 <div class="contact-item">
                   <div class="contact-icon">📞</div>
                   <div class="contact-label">Phone</div>
-                  <div class="contact-value">${formData.companyPhone}</div>
+                  <div class="contact-value">${formData.company_phone}</div>
                 </div>
                 
                 <div class="contact-item">
                   <div class="contact-icon">⏰</div>
                   <div class="contact-label">Deadline</div>
-                  <div class="contact-value">${formData.applicationDeadline}</div>
+                  <div class="contact-value">${formData.application_deadline}</div>
                 </div>
               </div>
 
