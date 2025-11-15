@@ -1,21 +1,21 @@
-import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { supabase } from '@/lib/supabase';
-import { useThemeColor } from '@/hooks/use-theme-color';
-import { Link } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { 
-  StyleSheet, 
-  View, 
-  FlatList, 
-  TouchableOpacity, 
-  Alert, 
-  ActivityIndicator,
-  Text 
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '@/constants/theme';
+import { useThemeColor } from '@/hooks/use-theme-color';
+import { supabase } from '@/lib/supabase';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Share,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native';
 
 interface Job {
   id: string;
@@ -26,9 +26,14 @@ interface Job {
   category: string;
   experience: string;
   salary?: string;
+  job_description: string;
   company_name?: string;
   company_address?: string;
+  company_email: string;
+  company_phone?: string;
   application_deadline?: string;
+  additional_info?: string;
+  poster_url?: string;
   is_draft?: boolean;
   user_id?: string;
   template_id?: string;
@@ -38,8 +43,11 @@ interface Job {
 export default function AllJobsScreen() {
   const backgroundColor = useThemeColor({}, 'background');
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   const colors = Colors.light;
+  const router = useRouter();
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -51,7 +59,7 @@ export default function AllJobsScreen() {
 
         let query = supabase
           .from('jobs')
-          .select('id, title, job_title, vacancy, job_type, category, experience, salary, company_name, company_address, application_deadline, is_draft, user_id, template_id, template_style');
+          .select('id, title, job_title, vacancy, job_type, category, experience, salary, job_description, company_name, company_address, company_email, company_phone, application_deadline, additional_info, poster_url, is_draft, user_id, template_id, template_style');
 
         if (user) {
           query = query.or(`is_draft.eq.false,user_id.eq.${user.id}`);
@@ -63,6 +71,7 @@ export default function AllJobsScreen() {
 
         if (error) throw error;
         setJobs(data || []);
+        setFilteredJobs(data || []);
       } catch (error: any) {
         console.error('Failed to fetch jobs:', error.message);
         Alert.alert('Error', 'Failed to fetch jobs.');
@@ -73,6 +82,50 @@ export default function AllJobsScreen() {
 
     fetchJobs();
   }, []);
+
+  useEffect(() => {
+    if (searchQuery === '') {
+      setFilteredJobs(jobs);
+    } else {
+      const lowercasedQuery = searchQuery.toLowerCase();
+      const filtered = jobs.filter(job =>
+        job.job_title.toLowerCase().includes(lowercasedQuery) ||
+        (job.title && job.title.toLowerCase().includes(lowercasedQuery)) ||
+        (job.company_name && job.company_name.toLowerCase().includes(lowercasedQuery))
+      );
+      setFilteredJobs(filtered);
+    }
+  }, [searchQuery, jobs]);
+
+  const handleShare = (item: Job) => {
+    const jobDetails = `
+🌟 *New Job Opportunity!* 🌟
+
+*Job Title:* ${item.job_title}
+*Category:* ${item.category}
+*Description:* ${item.title || 'N/A'}
+*Job Type:* ${item.job_type || 'N/A'}
+*Vacancy:* ${item.vacancy || 'N/A'}
+*Experience:* ${item.experience || 'N/A'}
+*Salary:* ${item.salary || 'N/A'}
+*Job Description:* ${item.job_description || 'N/A'}
+*Company Name:* ${item.company_name || 'N/A'}
+*Company Address:* ${item.company_address || 'N/A'}
+*Company Email:* ${item.company_email || 'N/A'}
+*Company Phone:* ${item.company_phone || 'N/A'}
+*Application Deadline:* ${item.application_deadline || 'N/A'}
+*Additional Info:* ${item.additional_info || 'N/A'}
+
+💼 *View more details:* ${item.poster_url || `https://sundarjobs.com/posts/preview?jobId=${item.id}&templateId=${item.template_id || ''}&styleId=${item.template_style || ''}`}
+
+🚀 *Find more jobs like this on SundarJobs!*
+    `;
+    Share.share({
+      message: jobDetails,
+    }, {
+      dialogTitle: 'Share Job Post',
+    });
+  };
 
   if (loading) {
     return (
@@ -85,176 +138,101 @@ export default function AllJobsScreen() {
     );
   }
 
-  if (jobs.length === 0) {
+  if (filteredJobs.length === 0 && !loading) {
     return (
-      <View style={[styles.emptyContainer, { backgroundColor: colors.background }]}>
-        <View style={[styles.emptyIconCircle, { backgroundColor: `${colors.tint}1A` }]}>
-          <Ionicons name="briefcase-outline" size={48} color={colors.tint} />
+      <ThemedView style={styles.container}>
+        <View style={styles.searchContainer}>
+          <Ionicons name="search" size={18} color="#9CA3AF" style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search jobs..."
+            placeholderTextColor="#9CA3AF"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+          {searchQuery !== '' && (
+            <TouchableOpacity onPress={() => setSearchQuery('')}>
+              <Ionicons name="close-circle" size={18} color="#9CA3AF" />
+            </TouchableOpacity>
+          )}
         </View>
-        <Text style={[styles.emptyTitle, { color: colors.text }]}>NO JOBS POSTED</Text>
-        <Text style={[styles.emptySubtitle, { color: colors.secondaryText }]}>
-          Start posting job opportunities
-        </Text>
-      </View>
+        <View style={styles.emptyContainer}>
+          <Ionicons name="briefcase-outline" size={48} color={colors.tint} />
+          <Text style={[styles.emptyTitle, { color: colors.text }]}>No Jobs Found</Text>
+          <Text style={[styles.emptySubtitle, { color: colors.secondaryText }]}>
+            {searchQuery ? 'Try adjusting your search' : 'Start posting job opportunities'}
+          </Text>
+        </View>
+      </ThemedView>
     );
   }
 
-  const renderItem = ({ item, index }: { item: Job; index: number }) => {
-    const isExpired = item.application_deadline 
-      ? new Date(item.application_deadline) < new Date() 
-      : false;
-
-    return (
-      <Link
-        href={
-          (item.is_draft
-            ? `/posts/templates?jobId=${item.id}`
-            : `/posts/preview?jobId=${item.id}&templateId=${item.template_id || 'default-template'}&styleId=${item.template_style || 'default-style'}`) as any
-        }
-        asChild
-      >
-        <TouchableOpacity activeOpacity={0.85}>
-          <View style={styles.jobCard}>
-            {/* Left accent bar */}
-            <View style={[styles.leftAccent, { backgroundColor: colors.tint }]} />
-            
-            <View style={styles.cardContent}>
-              {/* Header row with number and status */}
-              <View style={styles.headerRow}>
-                <View style={styles.numberContainer}>
-                  <Text style={[styles.jobNumber, { color: colors.tint }]}>
-                    {String(index + 1).padStart(2, '0')}
-                  </Text>
-                  <View style={[styles.numberLine, { backgroundColor: colors.border }]} />
-                </View>
-                
-                {/* Status badge */}
-                {item.is_draft ? (
-                  <View style={[styles.draftBadge, { backgroundColor: `${colors.icon}1A` }]}>
-                    <Ionicons name="create-outline" size={12} color={colors.icon} />
-                    <Text style={[styles.badgeText, { color: colors.icon }]}>DRAFT</Text>
-                  </View>
-                ) : isExpired ? (
-                  <View style={[styles.expiredBadge, { backgroundColor: '#6c757d1A' }]}>
-                    <Ionicons name="time-outline" size={12} color="#6c757d" />
-                    <Text style={[styles.badgeText, { color: '#6c757d' }]}>EXPIRED</Text>
-                  </View>
-                ) : (
-                  <View style={[styles.activeBadge, { backgroundColor: `${colors.tint}1A` }]}>
-                    <Ionicons name="checkmark-circle" size={12} color={colors.tint} />
-                    <Text style={[styles.badgeText, { color: colors.tint }]}>ACTIVE</Text>
-                  </View>
-                )}
-              </View>
-
-              {/* Job title */}
-              <Text style={[styles.jobTitle, { color: colors.text }]}>
-                {item.job_title.toUpperCase()}
-              </Text>
-
-              {/* Company name if available */}
-              {item.company_name && (
-                <View style={styles.companyRow}>
-                  <Ionicons name="business-outline" size={14} color={colors.secondaryText} />
-                  <Text style={[styles.companyName, { color: colors.secondaryText }]}>
-                    {item.company_name}
-                  </Text>
-                </View>
-              )}
-
-              {/* Category tag */}
-              <View style={styles.categoryRow}>
-                <View style={[styles.categoryBar, { backgroundColor: colors.secondary }]} />
-                <Text style={[styles.categoryText, { color: colors.icon }]}>
-                  {item.category.toUpperCase()}
-                </Text>
-              </View>
-
-              {/* Job details grid */}
-              <View style={styles.detailsGrid}>
-                {/* Vacancy */}
-                <View style={styles.detailItem}>
-                  <Ionicons name="people-outline" size={14} color={colors.secondaryText} />
-                  <Text style={[styles.detailLabel, { color: colors.secondaryText }]}>
-                    {item.vacancy} {item.vacancy === 1 ? 'Position' : 'Positions'}
-                  </Text>
-                </View>
-
-                {/* Job type */}
-                {item.job_type && (
-                  <View style={styles.detailItem}>
-                    <Ionicons name="time-outline" size={14} color={colors.secondaryText} />
-                    <Text style={[styles.detailLabel, { color: colors.secondaryText }]}>
-                      {item.job_type}
-                    </Text>
-                  </View>
-                )}
-
-                {/* Experience */}
-                <View style={styles.detailItem}>
-                  <Ionicons name="school-outline" size={14} color={colors.secondaryText} />
-                  <Text style={[styles.detailLabel, { color: colors.secondaryText }]}>
-                    {item.experience}
-                  </Text>
-                </View>
-
-                {/* Salary */}
-                {item.salary && (
-                  <View style={styles.detailItem}>
-                    <Ionicons name="cash-outline" size={14} color={colors.secondaryText} />
-                    <Text style={[styles.detailLabel, { color: colors.secondaryText }]}>
-                      {item.salary}
-                    </Text>
-                  </View>
-                )}
-              </View>
-
-              {/* Deadline if available */}
-              {item.application_deadline && (
-                <View style={styles.deadlineRow}>
-                  <Ionicons name="calendar-outline" size={12} color={isExpired ? '#6c757d' : colors.tint} />
-                  <Text style={[styles.deadlineText, { 
-                    color: isExpired ? '#6c757d' : colors.tint 
-                  }]}>
-                    Deadline: {new Date(item.application_deadline).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
-                  </Text>
-                </View>
-              )}
-
-              {/* View button */}
-              <View style={[styles.viewButton, { backgroundColor: colors.tint }]}>
-                <Text style={styles.viewButtonText}>
-                  {item.is_draft ? 'CONTINUE EDITING' : 'VIEW DETAILS'}
-                </Text>
-                <Ionicons name="arrow-forward" size={14} color="white" />
-              </View>
-            </View>
-
-            {/* Bottom gradient stripe */}
-            <LinearGradient
-              colors={[colors.tint, colors.secondary]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.bottomGradient}
-            />
-          </View>
+  const renderItem = ({ item }: { item: Job }) => (
+    <View style={styles.listItem}>
+      <View style={styles.jobInfo}>
+        <Text style={styles.jobTitle} numberOfLines={1}>
+          {item.job_title}
+        </Text>
+        {item.company_name && (
+          <Text style={styles.companyName} numberOfLines={1}>
+            {item.company_name}
+          </Text>
+        )}
+      </View>
+      <View style={styles.actions}>
+        <TouchableOpacity
+          style={[styles.button, styles.viewButton, { backgroundColor: colors.tint }]}
+          onPress={() => {
+            router.push({
+              pathname: item.is_draft ? "/posts/templates" : "/posts/preview",
+              params: item.is_draft
+                ? { jobId: item.id }
+                : {
+                    jobId: item.id,
+                    templateId: item.template_id || "default-template",
+                    styleId: item.template_style || "default-style",
+                  },
+            });
+          }}
+        >
+          <Ionicons name="eye-outline" size={16} color="white" />
+          <Text style={styles.buttonText}>View</Text>
         </TouchableOpacity>
-      </Link>
-    );
-  };
+        <TouchableOpacity
+          onPress={() => handleShare(item)}
+          style={[styles.button, styles.shareButton]}
+        >
+          <FontAwesome name="whatsapp" size={16} color="#25D366" />
+          <Text style={[styles.buttonText, { color: '#25D366' }]}>Share</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 
   return (
     <ThemedView style={styles.container}>
+      <View style={styles.searchContainer}>
+        <Ionicons name="search" size={18} color="#9CA3AF" style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search jobs..."
+          placeholderTextColor="#9CA3AF"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+        {searchQuery !== '' && (
+          <TouchableOpacity onPress={() => setSearchQuery('')}>
+            <Ionicons name="close-circle" size={18} color="#9CA3AF" />
+          </TouchableOpacity>
+        )}
+      </View>
       <FlatList
-        data={jobs}
+        data={filteredJobs}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
       />
     </ThemedView>
   );
@@ -263,6 +241,7 @@ export default function AllJobsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#F9FAFB',
   },
   loadingContainer: {
     flex: 1,
@@ -271,7 +250,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 12,
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
   },
   emptyContainer: {
@@ -280,168 +259,86 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 24,
   },
-  emptyIconCircle: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
   emptyTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '700',
+    marginTop: 16,
     marginBottom: 8,
   },
   emptySubtitle: {
     fontSize: 14,
+    textAlign: 'center',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 15,
+    color: '#111827',
   },
   listContent: {
-    padding: 12,
-    paddingTop: 16,
+    backgroundColor: '#FFFFFF',
   },
-  jobCard: {
-    backgroundColor: 'white',
-    marginBottom: 16,
-    overflow: 'hidden',
-  },
-  leftAccent: {
-    width: 4,
-    height: '100%',
-    position: 'absolute',
-    left: 0,
-    top: 0,
-  },
-  cardContent: {
-    padding: 14,
-    paddingLeft: 18,
-  },
-  headerRow: {
+  listItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#FFFFFF',
   },
-  numberContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  jobInfo: {
     flex: 1,
-  },
-  jobNumber: {
-    fontSize: 22,
-    fontWeight: '700',
-    marginRight: 10,
-  },
-  numberLine: {
-    flex: 1,
-    height: 1,
-  },
-  draftBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    gap: 4,
-  },
-  activeBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    gap: 4,
-  },
-  expiredBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    gap: 4,
-  },
-  badgeText: {
-    fontSize: 9,
-    fontWeight: '700',
-    letterSpacing: 0.8,
+    marginRight: 12,
   },
   jobTitle: {
     fontSize: 15,
-    fontWeight: '700',
-    marginBottom: 8,
-    lineHeight: 20,
-    letterSpacing: -0.3,
-  },
-  companyRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-    gap: 6,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 2,
   },
   companyName: {
     fontSize: 13,
-    fontWeight: '500',
+    color: '#6B7280',
   },
-  categoryRow: {
+  actions: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  categoryBar: {
-    height: 14,
-    width: 3,
-    marginRight: 8,
-  },
-  categoryText: {
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 1.2,
-  },
-  detailsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginBottom: 10,
     gap: 8,
   },
-  detailItem: {
+  button: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f8f9fa',
-    paddingHorizontal: 8,
-    paddingVertical: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderRadius: 6,
-    gap: 5,
-  },
-  detailLabel: {
-    fontSize: 11,
-    fontWeight: '600',
-  },
-  deadlineRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-    gap: 6,
-  },
-  deadlineText: {
-    fontSize: 11,
-    fontWeight: '600',
+    gap: 4,
   },
   viewButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    marginTop: 4,
+    backgroundColor: '#3B82F6',
   },
-  viewButtonText: {
-    color: 'white',
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 1.2,
+  shareButton: {
+    backgroundColor: '#F0FDF4',
+    borderWidth: 1,
+    borderColor: '#BBF7D0',
   },
-  bottomGradient: {
-    height: 3,
-    width: '100%',
+  buttonText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#F3F4F6',
+    marginLeft: 16,
   },
 });
