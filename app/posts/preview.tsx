@@ -24,7 +24,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import ViewShot from "react-native-view-shot";
 import WebView from "react-native-webview";
@@ -196,27 +196,6 @@ export default function PreviewScreen() {
     setZoom(1);
   };
 
-  const handleShare = async () => {
-    Alert.alert(
-      "Share Job",
-      "Choose a sharing option:",
-      [
-        {
-          text: "Share as PDF",
-          onPress: () => sharePdf(),
-        },
-        {
-          text: "Share on WhatsApp",
-          onPress: () => shareOnWhatsApp(),
-        },
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-      ],
-      { cancelable: true }
-    );
-  };
 
   const sharePdf = async () => {
     try {
@@ -254,39 +233,40 @@ export default function PreviewScreen() {
 
 *Job Title:* ${formData.job_title}
 *Category:* ${formData.category}
-*Description:* ${formData.title || 'N/A'}
-*Job Type:* ${formData.job_type || 'N/A'}
-*Vacancy:* ${formData.vacancy || 'N/A'}
-*Experience:* ${formData.experience || 'N/A'}
-*Salary:* ${formData.salary || 'N/A'}
-*Job Description:* ${formData.job_description || 'N/A'}
-*Company Name:* ${formData.company_name || 'N/A'}
-*Company Address:* ${formData.company_address || 'N/A'}
-*Company Email:* ${formData.company_email || 'N/A'}
-*Company Phone:* ${formData.company_phone || 'N/A'}
-*Application Deadline:* ${formData.application_deadline || 'N/A'}
-*Additional Info:* ${formData.additional_info || 'N/A'}
+*Description:* ${formData.title || "N/A"}
+*Job Type:* ${formData.job_type || "N/A"}
+*Vacancy:* ${formData.vacancy || "N/A"}
+*Experience:* ${formData.experience || "N/A"}
+*Salary:* ${formData.salary || "N/A"}
+*Job Description:* ${formData.job_description || "N/A"}
+*Company Name:* ${formData.company_name || "N/A"}
+*Company Address:* ${formData.company_address || "N/A"}
+*Company Email:* ${formData.company_email || "N/A"}
+*Company Phone:* ${formData.company_phone || "N/A"}
+*Application Deadline:* ${formData.application_deadline || "N/A"}
+*Additional Info:* ${formData.additional_info || "N/A"}
 
-💼 *View more details:* ${formData.poster_url || `https://sundarjobs.com/posts/preview?jobId=${formData.id}&templateId=${formData.template_id || ''}&styleId=${formData.template_style || ''}`}
+💼 *View more details:* ${
+        formData.poster_url ||
+        `https://sundarjobs.com/posts/preview?jobId=${formData.id}&templateId=${
+          formData.template_id || ""
+        }&styleId=${formData.template_style || ""}`
+      }
 
 🚀 *Find more jobs like this on SundarJobs!*
       `;
-      await Share.share({
-        message: jobDetails,
-      }, {
-        dialogTitle: 'Share Job Post',
-      });
+      await Share.share(
+        {
+          message: jobDetails,
+        },
+        {
+          dialogTitle: "Share Job Post",
+        }
+      );
     } catch (error: any) {
       Alert.alert("Share Error", error.message);
       console.log(error);
     }
-  };
-
-  const handleEdit = () => {
-    router.push({
-      pathname: "/posts/templates",
-      params: { jobId: formData?.id },
-    });
   };
 
   const handlePostJob = async () => {
@@ -627,37 +607,43 @@ export default function PreviewScreen() {
             ) : null}
           </View>
 
-          {/* Post Job Button - BELOW Preview */}
-          <View style={{ paddingTop: 20, paddingBottom: 10 }}>
-            <TouchableOpacity
-              style={[
-                {
-                  backgroundColor:
-                    isAuthenticated && isAdmin && formData.is_draft
-                      ? colors.tint
-                      : "#ccc", // Only enable if authenticated AND admin
-                  paddingVertical: 14,
-                  paddingHorizontal: 15,
-                  borderRadius: 10,
-                  alignItems: "center",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  gap: 8,
-                },
-              ]}
-              onPress={handlePostJob} // Call handlePostJob
-              disabled={!isAuthenticated || !isAdmin || !formData.is_draft} // Disable if not authenticated, not admin, or already posted
-            >
-              <Ionicons name="paper-plane" size={20} color="#fff" />
-              <Text style={{ color: "#fff", fontWeight: "600", fontSize: 16 }}>
-                {isAuthenticated && isAdmin && formData.is_draft
-                  ? "Post Job"
-                  : !formData.is_draft
-                  ? "Job Posted"
-                  : "Request to Post"}
-              </Text>
-            </TouchableOpacity>
-          </View>
+          {isAuthenticated && isAdmin && (
+            <>
+              {/* Post Job Button - BELOW Preview */}
+              <View style={{ paddingTop: 20, paddingBottom: 10 }}>
+                <TouchableOpacity
+                  style={[
+                    {
+                      backgroundColor:
+                        isAuthenticated && isAdmin && formData.is_draft
+                          ? colors.tint
+                          : "#ccc", // Only enable if authenticated AND admin
+                      paddingVertical: 14,
+                      paddingHorizontal: 15,
+                      borderRadius: 10,
+                      alignItems: "center",
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      gap: 8,
+                    },
+                  ]}
+                  onPress={handlePostJob} // Call handlePostJob
+                  disabled={!isAuthenticated || !isAdmin || !formData.is_draft} // Disable if not authenticated, not admin, or already posted
+                >
+                  <Ionicons name="paper-plane" size={20} color="#fff" />
+                  <Text
+                    style={{ color: "#fff", fontWeight: "600", fontSize: 16 }}
+                  >
+                    {isAuthenticated && isAdmin && formData.is_draft
+                      ? "Post Job"
+                      : !formData.is_draft
+                      ? "Job Posted"
+                      : "Request to Post"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
         </ScrollView>
       </View>
 
@@ -673,11 +659,11 @@ export default function PreviewScreen() {
       >
         <TouchableOpacity
           style={styles.actionButton}
-          onPress={handleShare}
-          disabled={!isAuthenticated || !isAdmin || !formData.is_draft}
+          onPress={sharePdf}
+          disabled={formData.is_draft}
         >
           <Ionicons
-            name="share-social"
+            name="document-text-outline"
             size={22}
             color={
               isAuthenticated && isAdmin && !formData.is_draft
@@ -690,26 +676,24 @@ export default function PreviewScreen() {
               styles.actionButtonText,
               {
                 color:
-                  isAuthenticated && isAdmin
-                    ? colors.secondaryText
-                    : "#888",
+                  isAuthenticated && isAdmin ? colors.secondaryText : "#888",
               },
             ]}
           >
-            Share
+            Share PDF
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.actionButton}
-          onPress={handleEdit}
-          disabled={!isAuthenticated || !isAdmin || !formData.is_draft}
+          onPress={shareOnWhatsApp}
+          disabled={formData.is_draft}
         >
           <Ionicons
-            name="create"
+            name="logo-whatsapp"
             size={22}
             color={
-              isAuthenticated && isAdmin && formData.is_draft
+              isAuthenticated && isAdmin && !formData.is_draft
                 ? colors.tint
                 : colors.secondaryText
             }
@@ -719,13 +703,11 @@ export default function PreviewScreen() {
               styles.actionButtonText,
               {
                 color:
-                  isAuthenticated && isAdmin && formData.is_draft
-                    ? colors.secondaryText
-                    : "#888",
+                  isAuthenticated && isAdmin ? colors.secondaryText : "#888",
               },
             ]}
           >
-            Edit
+            WhatsApp
           </Text>
         </TouchableOpacity>
 

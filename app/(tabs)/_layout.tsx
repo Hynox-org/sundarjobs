@@ -183,7 +183,7 @@ export default function TabLayout() {
           options={{
             title: 'Share',
             tabBarIcon: ({ color }) => <Ionicons name="share" size={28} color={color} />,
-            href: (isAuthenticated && isAdmin) ? '/(tabs)/share' : null, // Disable if not authenticated or not admin
+            href: '/(tabs)/share', // Disable if not authenticated or not admin
           }}
         />
         <Tabs.Screen
@@ -191,7 +191,7 @@ export default function TabLayout() {
           options={{
             title: 'WhatsApp',
             tabBarIcon: ({ color }) => <Ionicons name="logo-whatsapp" size={28} color={color} />,
-            href: (isAuthenticated && isAdmin) ? '/(tabs)/whatsapp' : null, // Disable if not authenticated or not admin
+            href: '/(tabs)/whatsapp', // Disable if not authenticated or not admin
           }}
         />
         <Tabs.Screen
@@ -199,7 +199,7 @@ export default function TabLayout() {
           options={{
             title: 'Mail',
             tabBarIcon: ({ color }) => <Ionicons name="mail" size={28} color={color} />,
-            href: (isAuthenticated && isAdmin) ? '/(tabs)/mail' : null, // Disable if not authenticated or not admin
+            href: '/(tabs)/mail', // Disable if not authenticated or not admin
           }}
         />
         <Tabs.Screen
