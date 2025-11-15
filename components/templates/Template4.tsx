@@ -22,11 +22,14 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
           }
 
           html, body {
-            width: 210mm;
-            height: 297mm;
+            width: 100%;
+            height: 100%; /* Fixed height for A4 */
             margin: 0;
+            display: flex;
+            justify-content:center;
+            align-items:center;
             padding: 0;
-            overflow: hidden;
+            overflow: hidden; /* Prevent overflow on the main page */
           }
 
           body {
@@ -43,6 +46,7 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
             display: flex;
             flex-direction: column;
             position: relative;
+            overflow: hidden; 
           }
 
           /* Hero Section - Large Centered "We Are Hiring" */

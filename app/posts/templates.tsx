@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonGroup: {
-    flexDirection: "row",
+    flexDirection: "column",
     gap: 16,
     justifyContent: "space-between",
   },

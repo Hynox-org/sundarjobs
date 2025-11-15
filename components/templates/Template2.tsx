@@ -22,9 +22,12 @@ export function generateTemplate2Html({ formData, templateStyle }: { formData: J
           }
 
           html, body {
-            width: 210mm;
-            height: 297mm; /* Fixed height for A4 */
+            width: 100%;
+            height: 100%; /* Fixed height for A4 */
             margin: 0;
+            display: flex;
+            justify-content:center;
+            align-items:center;
             padding: 0;
             overflow: hidden; /* Prevent overflow on the main page */
           }
