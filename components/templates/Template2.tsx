@@ -22,17 +22,20 @@ export function generateTemplate2Html({ formData, templateStyle }: { formData: J
             color: ${templateStyle.textColor};
             line-height: 1.4;
             padding: 0;
+            width: 793px; /* Fixed width for A4 */
+            height: 1122px; /* Fixed height for A4 */
+            overflow: hidden; /* Prevent overflow on the main page */
           }
 
           .container {
             width: 793px;
-            height: 1122px;
+            height: 1122px; /* Fixed height for A4 */
             margin: 0 auto;
             background: ${templateStyle.backgroundColor};
             position: relative;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
+            overflow: hidden; /* Ensure container content is contained */
           }
 
           /* Compact hero section */
@@ -174,8 +177,8 @@ export function generateTemplate2Html({ formData, templateStyle }: { formData: J
             color: ${templateStyle.textColor};
             opacity: 0.9;
             white-space: pre-wrap;
-            max-height: 200px;
-            overflow: hidden;
+            overflow-y: auto; /* Allow scrolling for description if it overflows */
+            max-height: 150px; /* Set a max-height for descriptions */
           }
 
           /* Compact contact section */
@@ -260,10 +263,22 @@ export function generateTemplate2Html({ formData, templateStyle }: { formData: J
           }
 
           @media print {
-            body { padding: 0; }
+            body { 
+              padding: 0; 
+              width: 793px;
+              height: 1122px;
+              overflow: hidden; /* Ensure no overflow in print */
+            }
             .container {
               width: 793px;
               height: 1122px;
+              page-break-after: avoid;
+              page-break-inside: avoid;
+              overflow: hidden; /* Ensure container content is contained */
+            }
+            .description {
+              max-height: none; /* Remove max-height for print */
+              overflow: visible; /* Allow content to be visible in print */
             }
           }
         </style>
@@ -355,7 +370,7 @@ export function generateTemplate2Html({ formData, templateStyle }: { formData: J
               <div class="accent-line"></div>
               <div class="section">
                 <div class="section-header">ADDITIONAL INFO</div>
-                <div class="description" style="max-height: 80px;">${formData.additional_info}</div>
+            <div class="description">${formData.additional_info}</div>
               </div>
             ` : ''}
           </div>

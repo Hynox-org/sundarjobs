@@ -196,7 +196,6 @@ export default function PreviewScreen() {
     setZoom(1);
   };
 
-
   const sharePdf = async () => {
     try {
       const htmlContent =
@@ -519,14 +518,7 @@ export default function PreviewScreen() {
         >
           <View style={[styles.pdfWrapper, { transform: [{ scale: zoom }] }]}>
             {htmlContent ? (
-              <ViewShot
-                ref={viewShotRef}
-                options={{
-                  fileName: "job-poster",
-                  format: "png",
-                  quality: 0.9,
-                }}
-              >
+              <>
                 <WebView
                   key={webViewKey}
                   originWhitelist={["*"]}
@@ -603,7 +595,7 @@ export default function PreviewScreen() {
                     </View>
                   </>
                 )}
-              </ViewShot>
+              </>
             ) : null}
           </View>
 

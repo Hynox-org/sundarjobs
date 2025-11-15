@@ -23,24 +23,26 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
 
           html, body {
             width: 210mm;
-            height: 297mm;
+            height: 297mm; /* Fixed height for A4 */
             margin: 0;
             padding: 0;
-            overflow: hidden;
+            overflow: hidden; /* Prevent overflow on the main page */
           }
 
           body {
             font-family: ${templateStyle.fontFamily};
             line-height: 1.5;
+            overflow: hidden; /* Ensure body content is contained */
           }
 
           .container {
             width: 210mm;
-            height: 297mm;
+            height: 297mm; /* Fixed height for A4 */
             margin: 0;
             position: relative;
-            overflow: hidden;
             background: ${templateStyle.backgroundColor};
+            display: flex; /* Use flexbox to manage content distribution */
+            flex-direction: column;
           }
 
           /* Asymmetric split background */
@@ -224,9 +226,6 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
             text-shadow: 2px 4px 12px ${templateStyle.textColor}33;
             max-height: 120px;
             overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
             text-transform: ${templateStyle.headerStyle === 'uppercase' ? 'uppercase' : 'none'};
           }
 
@@ -380,7 +379,9 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
             display: flex;
             flex-direction: column;
             gap: 20px;
-            overflow: hidden;
+            overflow-y: auto; /* Allow scrolling within content sections if needed */
+            max-height: calc(100% - 200px); /* Adjust based on surrounding elements' height */
+            padding-bottom: 20px; /* Add some padding at the bottom */
           }
 
           .content-card {
@@ -427,12 +428,9 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
           }
 
           .description-block {
-            max-height: 150px;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 7;
-            -webkit-box-orient: vertical;
-            text-overflow: ellipsis;
+            max-height: 150px; /* Keep existing max-height */
+            overflow-y: auto; /* Allow scrolling for description if it overflows */
+            text-overflow: ellipsis; /* Keep ellipsis for single line overflow */
           }
 
           /* Info grid */
@@ -585,12 +583,22 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
               height: 297mm;
               margin: 0;
               padding: 0;
+              overflow: hidden; /* Ensure no overflow in print */
             }
             .container {
               width: 210mm;
               height: 297mm;
               page-break-after: avoid;
               page-break-inside: avoid;
+              overflow: hidden; /* Ensure container content is contained */
+            }
+            .content-sections {
+              max-height: none; /* Remove max-height for print to allow content to flow */
+              overflow: visible; /* Allow content to be visible in print */
+            }
+            .description-block {
+              max-height: none; /* Remove max-height for print */
+              overflow: visible; /* Allow content to be visible in print */
             }
           }
         </style>
@@ -699,7 +707,7 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
                     <div class="card-icon-wrapper">🎁</div>
                     <h2 class="card-title">Benefits & Perks</h2>
                   </div>
-                  <div class="card-content" style="max-height: 90px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;">
+                  <div class="card-content" style="max-height: 90px; overflow: hidden;">
                     ${formData.additional_info}
                   </div>
                 </div>

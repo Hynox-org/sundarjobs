@@ -23,24 +23,27 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
 
           html, body {
             width: 210mm;
-            height: 297mm;
+            height: 297mm; /* Fixed height for A4 */
             margin: 0;
             padding: 0;
-            overflow: hidden;
+            overflow: hidden; /* Prevent overflow on the main page */
           }
 
           body {
             font-family: ${templateStyle.fontFamily};
             line-height: 1.4;
+            overflow: hidden; /* Ensure body content is contained */
           }
 
           .container {
             width: 210mm;
-            height: 297mm;
+            height: 297mm; /* Fixed height for A4 */
             margin: 0;
             position: relative;
-            overflow: hidden;
             background: ${templateStyle.backgroundColor};
+            display: flex; /* Use flexbox to manage content distribution */
+            flex-direction: column;
+            overflow: hidden; /* Ensure container content is contained */
           }
 
           /* Diagonal split background */
@@ -226,8 +229,6 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
             padding: 0 40px;
             margin-bottom: 18px;
             flex: 1;
-            overflow: hidden;
-            max-height: 430px;
           }
 
           .column-left {
@@ -272,12 +273,8 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
             color: ${templateStyle.textColor};
             opacity: 0.88;
             margin-bottom: 12px;
-            max-height: 145px;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 7;
-            -webkit-box-orient: vertical;
-            text-overflow: ellipsis;
+            overflow-y: auto; /* Allow scrolling for description if it overflows */
+            max-height: 150px; /* Set a max-height for descriptions */
           }
 
           /* Info cards - Bigger */
@@ -448,12 +445,18 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
               height: 297mm;
               margin: 0;
               padding: 0;
+              overflow: hidden; /* Ensure no overflow in print */
             }
             .container {
               width: 210mm;
               height: 297mm;
               page-break-after: avoid;
               page-break-inside: avoid;
+              overflow: hidden; /* Ensure container content is contained */
+            }
+            .description-text {
+              max-height: none; /* Remove max-height for print */
+              overflow: visible; /* Allow content to be visible in print */
             }
           }
         </style>
@@ -511,7 +514,7 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
                 ${formData.additional_info ? `
                   <div class="section">
                     <div class="section-tag">PERKS</div>
-                    <div class="description-text" style="max-height: 85px; -webkit-line-clamp: 4;">${formData.additional_info}</div>
+                    <div class="description-text">${formData.additional_info}</div>
                   </div>
                 ` : ''}
               </div>

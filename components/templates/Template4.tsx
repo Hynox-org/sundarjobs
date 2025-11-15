@@ -23,10 +23,10 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
 
           html, body {
             width: 210mm;
-            height: 297mm;
+            min-height: 297mm;
+            height: auto;
             margin: 0;
             padding: 0;
-            overflow: hidden;
           }
 
           body {
@@ -38,10 +38,10 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
 
           .container {
             width: 210mm;
-            height: 297mm;
+            min-height: 297mm;
+            height: auto;
             margin: 0;
             position: relative;
-            overflow: hidden;
             background: ${templateStyle.backgroundColor};
           }
 
@@ -241,7 +241,6 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
             grid-template-columns: 1.5fr 1fr;
             gap: 25px;
             flex: 1;
-            overflow: hidden;
           }
 
           .content-card {
@@ -295,12 +294,6 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
           }
 
           .description-content {
-            max-height: 320px;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 14;
-            -webkit-box-orient: vertical;
-            text-overflow: ellipsis;
           }
 
           /* Details List */
@@ -549,7 +542,7 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
                   ${formData.additional_info ? `
                   <div class="detail-item">
                     <div class="detail-label">Benefits</div>
-                    <div class="detail-value" style="font-size: 14px; line-height: 1.5; max-height: 60px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">${formData.additional_info}</div>
+                  <div class="detail-value" style="font-size: 14px; line-height: 1.5;">${formData.additional_info}</div>
                   </div>
                   ` : ''}
                 </div>
@@ -597,4 +590,3 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
     </html>
   `;
 }
-
