@@ -10,30 +10,38 @@ export function generateTemplate2Html({ formData, templateStyle }: { formData: J
         <style>
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Montserrat:wght@700;900&family=Space+Grotesk:wght@400;700&family=Playfair+Display:wght@700;900&family=Roboto+Mono:wght@400;700&family=Work+Sans:wght@500;700&family=Bebas+Neue&family=Oswald:wght@600;700&display=swap');
 
+          @page {
+            size: A4;
+            margin: 0;
+          }
+
           * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
           }
 
-          body {
-            font-family: ${templateStyle.fontFamily};
-            background-color: ${templateStyle.backgroundColor};
-            color: ${templateStyle.textColor};
-            line-height: 1.4;
+          html, body {
+            width: 210mm;
+            height: 297mm; /* Fixed height for A4 */
+            margin: 0;
             padding: 0;
-            width: 793px; /* Fixed width for A4 */
-            height: 1122px; /* Fixed height for A4 */
             overflow: hidden; /* Prevent overflow on the main page */
           }
 
+          body {
+            font-family: ${templateStyle.fontFamily};
+            line-height: 1.4;
+            overflow: hidden; /* Ensure body content is contained */
+          }
+
           .container {
-            width: 793px;
-            height: 1122px; /* Fixed height for A4 */
-            margin: 0 auto;
-            background: ${templateStyle.backgroundColor};
+            width: 210mm;
+            height: 297mm; /* Fixed height for A4 */
+            margin: 0;
             position: relative;
-            display: flex;
+            background: ${templateStyle.backgroundColor};
+            display: flex; /* Use flexbox to manage content distribution */
             flex-direction: column;
             overflow: hidden; /* Ensure container content is contained */
           }
