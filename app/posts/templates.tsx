@@ -1,5 +1,5 @@
 import { ThemedText } from '@/components/themed-text';
-import { HTML_TEMPLATES, HtmlTemplate } from '@/constants/jobTemplates';
+import { ALL_TEMPLATE_STYLES, HTML_TEMPLATES, HtmlTemplate, TemplateStyle } from '@/constants/jobTemplates';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { supabase } from '@/lib/supabase';
@@ -224,7 +224,7 @@ export default function TemplatesScreen() {
 
   const handleSelectTemplate = useCallback((template: HtmlTemplate, jobPost: FormData) => {
     setSelectedTemplate({ postId: jobPost.id!, template });
-    setSelectedStyleId(template.styles[0]?.id || null); // Select the first style by default
+    setSelectedStyleId(template.styles[0] || null); // Select the first style ID by default
   }, []);
 
   const handleSelectStyle = useCallback((styleId: string) => {
@@ -336,7 +336,10 @@ export default function TemplatesScreen() {
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.templateScroll}>
                   {HTML_TEMPLATES.map((template: HtmlTemplate) => {
                     const isSelected = selectedTemplate?.postId === post.id && selectedTemplate?.template.id === template.id;
-                    const displayStyle = template.styles[0]; // Use the first style for display in template list
+                    // Find the actual TemplateStyle object using the ID
+                    const displayStyle = ALL_TEMPLATE_STYLES.find(s => s.id === template.styles[0]);
+                    if (!displayStyle) return null; // Handle case where style is not found
+
                     return (
                       <TouchableOpacity
                         key={template.id}
@@ -360,7 +363,10 @@ export default function TemplatesScreen() {
                   <View style={styles.styleSelectionContainer}>
                     <ThemedText type="defaultSemiBold" style={styles.styleSelectionTitle}>Choose a Style:</ThemedText>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.templateScroll}>
-                      {selectedTemplate!.template.styles.map((style) => {
+                      {selectedTemplate!.template.styles.map((styleId) => {
+                        const style = ALL_TEMPLATE_STYLES.find(s => s.id === styleId);
+                        if (!style) return null; // Handle case where style is not found
+
                         const isStyleSelected = selectedStyleId === style.id;
                         return (
                           <TouchableOpacity
@@ -368,8 +374,8 @@ export default function TemplatesScreen() {
                             style={[
                               styles.templateOption,
                               {
-                                // backgroundColor: style.backgroundColor,
-                                borderColor: "#ccc",
+                                backgroundColor: style.backgroundColor,
+                                borderColor: isStyleSelected ? style.primaryColor : "#ccc",
                                 borderWidth: isStyleSelected ? 3 : 1, // Highlight selected style
                               }
                             ]}
@@ -384,12 +390,12 @@ export default function TemplatesScreen() {
                                   borderRadius: 4, // remove or change for square/circle
                                   backgroundColor: style.primaryColor,
                                   borderWidth: 1,
-                                  borderColor: "#ccc",
+                                  borderColor: style.secondaryColor,
                                 }}
                               />
 
                               {/* Text */}  
-                              <ThemedText style={[styles.templateOptionText, { color: "#000" }]} > {style.name} </ThemedText>
+                              <ThemedText style={[styles.templateOptionText, { color: style.textColor }]} > {style.name} </ThemedText>
                             </View>
                           </TouchableOpacity>
                         );

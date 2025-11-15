@@ -1,5 +1,6 @@
 import generateHtmlTemplate from "@/components/HtmlTemplate";
 import {
+  ALL_TEMPLATE_STYLES, // Added this import
   HTML_TEMPLATES,
   HtmlTemplate,
   TemplateStyle,
@@ -159,10 +160,11 @@ export default function PreviewScreen() {
         setSelectedTemplate(template || null);
 
         if (template && styleId) {
-          const style = template.styles.find((s) => s.id === styleId);
+          const style = ALL_TEMPLATE_STYLES.find((s) => s.id === styleId);
           setSelectedTemplateStyle(style || null);
         } else if (template && template.styles.length > 0) {
-          setSelectedTemplateStyle(template.styles[0]); // Fallback to first style if styleId is missing
+          const defaultStyle = ALL_TEMPLATE_STYLES.find(s => s.id === template.styles[0]);
+          setSelectedTemplateStyle(defaultStyle || null);
         }
       }
       setLoading(false);
@@ -278,7 +280,7 @@ export default function PreviewScreen() {
     try {
       // Generate HTML content
       const htmlContent = generateHtmlTemplate({
-        formData: mappedFormData,
+        formData: formData,
         template: selectedTemplate,
         templateStyle: selectedTemplateStyle,
       });
@@ -393,28 +395,10 @@ export default function PreviewScreen() {
     );
   }
 
-  // Map snake_case formData to camelCase for the template
-  const mappedFormData = {
-    ...formData,
-    jobTitle: formData.job_title,
-    jobType: formData.job_type,
-    jobDescription: formData.job_description,
-    companyName: formData.company_name,
-    companyAddress: formData.company_address,
-    companyEmail: formData.company_email,
-    companyPhone: formData.company_phone,
-    applicationDeadline: formData.application_deadline,
-    additionalInfo: formData.additional_info,
-    isDraft: formData.is_draft,
-    templateId: formData.template_id,
-    templateStyle: formData.template_style,
-    posterUrl: formData.poster_url,
-  };
-
   const htmlContent =
     formData && selectedTemplate && selectedTemplateStyle
       ? generateHtmlTemplate({
-          formData: mappedFormData,
+          formData: formData,
           template: selectedTemplate,
           templateStyle: selectedTemplateStyle,
         })
