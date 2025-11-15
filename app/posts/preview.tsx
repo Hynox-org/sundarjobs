@@ -660,7 +660,7 @@ export default function PreviewScreen() {
         <TouchableOpacity
           style={styles.actionButton}
           onPress={sharePdf}
-          disabled={formData.is_draft}
+          // disabled={formData.is_draft && !isAdmin}
         >
           <Ionicons
             name="document-text-outline"
