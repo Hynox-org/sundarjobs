@@ -1,6 +1,6 @@
 import { JobPostFormData, TemplateStyle } from '@/constants/jobTemplates';
 
-export function generateDefaultTemplateHtml({ formData, templateStyle }: { formData: JobPostFormData; templateStyle: TemplateStyle }): string {
+export function generateTemplate3Html({ formData, templateStyle }: { formData: JobPostFormData; templateStyle: TemplateStyle }): string {
   if (!formData || !templateStyle) return '<h1>Loading...</h1>';
 
   return `

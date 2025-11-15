@@ -45,7 +45,7 @@ export interface HtmlTemplate {
 
 export const HTML_TEMPLATES: HtmlTemplate[] = [
   {
-    id: "default-template",
+    id: "template-1",
     name: "Template 1",
     styles: [
       {
@@ -66,7 +66,7 @@ export const HTML_TEMPLATES: HtmlTemplate[] = [
     ],
   },
   {
-    id: "compact-hero",
+    id: "template-2",
     name: "Template 2",
     styles: [
       {
@@ -222,7 +222,7 @@ export const HTML_TEMPLATES: HtmlTemplate[] = [
     ],
   },
   {
-    id: "asymmetric-split",
+    id: "template-3",
     name: "Template 3",
     styles: [
       // DEFAULT - Cherry Red & Cream (Current Design)
@@ -583,4 +583,282 @@ export const HTML_TEMPLATES: HtmlTemplate[] = [
       },
     ],
   },
+  {
+  id: 'template-4',
+  name: 'Template 4',
+  styles: [
+    // DEFAULT - Vibrant Orange & Navy
+    {
+      id: 'default-style',
+      name: 'Sunset Orange',
+      backgroundColor: '#FFFFFF',
+      textColor: '#1A2332',
+      primaryColor: '#FF6B35',
+      secondaryColor: '#004E89',
+      fontFamily: "'Montserrat', 'Arial', sans-serif",
+      fontSize: {
+        title: '56px',
+        subtitle: '26px',
+        body: '15px'
+      },
+      headerStyle: 'bold'
+    },
+
+    // ELECTRIC NEON - Cyberpunk Style
+    {
+      id: 'style1',
+      name: 'Neon Cyber',
+      backgroundColor: '#0F0F23',
+      textColor: '#FFFFFF',
+      primaryColor: '#00FFF0',
+      secondaryColor: '#FF006E',
+      fontFamily: "'Orbitron', 'Courier New', monospace",
+      fontSize: {
+        title: '54px',
+        subtitle: '26px',
+        body: '15px'
+      },
+      headerStyle: 'uppercase'
+    },
+
+    // PASTEL DREAM - Soft & Friendly
+    {
+      id: 'style2',
+      name: 'Pastel Dream',
+      backgroundColor: '#FFF9FB',
+      textColor: '#2D3142',
+      primaryColor: '#BF98A0',
+      secondaryColor: '#83B5D1',
+      fontFamily: "'Quicksand', sans-serif",
+      fontSize: {
+        title: '56px',
+        subtitle: '26px',
+        body: '15px'
+      },
+      headerStyle: 'normal'
+    },
+
+    // FOREST GREEN - Natural & Eco
+    {
+      id: 'style3',
+      name: 'Forest Eco',
+      backgroundColor: '#F5F9F5',
+      textColor: '#1B3329',
+      primaryColor: '#2D6A4F',
+      secondaryColor: '#52B788',
+      fontFamily: "'Raleway', sans-serif",
+      fontSize: {
+        title: '56px',
+        subtitle: '26px',
+        body: '15px'
+      },
+      headerStyle: 'normal'
+    },
+
+    // ROYAL GOLD - Premium Luxury
+    {
+      id: 'style4',
+      name: 'Royal Gold',
+      backgroundColor: '#FFFEF9',
+      textColor: '#1A1A1D',
+      primaryColor: '#C9A961',
+      secondaryColor: '#2B2D42',
+      fontFamily: "'Cormorant Garamond', serif",
+      fontSize: {
+        title: '58px',
+        subtitle: '28px',
+        body: '15px'
+      },
+      headerStyle: 'normal'
+    },
+
+    // TECH SAPPHIRE - Corporate Blue
+    {
+      id: 'style5',
+      name: 'Tech Sapphire',
+      backgroundColor: '#F7FAFC',
+      textColor: '#1A202C',
+      primaryColor: '#2B6CB0',
+      secondaryColor: '#4299E1',
+      fontFamily: "'IBM Plex Sans', sans-serif",
+      fontSize: {
+        title: '56px',
+        subtitle: '26px',
+        body: '15px'
+      },
+      headerStyle: 'bold'
+    },
+
+    // CRIMSON POWER - Bold Red
+    {
+      id: 'style6',
+      name: 'Crimson Power',
+      backgroundColor: '#FFF5F5',
+      textColor: '#2D1B1E',
+      primaryColor: '#C41E3A',
+      secondaryColor: '#8B1538',
+      fontFamily: "'Bebas Neue', sans-serif",
+      fontSize: {
+        title: '60px',
+        subtitle: '26px',
+        body: '15px'
+      },
+      headerStyle: 'uppercase'
+    },
+
+    // LAVENDER CALM - Purple Serenity
+    {
+      id: 'style7',
+      name: 'Lavender Calm',
+      backgroundColor: '#FAF8FF',
+      textColor: '#2E234A',
+      primaryColor: '#8B7AB8',
+      secondaryColor: '#B8A8D9',
+      fontFamily: "'Nunito', sans-serif",
+      fontSize: {
+        title: '56px',
+        subtitle: '26px',
+        body: '15px'
+      },
+      headerStyle: 'normal'
+    },
+
+    // SUNSET GRADIENT - Warm Vibes
+    {
+      id: 'style8',
+      name: 'Sunset Gradient',
+      backgroundColor: '#FFF9F0',
+      textColor: '#3A2B1F',
+      primaryColor: '#F77F00',
+      secondaryColor: '#D62828',
+      fontFamily: "'Poppins', sans-serif",
+      fontSize: {
+        title: '56px',
+        subtitle: '26px',
+        body: '15px'
+      },
+      headerStyle: 'bold'
+    },
+
+    // OCEAN TEAL - Fresh Water
+    {
+      id: 'style9',
+      name: 'Ocean Teal',
+      backgroundColor: '#F0F9FF',
+      textColor: '#0F3A4B',
+      primaryColor: '#0891B2',
+      secondaryColor: '#06B6D4',
+      fontFamily: "'Work Sans', sans-serif",
+      fontSize: {
+        title: '56px',
+        subtitle: '26px',
+        body: '15px'
+      },
+      headerStyle: 'normal'
+    },
+
+    // CHARCOAL MINIMAL - Monochrome
+    {
+      id: 'style10',
+      name: 'Charcoal Minimal',
+      backgroundColor: '#FAFAFA',
+      textColor: '#2E2E2E',
+      primaryColor: '#424242',
+      secondaryColor: '#757575',
+      fontFamily: "'Inter', sans-serif",
+      fontSize: {
+        title: '56px',
+        subtitle: '26px',
+        body: '15px'
+      },
+      headerStyle: 'uppercase'
+    },
+
+    // LIME ENERGY - High Voltage
+    {
+      id: 'style11',
+      name: 'Lime Energy',
+      backgroundColor: '#F7FCF0',
+      textColor: '#2A3B1F',
+      primaryColor: '#84CC16',
+      secondaryColor: '#65A30D',
+      fontFamily: "'Rubik', sans-serif",
+      fontSize: {
+        title: '56px',
+        subtitle: '26px',
+        body: '15px'
+      },
+      headerStyle: 'bold'
+    },
+
+    // BERRY BURST - Vibrant Pink
+    {
+      id: 'style12',
+      name: 'Berry Burst',
+      backgroundColor: '#FFF5F9',
+      textColor: '#3B1F2B',
+      primaryColor: '#DB2777',
+      secondaryColor: '#EC4899',
+      fontFamily: "'Lexend', sans-serif",
+      fontSize: {
+        title: '56px',
+        subtitle: '26px',
+        body: '15px'
+      },
+      headerStyle: 'bold'
+    },
+
+    // MIDNIGHT BLUE - Professional Dark
+    {
+      id: 'style13',
+      name: 'Midnight Blue',
+      backgroundColor: '#1E1B3C',
+      textColor: '#FFFFFF',
+      primaryColor: '#6366F1',
+      secondaryColor: '#8B5CF6',
+      fontFamily: "'Space Grotesk', sans-serif",
+      fontSize: {
+        title: '56px',
+        subtitle: '26px',
+        body: '16px'
+      },
+      headerStyle: 'bold'
+    },
+
+    // AMBER WARMTH - Golden Hour
+    {
+      id: 'style14',
+      name: 'Amber Warmth',
+      backgroundColor: '#FFFBF5',
+      textColor: '#3D2817',
+      primaryColor: '#F59E0B',
+      secondaryColor: '#D97706',
+      fontFamily: "'Merriweather', serif",
+      fontSize: {
+        title: '56px',
+        subtitle: '26px',
+        body: '15px'
+      },
+      headerStyle: 'normal'
+    },
+
+    // MINT FRESH - Cool Green
+    {
+      id: 'style15',
+      name: 'Mint Fresh',
+      backgroundColor: '#F0FDF9',
+      textColor: '#0F3B2F',
+      primaryColor: '#10B981',
+      secondaryColor: '#059669',
+      fontFamily: "'DM Sans', sans-serif",
+      fontSize: {
+        title: '56px',
+        subtitle: '26px',
+        body: '15px'
+      },
+      headerStyle: 'normal'
+    }
+  ]
+}
+
 ];

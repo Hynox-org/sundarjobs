@@ -814,11 +814,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
     overflow: "hidden",
-    padding: "5%",
   },
   webView: {
     width: "100%",
-    height: 500,
+    height: 600,
     padding: 20,
   },
   noContent: {
