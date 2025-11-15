@@ -446,7 +446,6 @@ export default function PreviewScreen() {
               },
             ]}
             onPress={handleZoomOut}
-            disabled={!isAuthenticated || !isAdmin || !formData.is_draft} // Disable if not authenticated or not admin
           >
             <Ionicons name="remove-outline" size={20} color={colors.tint} />
           </TouchableOpacity>
@@ -462,7 +461,6 @@ export default function PreviewScreen() {
               },
             ]}
             onPress={handleZoomIn}
-            disabled={!isAuthenticated || !isAdmin || !formData.is_draft} // Disable if not authenticated or not admin
           >
             <Ionicons name="add-circle" size={20} color={colors.tint} />
           </TouchableOpacity>
@@ -475,7 +473,6 @@ export default function PreviewScreen() {
               },
             ]}
             onPress={handleResetZoom}
-            disabled={!isAuthenticated || !isAdmin || !formData.is_draft} // Disable if not authenticated or not admin
           >
             <Text style={[styles.zoomResetText, { color: colors.text }]}>
               1x
@@ -636,7 +633,7 @@ export default function PreviewScreen() {
         <TouchableOpacity
           style={styles.actionButton}
           onPress={sharePdf}
-          // disabled={formData.is_draft && !isAdmin}
+          disabled={formData.is_draft}
         >
           <Ionicons
             name="document-text-outline"

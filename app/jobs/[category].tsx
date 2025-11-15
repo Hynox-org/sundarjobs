@@ -152,13 +152,13 @@ export default function CategoryJobsScreen() {
           {/* Compact CTA */}
           <TouchableOpacity 
             onPress={() => router.push({
-              pathname: '/posts/preview',
-              params: {
-                jobId: item.id,
-                templateId: item.template_id,
-                styleId: item.template_style,
-              }
-            })}
+          pathname: "/posts/preview",
+          params: {
+            jobId: item.id,
+            templateId: item.template_id,
+            styleId: item.template_style,
+          },
+        })}
             activeOpacity={0.8}
             style={[styles.readMoreButton, { backgroundColor: colors.tint }]}
           >
@@ -187,7 +187,7 @@ export default function CategoryJobsScreen() {
 *Application Deadline:* ${item.application_deadline || 'N/A'}
 *Additional Info:* ${item.additional_info || 'N/A'}
 
-💼 *View more details:* ${item.poster_url || `https://sundarjobs.com/posts/preview?jobId=${item.id}&templateId=${item.template_id || ''}&styleId=${item.template_style || ''}`}
+💼 *View more details:* ${item.poster_url || `https://sundarjobs.com/posts/preview?id=${item.id}&template_id=${item.template_id || ''}&template_style=${item.template_style || ''}`}
 
 🚀 *Find more jobs like this on SundarJobs!*
               `;
