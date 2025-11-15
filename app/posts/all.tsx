@@ -168,16 +168,47 @@ export default function AllJobsScreen() {
   }
 
   const renderItem = ({ item }: { item: Job }) => (
-    <View style={styles.listItem}>
+    <View style={[styles.listItem, item.is_draft && styles.draftItem]}>
       <View style={styles.jobInfo}>
-        <Text style={styles.jobTitle} numberOfLines={1}>
-          {item.job_title}
-        </Text>
+        <View style={styles.jobTitleContainer}>
+          <Text style={styles.jobTitle} numberOfLines={1}>
+            {item.job_title}
+          </Text>
+          {item.is_draft && (
+            <View style={styles.draftBadge}>
+              <Text style={styles.draftBadgeText}>Draft</Text>
+            </View>
+          )}
+        </View>
         {item.company_name && (
           <Text style={styles.companyName} numberOfLines={1}>
             {item.company_name}
           </Text>
         )}
+        <View style={styles.jobDetailsRow}>
+          {item.job_type && (
+            <Text style={styles.jobDetailText}>
+              <Ionicons name="briefcase-outline" size={12} color="#6B7280" /> {item.job_type}
+            </Text>
+          )}
+          {item.category && (
+            <Text style={styles.jobDetailText}>
+              <Ionicons name="pricetag-outline" size={12} color="#6B7280" /> {item.category}
+            </Text>
+          )}
+        </View>
+        <View style={styles.jobDetailsRow}>
+          {item.experience && (
+            <Text style={styles.jobDetailText}>
+              <Ionicons name="hourglass-outline" size={12} color="#6B7280" /> {item.experience}
+            </Text>
+          )}
+          {item.salary && (
+            <Text style={styles.jobDetailText}>
+              <Ionicons name="cash-outline" size={12} color="#6B7280" /> {item.salary}
+            </Text>
+          )}
+        </View>
       </View>
       <View style={styles.actions}>
         <TouchableOpacity
@@ -310,6 +341,42 @@ const styles = StyleSheet.create({
   companyName: {
     fontSize: 13,
     color: '#6B7280',
+    marginBottom: 4,
+  },
+  jobTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  draftBadge: {
+    backgroundColor: '#FEE2E2',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+    marginLeft: 8,
+  },
+  draftBadgeText: {
+    color: '#EF4444',
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  jobDetailsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    marginBottom: 4,
+  },
+  jobDetailText: {
+    fontSize: 12,
+    color: '#6B7280',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  draftItem: {
+    backgroundColor: '#FFFBEB',
+    borderLeftWidth: 4,
+    borderLeftColor: '#FCD34D',
   },
   actions: {
     flexDirection: 'row',
