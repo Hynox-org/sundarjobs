@@ -1,7 +1,7 @@
-import { JobPostFormData, TemplateStyle } from '@/constants/jobTemplates';
+import { JobPostFormData } from '@/constants/jobTemplates';
 
-export function generateTemplate1Html({ formData, templateStyle }: { formData: JobPostFormData; templateStyle: TemplateStyle }): string {
-  if (!formData || !templateStyle) return '<h1>Loading...</h1>';
+export function generateTemplate1Html({ formData, backgroundColor, textColor, primaryColor, secondaryColor, fontFamily }: { formData: JobPostFormData; backgroundColor: string; textColor: string; primaryColor: string; secondaryColor: string; fontFamily: string; }): string {
+  if (!formData) return '<h1>Loading...</h1>';
 
   return `
     <!DOCTYPE html>
@@ -33,7 +33,7 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
           }
 
           body {
-            font-family: ${templateStyle.fontFamily};
+            font-family: ${fontFamily};
             line-height: 1.5;
             overflow: hidden; /* Ensure body content is contained */
           }
@@ -43,7 +43,7 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
             height: 297mm; /* Fixed height for A4 */
             margin: 0;
             position: relative;
-            background: ${templateStyle.backgroundColor};
+            background: ${backgroundColor};
             display: flex; /* Use flexbox to manage content distribution */
             flex-direction: column;
             overflow: hidden;
@@ -63,7 +63,7 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
             left: 0;
             width: 45%;
             height: 100%;
-            background: linear-gradient(165deg, ${templateStyle.primaryColor} 0%, ${templateStyle.primaryColor}DD 100%);
+            background: linear-gradient(165deg, ${primaryColor} 0%, ${primaryColor}DD 100%);
           }
 
           .bg-section-2 {
@@ -72,7 +72,7 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
             right: 0;
             width: 55%;
             height: 100%;
-            background: ${templateStyle.backgroundColor};
+            background: ${backgroundColor};
           }
 
           /* Curved divider between sections */
@@ -82,7 +82,85 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
             top: 0;
             width: 15%;
             height: 100%;
-            background: linear-gradient(90deg, ${templateStyle.primaryColor} 0%, transparent 100%);
+            background: linear-gradient(90deg, ${primaryColor} 0%, transparent 100%);
+            clip-path: ellipse(50% 100% at 0% 50%);
+            opacity: 0.3;
+          }
+
+          /* Large decorative microphone - left side */
+          .mic-decoration-left {
+            position: absolute;
+            bottom: -60px;
+            left: -40px;
+            font-size: 280px;
+            opacity: 0.12;
+            transform: rotate(-25deg);
+            z-index: 1;
+          }
+
+          /* Medium microphone - top right */
+          .mic-decoration-right {
+            position: absolute;
+            top: -50px;
+            right: 40px;
+            font-size: 180px;
+            opacity: 0.08;
+            transform: rotate(35deg);
+            z-index: 1;
+          }
+
+          /* Organic blob shapes */
+          body {
+            font-family: ${fontFamily};
+            line-height: 1.5;
+            overflow: hidden; /* Ensure body content is contained */
+          }
+
+          .container {
+            width: 210mm;
+            height: 297mm; /* Fixed height for A4 */
+            margin: 0;
+            position: relative;
+            background: ${backgroundColor};
+            display: flex; /* Use flexbox to manage content distribution */
+            flex-direction: column;
+            overflow: hidden;
+          }
+
+          /* Asymmetric split background */
+          .bg-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+          }
+
+          .bg-section-1 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 45%;
+            height: 100%;
+            background: linear-gradient(165deg, ${primaryColor} 0%, ${primaryColor}DD 100%);
+          }
+
+          .bg-section-2 {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 55%;
+            height: 100%;
+            background: ${backgroundColor};
+          }
+
+          /* Curved divider between sections */
+          .curve-divider {
+            position: absolute;
+            left: 40%;
+            top: 0;
+            width: 15%;
+            height: 100%;
+            background: linear-gradient(90deg, ${primaryColor} 0%, transparent 100%);
             clip-path: ellipse(50% 100% at 0% 50%);
             opacity: 0.3;
           }
@@ -116,7 +194,7 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
             right: 10%;
             width: 150px;
             height: 150px;
-            background: ${templateStyle.secondaryColor};
+            background: ${secondaryColor};
             border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%;
             opacity: 0.15;
             z-index: 1;
@@ -128,7 +206,7 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
             left: 8%;
             width: 100px;
             height: 100px;
-            background: ${templateStyle.backgroundColor};
+            background: ${backgroundColor};
             border-radius: 48% 52% 68% 32% / 42% 58% 42% 58%;
             opacity: 0.25;
             z-index: 1;
@@ -140,7 +218,7 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
             right: 5%;
             width: 120px;
             height: 120px;
-            background: ${templateStyle.secondaryColor};
+            background: ${secondaryColor};
             border-radius: 35% 65% 72% 28% / 64% 36% 64% 36%;
             opacity: 0.1;
             z-index: 1;
@@ -152,9 +230,9 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
             width: 100%;
             height: 100%;
             background: 
-              radial-gradient(at 20% 30%, ${templateStyle.secondaryColor}26 0px, transparent 50%),
-              radial-gradient(at 80% 70%, ${templateStyle.primaryColor}1F 0px, transparent 50%),
-              radial-gradient(at 50% 50%, ${templateStyle.secondaryColor}14 0px, transparent 50%);
+              radial-gradient(at 20% 30%, ${secondaryColor}26 0px, transparent 50%),
+              radial-gradient(at 80% 70%, ${primaryColor}1F 0px, transparent 50%),
+              radial-gradient(at 50% 50%, ${secondaryColor}14 0px, transparent 50%);
             z-index: 1;
           }
 
@@ -172,7 +250,7 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
             padding: 45px 35px;
             display: flex;
             flex-direction: column;
-            color: ${templateStyle.backgroundColor};
+            color: ${backgroundColor};
             position: relative;
           }
 
@@ -181,10 +259,10 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: ${templateStyle.backgroundColor}40;
+            background: ${backgroundColor}40;
             backdrop-filter: blur(10px);
-            border: 2px solid ${templateStyle.backgroundColor}66;
-            color: ${templateStyle.backgroundColor};
+            border: 2px solid ${backgroundColor}66;
+            color: ${backgroundColor};
             padding: 10px 22px;
             border-radius: 30px;
             font-size: 12px;
@@ -198,7 +276,7 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
           .pulse-dot {
             width: 10px;
             height: 10px;
-            background: ${templateStyle.secondaryColor};
+            background: ${secondaryColor};
             border-radius: 50%;
             animation: pulse-glow 2s infinite;
           }
@@ -220,48 +298,48 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
           }
 
           .job-title-main {
-            font-family: ${templateStyle.fontFamily};
-            font-size: ${templateStyle.fontSize?.title || '48px'};
+            font-family: ${fontFamily};
+            font-size: 48px;
             font-weight: 800;
             line-height: 1.1;
-            color: ${templateStyle.backgroundColor};
+            color: ${backgroundColor};
             margin-bottom: 20px;
             letter-spacing: -1.5px;
-            text-shadow: 2px 4px 12px ${templateStyle.textColor}33;
+            text-shadow: 2px 4px 12px ${textColor}33;
             max-height: 120px;
             overflow: hidden;
-            text-transform: ${templateStyle.headerStyle === 'uppercase' ? 'uppercase' : 'none'};
+            text-transform: none;
           }
 
           .company-info {
             display: flex;
             align-items: center;
             gap: 14px;
-            background: ${templateStyle.textColor}26;
+            background: ${textColor}26;
             backdrop-filter: blur(8px);
             padding: 14px 20px;
             border-radius: 16px;
-            border: 1px solid ${templateStyle.backgroundColor}33;
+            border: 1px solid ${backgroundColor}33;
           }
 
           .company-avatar {
             width: 50px;
             height: 50px;
-            background: linear-gradient(135deg, ${templateStyle.secondaryColor}, ${templateStyle.secondaryColor}CC);
+            background: linear-gradient(135deg, ${secondaryColor}, ${secondaryColor}CC);
             border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
             font-weight: 900;
-            color: ${templateStyle.backgroundColor};
+            color: ${backgroundColor};
             flex-shrink: 0;
           }
 
           .company-name {
             font-size: 19px;
             font-weight: 700;
-            color: ${templateStyle.backgroundColor};
+            color: ${backgroundColor};
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -276,11 +354,11 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
           }
 
           .highlight-pill {
-            background: ${templateStyle.backgroundColor}33;
+            background: ${backgroundColor}33;
             backdrop-filter: blur(10px);
             padding: 16px 20px;
             border-radius: 16px;
-            border: 1px solid ${templateStyle.backgroundColor}4D;
+            border: 1px solid ${backgroundColor}4D;
           }
 
           .highlight-pill {
@@ -333,12 +411,12 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
 
           .stat-box {
             flex: 1;
-            background: ${templateStyle.backgroundColor === '#FFFFFF' || templateStyle.backgroundColor === '#FBF8F3' ? '#FFFFFF' : templateStyle.backgroundColor + '1A'};
+            background: ${backgroundColor === '#FFFFFF' || backgroundColor === '#FBF8F3' ? '#FFFFFF' : backgroundColor + '1A'};
             padding: 18px 16px;
             border-radius: 18px;
             text-align: center;
-            box-shadow: 0 4px 24px ${templateStyle.primaryColor}14;
-            border: 2px solid ${templateStyle.primaryColor}26;
+            box-shadow: 0 4px 24px ${primaryColor}14;
+            border: 2px solid ${primaryColor}26;
             position: relative;
             overflow: hidden;
           }
@@ -350,7 +428,7 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
             left: 0;
             width: 100%;
             height: 5px;
-            background: linear-gradient(90deg, ${templateStyle.primaryColor}, ${templateStyle.secondaryColor});
+            background: linear-gradient(90deg, ${primaryColor}, ${secondaryColor});
           }
 
           .stat-emoji {
@@ -364,14 +442,14 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
             font-weight: 700;
             letter-spacing: 1.3px;
             text-transform: uppercase;
-            color: ${templateStyle.primaryColor};
+            color: ${primaryColor};
             margin-bottom: 6px;
           }
 
           .stat-value {
             font-size: 18px;
             font-weight: 800;
-            color: ${templateStyle.textColor};
+            color: ${textColor};
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -389,11 +467,11 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
           }
 
           .content-card {
-            background: ${templateStyle.backgroundColor === '#FFFFFF' || templateStyle.backgroundColor === '#FBF8F3' ? '#FFFFFF' : templateStyle.backgroundColor + '1A'};
+            background: ${backgroundColor === '#FFFFFF' || backgroundColor === '#FBF8F3' ? '#FFFFFF' : backgroundColor + '1A'};
             padding: 26px;
             border-radius: 22px;
-            box-shadow: 0 6px 32px ${templateStyle.textColor}0F;
-            border: 2px solid ${templateStyle.secondaryColor}1A;
+            box-shadow: 0 6px 32px ${textColor}0F;
+            border: 2px solid ${secondaryColor}1A;
           }
 
           .card-header {
@@ -402,33 +480,33 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
             gap: 14px;
             margin-bottom: 16px;
             padding-bottom: 14px;
-            border-bottom: 2px solid ${templateStyle.primaryColor}26;
+            border-bottom: 2px solid ${primaryColor}26;
           }
 
           .card-icon-wrapper {
             width: 48px;
             height: 48px;
-            background: linear-gradient(135deg, ${templateStyle.primaryColor}, ${templateStyle.primaryColor}DD);
+            background: linear-gradient(135deg, ${primaryColor}, ${primaryColor}DD);
             border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
-            box-shadow: 0 4px 16px ${templateStyle.primaryColor}40;
+            box-shadow: 0 4px 16px ${primaryColor}40;
           }
 
           .card-title {
-            font-family: ${templateStyle.fontFamily};
-            font-size: ${templateStyle.fontSize?.subtitle || '22px'};
+            font-family: ${fontFamily};
+            font-size: 22px;
             font-weight: 800;
-            color: ${templateStyle.textColor};
+            color: ${textColor};
             letter-spacing: -0.5px;
           }
 
           .card-content {
-            font-size: ${templateStyle.fontSize?.body || '13.5px'};
+            font-size: 13.5px;
             line-height: 1.75;
-            color: ${templateStyle.textColor};
+            color: ${textColor};
           }
 
           .description-block {
@@ -445,10 +523,10 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
           }
 
           .info-item {
-            background: linear-gradient(135deg, ${templateStyle.secondaryColor}26, ${templateStyle.primaryColor}1A);
+            background: linear-gradient(135deg, ${secondaryColor}26, ${primaryColor}1A);
             padding: 16px 18px;
             border-radius: 14px;
-            border-left: 4px solid ${templateStyle.primaryColor};
+            border-left: 4px solid ${primaryColor};
           }
 
           .info-label {
@@ -456,14 +534,14 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
             font-weight: 700;
             letter-spacing: 1.3px;
             text-transform: uppercase;
-            color: ${templateStyle.primaryColor};
+            color: ${primaryColor};
             margin-bottom: 6px;
           }
 
           .info-value {
             font-size: 16px;
             font-weight: 700;
-            color: ${templateStyle.textColor};
+            color: ${textColor};
             line-height: 1.3;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -472,7 +550,7 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
 
           /* Bottom action section */
           .action-section {
-            background: linear-gradient(135deg, ${templateStyle.textColor}, ${templateStyle.textColor}F0);
+            background: linear-gradient(135deg, ${textColor}, ${textColor}F0);
             margin: 0 -40px -45px;
             padding: 32px 40px;
             border-radius: 28px 28px 0 0;
@@ -491,10 +569,10 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
           }
 
           .action-title {
-            font-family: ${templateStyle.fontFamily};
+            font-family: ${fontFamily};
             font-size: 24px;
             font-weight: 800;
-            color: ${templateStyle.backgroundColor};
+            color: ${backgroundColor};
             text-align: center;
             margin-bottom: 18px;
             letter-spacing: -0.5px;
@@ -508,12 +586,12 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
           }
 
           .contact-item {
-            background: ${templateStyle.backgroundColor}14;
+            background: ${backgroundColor}14;
             backdrop-filter: blur(10px);
             padding: 16px 12px;
             border-radius: 14px;
             text-align: center;
-            border: 1px solid ${templateStyle.backgroundColor}26;
+            border: 1px solid ${backgroundColor}26;
           }
 
           .contact-emoji {
@@ -527,14 +605,14 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
             font-weight: 700;
             letter-spacing: 1.3px;
             text-transform: uppercase;
-            color: ${templateStyle.backgroundColor}B3;
+            color: ${backgroundColor}B3;
             margin-bottom: 6px;
           }
 
           .contact-value {
             font-size: 13px;
             font-weight: 600;
-            color: ${templateStyle.backgroundColor};
+            color: ${backgroundColor};
             line-height: 1.3;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -543,17 +621,17 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
           }
 
           .cta-button {
-            background: linear-gradient(135deg, ${templateStyle.primaryColor}, ${templateStyle.primaryColor}DD);
-            color: ${templateStyle.backgroundColor};
+            background: linear-gradient(135deg, ${primaryColor}, ${primaryColor}DD);
+            color: ${backgroundColor};
             text-align: center;
             padding: 20px;
             border-radius: 16px;
-            font-family: ${templateStyle.fontFamily};
+            font-family: ${fontFamily};
             font-size: 20px;
             font-weight: 800;
             letter-spacing: 0.5px;
             text-transform: uppercase;
-            box-shadow: 0 8px 32px ${templateStyle.primaryColor}66;
+            box-shadow: 0 8px 32px ${primaryColor}66;
             position: relative;
             overflow: hidden;
           }
@@ -565,7 +643,7 @@ export function generateTemplate1Html({ formData, templateStyle }: { formData: J
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, ${templateStyle.backgroundColor}4D, transparent);
+            background: linear-gradient(90deg, transparent, ${backgroundColor}4D, transparent);
             animation: slide-shine 3s infinite;
           }
 

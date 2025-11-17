@@ -156,7 +156,6 @@ export default function CategoryJobsScreen() {
           params: {
             jobId: item.id,
             templateId: item.template_id,
-            styleId: item.template_style,
           },
         })}
             activeOpacity={0.8}

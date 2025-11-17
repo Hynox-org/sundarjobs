@@ -1,7 +1,21 @@
-import { JobPostFormData, TemplateStyle } from '@/constants/jobTemplates';
+import { JobPostFormData } from '@/constants/jobTemplates';
 
-export function generateTemplate3Html({ formData, templateStyle }: { formData: JobPostFormData; templateStyle: TemplateStyle }): string {
-  if (!formData || !templateStyle) return '<h1>Loading...</h1>';
+export function generateTemplate3Html({ 
+  formData, 
+  backgroundColor = '#FFFFFF', 
+  textColor = '#333333', 
+  primaryColor = '#2563EB', 
+  secondaryColor = '#60A5FA', 
+  fontFamily = 'Arial, sans-serif' 
+}: { 
+  formData: JobPostFormData; 
+  backgroundColor?: string; 
+  textColor?: string; 
+  primaryColor?: string; 
+  secondaryColor?: string; 
+  fontFamily?: string; 
+}): string {
+  if (!formData) return '<h1>Loading...</h1>';
 
   return `
     <!DOCTYPE html>
@@ -23,30 +37,30 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
 
           html, body {
             width: 100%;
-            height: 100%; /* Fixed height for A4 */
+            height: 100%;
             margin: 0;
             display: flex;
             justify-content:center;
             align-items:center;
             padding: 0;
-            overflow: hidden; /* Prevent overflow on the main page */
+            overflow: hidden;
           }
 
           body {
-            font-family: ${templateStyle.fontFamily};
+            font-family: ${fontFamily};
             line-height: 1.4;
-            overflow: hidden; /* Ensure body content is contained */
+            overflow: hidden;
           }
 
           .container {
             width: 210mm;
-            height: 297mm; /* Fixed height for A4 */
+            height: 297mm;
             margin: 0;
             position: relative;
-            background: ${templateStyle.backgroundColor};
-            display: flex; /* Use flexbox to manage content distribution */
+            background: ${backgroundColor};
+            display: flex;
             flex-direction: column;
-            overflow: hidden; /* Ensure container content is contained */
+            overflow: hidden;
           }
 
           /* Diagonal split background */
@@ -57,10 +71,10 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
             width: 100%;
             height: 100%;
             background: linear-gradient(145deg, 
-              ${templateStyle.backgroundColor} 0%, 
-              ${templateStyle.backgroundColor} 62%, 
-              ${templateStyle.primaryColor} 62%, 
-              ${templateStyle.primaryColor} 100%);
+              ${backgroundColor} 0%, 
+              ${backgroundColor} 62%, 
+              ${primaryColor} 62%, 
+              ${primaryColor} 100%);
             z-index: 0;
           }
 
@@ -72,7 +86,7 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
             width: 240px;
             height: 240px;
             border-radius: 50%;
-            background: ${templateStyle.secondaryColor};
+            background: ${secondaryColor};
             opacity: 0.13;
             z-index: 1;
           }
@@ -83,7 +97,7 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
             left: -35px;
             width: 160px;
             height: 160px;
-            background: ${templateStyle.primaryColor};
+            background: ${primaryColor};
             opacity: 0.07;
             transform: rotate(25deg);
             z-index: 1;
@@ -98,7 +112,7 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
             flex-direction: column;
           }
 
-          /* Hero section - Bigger sizes */
+          /* Hero section */
           .hero-section {
             padding: 40px 40px 28px;
             position: relative;
@@ -106,8 +120,8 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
 
           .eyebrow-tag {
             display: inline-block;
-            background: ${templateStyle.primaryColor};
-            color: ${templateStyle.backgroundColor};
+            background: ${primaryColor};
+            color: ${backgroundColor};
             padding: 8px 24px;
             font-size: 12px;
             font-weight: 900;
@@ -115,27 +129,26 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
             text-transform: uppercase;
             transform: rotate(-2deg);
             margin-bottom: 16px;
-            box-shadow: 4px 4px 0px ${templateStyle.textColor}20;
+            box-shadow: 4px 4px 0px ${textColor}20;
           }
 
-          /* Bigger headline */
           .mega-title {
             font-size: 52px;
             font-weight: 900;
             line-height: 0.95;
-            color: ${templateStyle.textColor};
+            color: ${textColor};
             text-transform: uppercase;
             letter-spacing: -2px;
             margin-bottom: 10px;
             word-wrap: break-word;
-            text-shadow: 3px 3px 0px ${templateStyle.primaryColor}30;
+            text-shadow: 3px 3px 0px ${primaryColor}30;
             max-height: 110px;
             overflow: hidden;
           }
 
           .mega-title span {
             display: block;
-            background: linear-gradient(135deg, ${templateStyle.primaryColor}, ${templateStyle.secondaryColor});
+            background: linear-gradient(135deg, ${primaryColor}, ${secondaryColor});
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -145,8 +158,8 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            background: ${templateStyle.textColor};
-            color: ${templateStyle.backgroundColor};
+            background: ${textColor};
+            color: ${backgroundColor};
             padding: 10px 20px;
             font-size: 16px;
             font-weight: 700;
@@ -161,7 +174,7 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
           .company-icon {
             width: 7px;
             height: 7px;
-            background: ${templateStyle.primaryColor};
+            background: ${primaryColor};
             border-radius: 50%;
             flex-shrink: 0;
           }
@@ -177,11 +190,11 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
 
           .stat-pill {
             flex: 1;
-            background: ${templateStyle.primaryColor};
-            color: ${templateStyle.backgroundColor};
+            background: ${primaryColor};
+            color: ${backgroundColor};
             padding: 14px 16px;
             text-align: center;
-            border-right: 3px solid ${templateStyle.backgroundColor};
+            border-right: 3px solid ${backgroundColor};
             position: relative;
           }
 
@@ -196,7 +209,7 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
             left: 10px;
             right: 10px;
             height: 3px;
-            background: ${templateStyle.secondaryColor};
+            background: ${secondaryColor};
           }
 
           .stat-label {
@@ -221,11 +234,11 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
           /* Divider */
           .angled-divider {
             height: 20px;
-            background: linear-gradient(175deg, transparent 49%, ${templateStyle.primaryColor}13 50%);
+            background: linear-gradient(175deg, transparent 49%, ${primaryColor}13 50%);
             margin: 20px 0;
           }
 
-          /* Content columns - Bigger text */
+          /* Content columns */
           .two-column-layout {
             display: flex;
             gap: 28px;
@@ -244,7 +257,7 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
             overflow: hidden;
           }
 
-          /* Section styling - Bigger */
+          /* Section styling */
           .section {
             margin-bottom: 20px;
           }
@@ -255,8 +268,8 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
             font-weight: 900;
             letter-spacing: 2.2px;
             text-transform: uppercase;
-            color: ${templateStyle.primaryColor};
-            border: 2px solid ${templateStyle.primaryColor};
+            color: ${primaryColor};
+            border: 2px solid ${primaryColor};
             padding: 6px 14px;
             margin-bottom: 10px;
           }
@@ -264,7 +277,7 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
           .section-heading {
             font-size: 24px;
             font-weight: 900;
-            color: ${templateStyle.textColor};
+            color: ${textColor};
             margin-bottom: 12px;
             letter-spacing: -1px;
             line-height: 1.1;
@@ -273,14 +286,14 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
           .description-text {
             font-size: 13px;
             line-height: 1.65;
-            color: ${templateStyle.textColor};
+            color: ${textColor};
             opacity: 0.88;
             margin-bottom: 12px;
-            overflow-y: auto; /* Allow scrolling for description if it overflows */
-            max-height: 150px; /* Set a max-height for descriptions */
+            overflow-y: auto;
+            max-height: 150px;
           }
 
-          /* Info cards - Bigger */
+          /* Info cards */
           .info-card-stack {
             display: flex;
             flex-direction: column;
@@ -288,10 +301,10 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
           }
 
           .info-card {
-            background: ${templateStyle.backgroundColor};
-            border-left: 4px solid ${templateStyle.primaryColor};
+            background: ${backgroundColor};
+            border-left: 4px solid ${primaryColor};
             padding: 12px 16px;
-            box-shadow: 3px 3px 0px ${templateStyle.primaryColor}20;
+            box-shadow: 3px 3px 0px ${primaryColor}20;
             position: relative;
           }
 
@@ -302,7 +315,7 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
             right: 0;
             width: 50px;
             height: 100%;
-            background: linear-gradient(90deg, transparent, ${templateStyle.primaryColor}07);
+            background: linear-gradient(90deg, transparent, ${primaryColor}07);
           }
 
           .info-label {
@@ -310,24 +323,24 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
             font-weight: 700;
             letter-spacing: 1.6px;
             text-transform: uppercase;
-            color: ${templateStyle.primaryColor};
+            color: ${primaryColor};
             margin-bottom: 5px;
           }
 
           .info-value {
             font-size: 17px;
             font-weight: 700;
-            color: ${templateStyle.textColor};
+            color: ${textColor};
             line-height: 1.2;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
           }
 
-          /* Single-line horizontal contact bar */
+          /* Contact zone */
           .contact-zone {
-            background: ${templateStyle.textColor};
-            color: ${templateStyle.backgroundColor};
+            background: ${textColor};
+            color: ${backgroundColor};
             padding: 28px 40px 24px;
             position: relative;
             margin-top: auto;
@@ -340,7 +353,7 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
             left: 0;
             right: 0;
             height: 14px;
-            background: ${templateStyle.textColor};
+            background: ${textColor};
             clip-path: polygon(0 100%, 100% 0, 100% 100%, 0 100%);
           }
 
@@ -350,26 +363,25 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
             text-transform: uppercase;
             letter-spacing: -0.8px;
             margin-bottom: 16px;
-            color: ${templateStyle.backgroundColor};
+            color: ${backgroundColor};
             text-align: center;
           }
 
-          /* Horizontal contact bar layout */
           .contact-bar {
             display: flex;
             justify-content: space-between;
             align-items: stretch;
             gap: 0;
             margin-bottom: 18px;
-            border: 3px solid ${templateStyle.primaryColor};
-            background: ${templateStyle.backgroundColor}12;
+            border: 3px solid ${primaryColor};
+            background: ${backgroundColor}12;
           }
 
           .contact-item {
             flex: 1;
             padding: 14px 16px;
             text-align: center;
-            border-right: 3px solid ${templateStyle.primaryColor};
+            border-right: 3px solid ${primaryColor};
             position: relative;
             display: flex;
             flex-direction: column;
@@ -387,7 +399,7 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
             left: 0;
             right: 0;
             height: 3px;
-            background: ${templateStyle.primaryColor};
+            background: ${primaryColor};
             opacity: 0.3;
           }
 
@@ -403,24 +415,24 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
             text-transform: uppercase;
             opacity: 0.75;
             margin-bottom: 5px;
-            color: ${templateStyle.backgroundColor};
+            color: ${backgroundColor};
           }
 
           .contact-value {
             font-size: 13px;
             font-weight: 700;
             line-height: 1.3;
-            color: ${templateStyle.backgroundColor};
+            color: ${backgroundColor};
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             padding: 0 5px;
           }
 
-          /* Call to action */
+          /* CTA banner */
           .cta-banner {
-            background: ${templateStyle.primaryColor};
-            color: ${templateStyle.backgroundColor};
+            background: ${primaryColor};
+            color: ${backgroundColor};
             padding: 16px;
             text-align: center;
             transform: rotate(-1deg);
@@ -448,18 +460,18 @@ export function generateTemplate3Html({ formData, templateStyle }: { formData: J
               height: 297mm;
               margin: 0;
               padding: 0;
-              overflow: hidden; /* Ensure no overflow in print */
+              overflow: hidden;
             }
             .container {
               width: 210mm;
               height: 297mm;
               page-break-after: avoid;
               page-break-inside: avoid;
-              overflow: hidden; /* Ensure container content is contained */
+              overflow: hidden;
             }
             .description-text {
-              max-height: none; /* Remove max-height for print */
-              overflow: visible; /* Allow content to be visible in print */
+              max-height: none;
+              overflow: visible;
             }
           }
         </style>

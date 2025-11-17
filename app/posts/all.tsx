@@ -220,8 +220,7 @@ export default function AllJobsScreen() {
                 ? { jobId: item.id }
                 : {
                     jobId: item.id,
-                    templateId: item.template_id || "default-template",
-                    styleId: item.template_style || "default-style",
+                    templateId: item.template_id || "default-template"
                   },
             });
           }}

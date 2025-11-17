@@ -1,9 +1,7 @@
 import generateHtmlTemplate from "@/components/HtmlTemplate";
 import {
-  ALL_TEMPLATE_STYLES, // Added this import
   HTML_TEMPLATES,
   HtmlTemplate,
-  TemplateStyle,
 } from "@/constants/jobTemplates";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
@@ -48,18 +46,15 @@ interface JobPostFormData {
   additional_info: string;
   is_draft?: boolean;
   template_id?: string;
-  template_style?: string;
   poster_url?: string; // New field to store the URL of the uploaded poster
 }
 
 export default function PreviewScreen() {
-  const { jobId, templateId, styleId } = useLocalSearchParams();
+  const { jobId, templateId } = useLocalSearchParams();
   const [formData, setFormData] = useState<JobPostFormData | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<HtmlTemplate | null>(
     null
   );
-  const [selectedTemplateStyle, setSelectedTemplateStyle] =
-    useState<TemplateStyle | null>(null);
   const [loading, setLoading] = useState(true); // For initial data loading
   const [isPostingJob, setIsPostingJob] = useState(false); // For job posting action
   const [zoom, setZoom] = useState(1);
@@ -158,20 +153,12 @@ export default function PreviewScreen() {
           (t: HtmlTemplate) => t.id === templateId
         );
         setSelectedTemplate(template || null);
-
-        if (template && styleId) {
-          const style = ALL_TEMPLATE_STYLES.find((s) => s.id === styleId);
-          setSelectedTemplateStyle(style || null);
-        } else if (template && template.styles.length > 0) {
-          const defaultStyle = ALL_TEMPLATE_STYLES.find(s => s.id === template.styles[0]);
-          setSelectedTemplateStyle(defaultStyle || null);
-        }
       }
       setLoading(false);
     };
 
     loadJobPost();
-  }, [jobId, templateId, styleId]);
+  }, [jobId, templateId]);
 
   const handleLoginRedirect = () => {
     Alert.alert(
@@ -201,11 +188,10 @@ export default function PreviewScreen() {
   const sharePdf = async () => {
     try {
       const htmlContent =
-        formData && selectedTemplate && selectedTemplateStyle
+        formData && selectedTemplate
           ? generateHtmlTemplate({
               formData,
               template: selectedTemplate,
-              templateStyle: selectedTemplateStyle,
             })
           : "<h1>Loading...</h1>";
       if (!htmlContent) {
@@ -251,7 +237,7 @@ export default function PreviewScreen() {
         formData.poster_url ||
         `https://sundarjobs.com/posts/preview?jobId=${formData.id}&templateId=${
           formData.template_id || ""
-        }&styleId=${formData.template_style || ""}`
+        }`
       }
 
 🚀 *Find more jobs like this on SundarJobs!*
@@ -271,7 +257,7 @@ export default function PreviewScreen() {
   };
 
   const handlePostJob = async () => {
-    if (!formData || !selectedTemplate || !selectedTemplateStyle || !session) {
+    if (!formData || !selectedTemplate || !session) {
       Alert.alert("Error", "Job post data or session is missing.");
       return;
     }
@@ -282,7 +268,6 @@ export default function PreviewScreen() {
       const htmlContent = generateHtmlTemplate({
         formData: formData,
         template: selectedTemplate,
-        templateStyle: selectedTemplateStyle,
       });
 
       // Convert HTML to PDF first
@@ -368,7 +353,7 @@ export default function PreviewScreen() {
     );
   }
 
-  if (!formData || !selectedTemplate || !selectedTemplateStyle) {
+  if (!formData || !selectedTemplate) {
     return (
       <View
         style={[
@@ -396,11 +381,10 @@ export default function PreviewScreen() {
   }
 
   const htmlContent =
-    formData && selectedTemplate && selectedTemplateStyle
+    formData && selectedTemplate
       ? generateHtmlTemplate({
           formData: formData,
           template: selectedTemplate,
-          templateStyle: selectedTemplateStyle,
         })
       : "<h1>Loading...</h1>";
 
@@ -633,7 +617,7 @@ export default function PreviewScreen() {
         <TouchableOpacity
           style={styles.actionButton}
           onPress={sharePdf}
-          disabled={formData.is_draft}
+          // disabled={formData.is_draft}
         >
           <Ionicons
             name="document-text-outline"

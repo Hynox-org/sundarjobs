@@ -1,7 +1,21 @@
-import { JobPostFormData, TemplateStyle } from '@/constants/jobTemplates';
+import { JobPostFormData } from '@/constants/jobTemplates';
 
-export function generateTemplate4Html({ formData, templateStyle }: { formData: JobPostFormData; templateStyle: TemplateStyle }): string {
-  if (!formData || !templateStyle) return '<h1>Loading...</h1>';
+export function generateTemplate4Html({ 
+  formData, 
+  backgroundColor = '#FFFFFF', 
+  textColor = '#333333', 
+  primaryColor = '#2563EB', 
+  secondaryColor = '#60A5FA', 
+  fontFamily = 'Arial, sans-serif' 
+}: { 
+  formData: JobPostFormData; 
+  backgroundColor?: string; 
+  textColor?: string; 
+  primaryColor?: string; 
+  secondaryColor?: string; 
+  fontFamily?: string; 
+}): string {
+  if (!formData) return '<h1>Loading...</h1>';
 
   return `
     <!DOCTYPE html>
@@ -23,17 +37,17 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
 
           html, body {
             width: 100%;
-            height: 100%; /* Fixed height for A4 */
+            height: 100%;
             margin: 0;
             display: flex;
             justify-content:center;
             align-items:center;
             padding: 0;
-            overflow: hidden; /* Prevent overflow on the main page */
+            overflow: hidden;
           }
 
           body {
-            font-family: ${templateStyle.fontFamily};
+            font-family: ${fontFamily};
             line-height: 1.5;
           }
 
@@ -42,26 +56,26 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
             height: 297mm;
             margin: 0;
             padding: 50px 45px;
-            background: ${templateStyle.backgroundColor};
+            background: ${backgroundColor};
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden; 
           }
 
-          /* Hero Section - Large Centered "We Are Hiring" */
+          /* Hero Section */
           .hero-section {
             text-align: center;
             margin-bottom: 45px;
             padding-bottom: 35px;
-            border-bottom: 3px solid ${templateStyle.primaryColor};
+            border-bottom: 3px solid ${primaryColor};
           }
 
           .hero-title {
-            font-family: ${templateStyle.fontFamily};
+            font-family: ${fontFamily};
             font-size: 72px;
             font-weight: 900;
-            color: ${templateStyle.primaryColor};
+            color: ${primaryColor};
             letter-spacing: -2px;
             margin-bottom: 15px;
             text-transform: uppercase;
@@ -71,7 +85,7 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
           .hero-subtitle {
             font-size: 24px;
             font-weight: 600;
-            color: ${templateStyle.textColor};
+            color: ${textColor};
             opacity: 0.8;
           }
 
@@ -82,10 +96,10 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
           }
 
           .job-title {
-            font-family: ${templateStyle.fontFamily};
-            font-size: ${templateStyle.fontSize?.title || '48px'};
+            font-family: ${fontFamily};
+            font-size: 48px;
             font-weight: 800;
-            color: ${templateStyle.textColor};
+            color: ${textColor};
             margin-bottom: 12px;
             letter-spacing: -1px;
           }
@@ -93,7 +107,7 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
           .company-name {
             font-size: 22px;
             font-weight: 600;
-            color: ${templateStyle.primaryColor};
+            color: ${primaryColor};
           }
 
           /* Key Info Grid */
@@ -105,11 +119,11 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
           }
 
           .info-card {
-            background: ${templateStyle.backgroundColor === '#FFFFFF' ? '#F8F9FA' : templateStyle.backgroundColor + '4D'};
+            background: ${backgroundColor === '#FFFFFF' ? '#F8F9FA' : backgroundColor + '4D'};
             padding: 20px 16px;
             border-radius: 16px;
             text-align: center;
-            border: 2px solid ${templateStyle.primaryColor}33;
+            border: 2px solid ${primaryColor}33;
             transition: transform 0.2s;
           }
 
@@ -128,18 +142,18 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1.2px;
-            color: ${templateStyle.primaryColor};
+            color: ${primaryColor};
             margin-bottom: 8px;
           }
 
           .info-value {
             font-size: 16px;
             font-weight: 700;
-            color: ${templateStyle.textColor};
+            color: ${textColor};
             line-height: 1.3;
           }
 
-          /* Content Layout - Two Columns */
+          /* Content Layout */
           .content-layout {
             display: grid;
             grid-template-columns: 1.2fr 0.8fr;
@@ -156,10 +170,10 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
           }
 
           .content-box {
-            background: ${templateStyle.backgroundColor === '#FFFFFF' ? '#F8F9FA' : templateStyle.backgroundColor + '4D'};
+            background: ${backgroundColor === '#FFFFFF' ? '#F8F9FA' : backgroundColor + '4D'};
             padding: 24px;
             border-radius: 18px;
-            border-left: 4px solid ${templateStyle.primaryColor};
+            border-left: 4px solid ${primaryColor};
           }
 
           .content-box-header {
@@ -168,7 +182,7 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
             gap: 12px;
             margin-bottom: 14px;
             padding-bottom: 12px;
-            border-bottom: 2px solid ${templateStyle.primaryColor}26;
+            border-bottom: 2px solid ${primaryColor}26;
           }
 
           .content-box-icon {
@@ -176,16 +190,16 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
           }
 
           .content-box-title {
-            font-family: ${templateStyle.fontFamily};
-            font-size: ${templateStyle.fontSize?.subtitle || '20px'};
+            font-family: ${fontFamily};
+            font-size: 20px;
             font-weight: 700;
-            color: ${templateStyle.textColor};
+            color: ${textColor};
           }
 
           .content-box-text {
-            font-size: ${templateStyle.fontSize?.body || '13.5px'};
+            font-size: 13.5px;
             line-height: 1.75;
-            color: ${templateStyle.textColor};
+            color: ${textColor};
             max-height: 180px;
             overflow-y: auto;
           }
@@ -198,10 +212,10 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
           }
 
           .detail-group {
-            background: ${templateStyle.backgroundColor === '#FFFFFF' ? '#F8F9FA' : templateStyle.backgroundColor + '4D'};
+            background: ${backgroundColor === '#FFFFFF' ? '#F8F9FA' : backgroundColor + '4D'};
             padding: 18px;
             border-radius: 14px;
-            border: 2px solid ${templateStyle.secondaryColor}33;
+            border: 2px solid ${secondaryColor}33;
           }
 
           .detail-item {
@@ -217,20 +231,20 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1.2px;
-            color: ${templateStyle.primaryColor};
+            color: ${primaryColor};
             margin-bottom: 6px;
           }
 
           .detail-value {
             font-size: 15px;
             font-weight: 600;
-            color: ${templateStyle.textColor};
+            color: ${textColor};
             line-height: 1.4;
           }
 
-          /* Bottom CTA Section */
+          /* CTA Section */
           .cta-section {
-            background: linear-gradient(135deg, ${templateStyle.primaryColor}, ${templateStyle.primaryColor}E6);
+            background: linear-gradient(135deg, ${primaryColor}, ${primaryColor}E6);
             padding: 30px;
             border-radius: 20px;
             text-align: center;
@@ -238,10 +252,10 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
           }
 
           .cta-title {
-            font-family: ${templateStyle.fontFamily};
+            font-family: ${fontFamily};
             font-size: 28px;
             font-weight: 800;
-            color: ${templateStyle.backgroundColor};
+            color: ${backgroundColor};
             margin-bottom: 20px;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -255,11 +269,11 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
           }
 
           .contact-card {
-            background: ${templateStyle.backgroundColor}26;
+            background: ${backgroundColor}26;
             backdrop-filter: blur(10px);
             padding: 16px 12px;
             border-radius: 12px;
-            border: 1px solid ${templateStyle.backgroundColor}40;
+            border: 1px solid ${backgroundColor}40;
           }
 
           .contact-icon {
@@ -273,7 +287,7 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: ${templateStyle.backgroundColor};
+            color: ${backgroundColor};
             opacity: 0.9;
             margin-bottom: 6px;
           }
@@ -281,7 +295,7 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
           .contact-value {
             font-size: 13px;
             font-weight: 600;
-            color: ${templateStyle.backgroundColor};
+            color: ${backgroundColor};
             line-height: 1.3;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -289,11 +303,11 @@ export function generateTemplate4Html({ formData, templateStyle }: { formData: J
           }
 
           .apply-button {
-            background: ${templateStyle.backgroundColor};
-            color: ${templateStyle.primaryColor};
+            background: ${backgroundColor};
+            color: ${primaryColor};
             padding: 18px 40px;
             border-radius: 12px;
-            font-family: ${templateStyle.fontFamily};
+            font-family: ${fontFamily};
             font-size: 20px;
             font-weight: 800;
             text-transform: uppercase;

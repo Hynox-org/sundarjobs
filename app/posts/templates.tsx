@@ -1,5 +1,5 @@
 import { ThemedText } from '@/components/themed-text';
-import { ALL_TEMPLATE_STYLES, HTML_TEMPLATES, HtmlTemplate, TemplateStyle } from '@/constants/jobTemplates';
+import { HTML_TEMPLATES, HtmlTemplate } from '@/constants/jobTemplates';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { supabase } from '@/lib/supabase';
@@ -25,7 +25,6 @@ interface FormData {
   additional_info: string;
   is_draft?: boolean;
   template_id?: string;
-  template_style?: string;
 }
 
 const styles = StyleSheet.create({
@@ -110,16 +109,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
   },
-  styleSelectionContainer: {
-    marginTop: 15,
-    paddingTop: 15,
-    borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
-  },
-  styleSelectionTitle: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
   previewButton: {
     marginTop: 20,
     paddingVertical: 12,
@@ -181,7 +170,6 @@ const styles = StyleSheet.create({
 export default function TemplatesScreen() {
   const [jobPosts, setJobPosts] = useState<FormData[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<{ postId: string; template: HtmlTemplate } | null>(null);
-  const [selectedStyleId, setSelectedStyleId] = useState<string | null>(null);
   const router = useRouter();
   const { jobId } = useLocalSearchParams<{ jobId?: string }>(); // Get jobId from router params
 
@@ -224,43 +212,34 @@ export default function TemplatesScreen() {
 
   const handleSelectTemplate = useCallback((template: HtmlTemplate, jobPost: FormData) => {
     setSelectedTemplate({ postId: jobPost.id!, template });
-    setSelectedStyleId(template.styles[0] || null); // Select the first style ID by default
   }, []);
 
-  const handleSelectStyle = useCallback((styleId: string) => {
-    if (jobId && selectedTemplate) {
-      setSelectedStyleId(styleId);
-      // No immediate navigation, just update selected style
-    }
-  }, [jobId, selectedTemplate]);
-
   const handlePreview = useCallback(() => {
-    if (jobId && selectedTemplate && selectedStyleId) {
+    if (jobId && selectedTemplate) {
       router.push({
         pathname: "/posts/preview",
         params: {
           jobId: jobId,
           templateId: selectedTemplate.template.id,
-          styleId: selectedStyleId,
         },
       });
     } else {
-      console.warn("Please select a template and a style before previewing.");
+      console.warn("Please select a template before previewing.");
       if (Platform.OS === "web") {
-        alert("Please select a template and a style before previewing.");
+        alert("Please select a template before previewing.");
       } else {
-        Alert.alert("Selection Required", "Please select a template and a style before previewing.");
+        Alert.alert("Selection Required", "Please select a template before previewing.");
       }
     }
-  }, [jobId, selectedTemplate, selectedStyleId, router]);
+  }, [jobId, selectedTemplate, router]);
 
   const handleSaveTemplate = useCallback(async (action: "draft" | "preview") => {
-    if (!jobId || !selectedTemplate || !selectedStyleId) {
-      console.warn("Please select a template and a style before saving or proceeding.");
+    if (!jobId || !selectedTemplate) {
+      console.warn("Please select a template before saving or proceeding.");
       if (Platform.OS === "web") {
-        alert("Please select a template and a style.");
+        alert("Please select a template.");
       } else {
-        Alert.alert("Selection Required", "Please select a template and a style.");
+        Alert.alert("Selection Required", "Please select a template.");
       }
       return;
     }
@@ -270,7 +249,6 @@ export default function TemplatesScreen() {
         .from('jobs')
         .update({
           template_id: selectedTemplate.template.id,
-          template_style: selectedStyleId,
           is_draft: true, // Always keep as draft when saving template details
         })
         .eq('id', jobId);
@@ -299,7 +277,6 @@ export default function TemplatesScreen() {
           params: {
             jobId: jobId,
             templateId: selectedTemplate.template.id,
-            styleId: selectedStyleId,
           },
         });
       }
@@ -311,7 +288,7 @@ export default function TemplatesScreen() {
         Alert.alert("Error", "Error saving template details.");
       } 
     }
-  }, [jobId, selectedTemplate, selectedStyleId, router]);
+  }, [jobId, selectedTemplate, router]);
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor }} contentContainerStyle={styles.scrollContainer}>
@@ -334,75 +311,32 @@ export default function TemplatesScreen() {
               <View style={styles.templateSelectionContainer}>
                 <ThemedText type="defaultSemiBold" style={styles.templateSelectionTitle}>Choose a Template:</ThemedText>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.templateScroll}>
-                  {HTML_TEMPLATES.map((template: HtmlTemplate) => {
-                    const isSelected = selectedTemplate?.postId === post.id && selectedTemplate?.template.id === template.id;
-                    // Find the actual TemplateStyle object using the ID
-                    const displayStyle = ALL_TEMPLATE_STYLES.find(s => s.id === template.styles[0]);
-                    if (!displayStyle) return null; // Handle case where style is not found
+  {HTML_TEMPLATES.map((template: HtmlTemplate) => {
+    const isSelected = selectedTemplate?.postId === post.id && selectedTemplate?.template.id === template.id;
 
-                    return (
-                      <TouchableOpacity
-                        key={template.id}
-                        style={[
-                          styles.templateOption,
-                          {
-                            backgroundColor: displayStyle.backgroundColor,
-                            borderColor: displayStyle.primaryColor,
-                            borderWidth: isSelected ? 3 : 1, // Highlight selected template
-                          }
-                        ]}
-                        onPress={() => handleSelectTemplate(template, post)}
-                      >
-                        <ThemedText style={[styles.templateOptionText, { color: displayStyle.textColor }]}>{template.name}</ThemedText>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </ScrollView>
-
-                {selectedTemplate?.postId === post.id && selectedTemplate!.template.styles.length > 0 && (
-                  <View style={styles.styleSelectionContainer}>
-                    <ThemedText type="defaultSemiBold" style={styles.styleSelectionTitle}>Choose a Style:</ThemedText>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.templateScroll}>
-                      {selectedTemplate!.template.styles.map((styleId) => {
-                        const style = ALL_TEMPLATE_STYLES.find(s => s.id === styleId);
-                        if (!style) return null; // Handle case where style is not found
-
-                        const isStyleSelected = selectedStyleId === style.id;
-                        return (
-                          <TouchableOpacity
-                            key={style.id}
-                            style={[
-                              styles.templateOption,
-                              {
-                                backgroundColor: style.backgroundColor,
-                                borderColor: isStyleSelected ? style.primaryColor : "#ccc",
-                                borderWidth: isStyleSelected ? 3 : 1, // Highlight selected style
-                              }
-                            ]}
-                            onPress={() => handleSelectStyle(style.id)}
-                          >
-                            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                              {/* Color Box */}
-                              <View
-                                style={{
-                                  width: 20,
-                                  height: 20,
-                                  borderRadius: 4, // remove or change for square/circle
-                                  backgroundColor: style.primaryColor,
-                                  borderWidth: 1,
-                                  borderColor: style.secondaryColor,
-                                }}
-                              />
-
-                              {/* Text */}  
-                              <ThemedText style={[styles.templateOptionText, { color: style.textColor }]} > {style.name} </ThemedText>
-                            </View>
-                          </TouchableOpacity>
-                        );
-                      })}
-                    </ScrollView>
-                  </View>
-                )}
+    return (
+      <TouchableOpacity
+        key={template.id}
+        style={[
+          styles.templateOption,
+          {
+            backgroundColor: isSelected ? '#2563EB' : '#FFFFFF',
+            borderColor: isSelected ? '#2563EB' : '#E5E7EB',
+            borderWidth: isSelected ? 2 : 1,
+          }
+        ]}
+        onPress={() => handleSelectTemplate(template, post)}
+      >
+        <ThemedText style={[
+          styles.templateOptionText, 
+          { color: isSelected ? '#FFFFFF' : '#374151' }
+        ]}>
+          {template.name}
+        </ThemedText>
+      </TouchableOpacity>
+    );
+  })}
+</ScrollView>
               </View>
             </View>
           ))
