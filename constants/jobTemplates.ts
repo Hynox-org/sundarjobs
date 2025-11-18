@@ -3,22 +3,27 @@ export interface JobPostFormData {
   title: string;
   job_title: string;
   vacancy: number;
-  job_type: string;
+  // job_type: string;
   category: string;
   experience: string;
-  salary: string;
-  job_description: string;
+  // salary: string;
+  // job_description: string;
   company_name: string;
   company_address: string;
   company_email: string;
   company_phone: string;
-  application_deadline: string;
-  additional_info: string;
+  // application_deadline: string;
+  // additional_info: string;
+  additional_jobs?: AdditionalJob[]; // <-- add this line
   is_draft?: boolean;
   template_id?: string;
   poster_url?: string;
 }
-
+export interface AdditionalJob {
+  job_title: string;
+  vacancy: number;
+  experience: string;
+}
 export interface HtmlTemplate {
   id: string;
   name: string;
@@ -45,4 +50,12 @@ export const HTML_TEMPLATES: HtmlTemplate[] = [
     id: "template-5",
     name: "Template 5",
   },
+  {
+    id: "template-6",
+    name: "Template 6",
+  },
+  {
+    id: "template-7",
+    name: "Template 7",
+  }
 ];

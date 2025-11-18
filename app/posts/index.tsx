@@ -4,7 +4,6 @@ import { JOB_CATEGORIES } from "@/constants/jobCategories";
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { supabase } from "@/lib/supabase";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -20,92 +19,125 @@ import {
   View,
 } from "react-native";
 
+interface AdditionalJob {
+  job_title: string;
+  vacancy: number;
+  experience: string;
+}
+
 interface FormData {
-  id?: string; // Add an optional ID for unique identification
-  title: string;
-  jobTitle: string;
-  vacancy: string;
-  jobType: string;
-  category: string;
-  experience: string;
-  salary: string;
-  jobDescription: string;
-  companyName: string;
-  companyAddress: string;
-  companyEmail: string;
-  companyPhone: string;
-  applicationDeadline: string;
-  additionalInfo: string;
-  isDraft?: boolean; // Add isDraft flag
-  templateId?: string; // Add templateId for selected template
-  templateStyle?: string; // Add templateStyle for selected template style
+  id?: string; // Add an optional ID for unique identification
+  title: string;
+  jobTitle: string;
+  vacancy: string;
+  // jobType: string;
+  category: string;
+  experience: string;
+  // salary: string;
+  // jobDescription: string;
+  companyName: string;
+  companyAddress: string;
+  companyEmail: string;
+  companyPhone: string;
+  // applicationDeadline: string;
+  // additionalInfo: string;
+  additional_jobs?: AdditionalJob[];
+  isDraft?: boolean; // Add isDraft flag
+  templateId?: string; // Add templateId for selected template
+  templateStyle?: string; // Add templateStyle for selected template style
 }
 
 export default function PostJobsScreen() {
-  const { width } = useWindowDimensions();
-  const isSmallScreen = width < 768;
-  const isMediumScreen = width >= 768 && width < 1024;
+  const { width } = useWindowDimensions();
+  const isSmallScreen = width < 768;
+  const isMediumScreen = width >= 768 && width < 1024;
 
-  const [form, setForm] = useState<FormData>({
-    title: "",
-    jobTitle: "",
-    vacancy: "",
-    jobType: "",
-    category: "",
-    experience: "",
-    salary: "",
-    jobDescription: "",
-    companyName: "",
-    companyAddress: "",
-    companyEmail: "",
-    companyPhone: "",
-    applicationDeadline: "",
-    additionalInfo: "",
-  });
+  const [form, setForm] = useState<FormData>({
+    title: "",
+    jobTitle: "",
+    vacancy: "",
+    // jobType: "",
+    category: "",
+    experience: "",
+    // salary: "",
+    // jobDescription: "",
+    companyName: "",
+    companyAddress: "",
+    companyEmail: "",
+    companyPhone: "",
+    // applicationDeadline: "",
+    // additionalInfo: "",
+    additional_jobs: [],
+  });
 
-  const [isCategoryModalVisible, setCategoryModalVisible] = useState(false);
-  const [isJobTypeModalVisible, setJobTypeModalVisible] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [isCategoryModalVisible, setCategoryModalVisible] = useState(false);
+  const [isJobTypeModalVisible, setJobTypeModalVisible] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-    };
-    fetchUser();
-  }, []);
+  useEffect(() => {
+  const fetchUser = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    setUser(user);
+    };
+    fetchUser();
+  }, []);
 
-  const [errors, setErrors] = useState<Partial<Record<keyof FormData, boolean>>>({});
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, boolean>>>({});
 
-  const jobTypes = [
-    "Full Time",
-    "Part Time",
-    "Internship",
-    "Contract",
-    "Temporary",
-    "Other",
-  ];
+  // const jobTypes = [
+  //   "Full Time",
+  //   "Part Time",
+  //   "Internship",
+  //   "Contract",
+  //   "Temporary",
+  //   "Other",
+  // ];
 
-  const handleChange = (field: keyof FormData, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+  const handleChange = (field: keyof FormData, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: false }));
-    }
-  };
+     setErrors((prev) => ({ ...prev, [field]: false }));
+    }
+  };
 
-  const handleSaveJob = async (action: "draft" | "template") => {
-    const required: (keyof FormData)[] = [
-      "title",
-      "jobTitle",
-      "vacancy",
-      "category",
-      "experience",
-      "jobDescription",
-      "companyEmail",
-    ];
+  const handleAdditionalJobChange = (index: number, field: keyof AdditionalJob, value: string | number) => {
+    if (!form.additional_jobs) return;
+    const updatedJobs = [...form.additional_jobs];
+    if (field === "vacancy" && typeof value === "string") {
+      updatedJobs[index][field] = Number(value);
+    } else {
+      updatedJobs[index][field] = value as never;
+    }
+    setForm({ ...form, additional_jobs: updatedJobs });
+  };
+
+  const handleRemoveAdditionalJob = (index: number) => {
+    if (!form.additional_jobs) return;
+    const updatedJobs = form.additional_jobs.filter((_, i) => i !== index);
+    setForm({ ...form, additional_jobs: updatedJobs });
+  };
+
+  const handleAddAdditionalJob = () => {
+    if ((form.additional_jobs?.length ?? 0) >= 6) return;
+    const newJob: AdditionalJob = { job_title: "", vacancy: 0, experience: "" };
+    setForm((prev) => ({
+      ...prev,
+      additional_jobs: [...(prev.additional_jobs ?? []), newJob],
+    }));
+  };
+
+  const handleSaveJob = async (action: "draft" | "template") => {
+    const required: (keyof FormData)[] = [
+      "title",
+      "jobTitle",
+      "vacancy",
+      "category",
+      "experience",
+      "companyName",
+    ];
 
     const newErrors: Partial<Record<keyof FormData, boolean>> = {};
     const missing = required.filter((key) => {
@@ -135,25 +167,26 @@ export default function PostJobsScreen() {
       return;
       }
 
-    try {
-      const jobData = {
-        title: form.title,
-        job_title: form.jobTitle,
-        vacancy: parseInt(form.vacancy, 10),
-        job_type: form.jobType,
-        category: form.category,
-        experience: form.experience,
-        salary: form.salary,
-        job_description: form.jobDescription,
-        company_name: form.companyName,
-        company_address: form.companyAddress,
-        company_email: form.companyEmail,
-        company_phone: form.companyPhone,
-        application_deadline: form.applicationDeadline || null,
-        additional_info: form.additionalInfo,
-        user_id: user.id,
-        is_draft: true,
-      };
+    try {
+      const jobData = {
+        title: form.title,
+        job_title: form.jobTitle,
+        vacancy: parseInt(form.vacancy, 10),
+        // job_type: form.jobType,
+        category: form.category,
+        experience: form.experience,
+        // salary: form.salary,
+        // job_description: form.jobDescription,
+        company_name: form.companyName,
+        company_address: form.companyAddress,
+        company_email: form.companyEmail,
+        company_phone: form.companyPhone,
+        // application_deadline: form.applicationDeadline || null,
+        // additional_info: form.additionalInfo,
+        additional_jobs: form.additional_jobs, // include additional jobs here
+        user_id: user.id,
+        is_draft: action === "draft",
+      };
 
       const { data, error } = await supabase.from("jobs").insert([jobData]).select();
 
@@ -222,9 +255,7 @@ export default function PostJobsScreen() {
 
           {/* Title */}
           <View style={styles.formGroup}>
-            <Text style={styles.label}>
-              Job Posting Title <Text style={styles.required}>*</Text>
-            </Text>
+            <Text style={styles.label}>Poster Title <Text style={styles.required}>*</Text></Text>
             <TextInput
               placeholder="e.g., Mega Hiring Drive 2025"
               placeholderTextColor="#9CA3AF"
@@ -241,7 +272,7 @@ export default function PostJobsScreen() {
           <View style={[styles.row, isSmallScreen && styles.column]}>
             <View style={[styles.formGroup, styles.flex1]}>
               <Text style={styles.label}>
-                Job Title <Text style={styles.required}>*</Text>
+                Job Position <Text style={styles.required}>*</Text>
               </Text>
               <TextInput
                 placeholder="e.g., Software Engineer"
@@ -276,9 +307,7 @@ export default function PostJobsScreen() {
           {/* Category & Job Type */}
           <View style={[styles.row, isSmallScreen && styles.column]}>
             <View style={[styles.formGroup, styles.flex1]}>
-              <Text style={styles.label}>
-                Category <Text style={styles.required}>*</Text>
-              </Text>
+              <Text style={styles.label}>Category <Text style={styles.required}>*</Text></Text>
               <TouchableOpacity
                 style={[
                   styles.pickerWrapper,
@@ -287,23 +316,22 @@ export default function PostJobsScreen() {
                 ]}
                 onPress={() => setCategoryModalVisible(true)}
               >
-                <Text style={form.category ? styles.pickerText : styles.placeholderText}>
-                  {form.category || "Select a category"}
-                </Text>
+                <Text style={form.category ? styles.pickerText : styles.placeholderText}>{form.category || "Select a category"}</Text>
               </TouchableOpacity>
             </View>
 
-            <View style={[styles.formGroup, styles.flex1]}>
+            {/* Uncomment if needed for job type */}
+            {/* <View style={[styles.formGroup, styles.flex1]}>
               <Text style={styles.label}>Job Type</Text>
               <TouchableOpacity
-                style={[styles.pickerWrapper, styles.touchablePicker]}
+                style={[styles.pickerWrapper, styles.touchablePicker]}  
                 onPress={() => setJobTypeModalVisible(true)}
               >
                 <Text style={form.jobType ? styles.pickerText : styles.placeholderText}>
                   {form.jobType || "Select job type"}
                 </Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
 
           {/* Experience & Salary */}
@@ -324,7 +352,8 @@ export default function PostJobsScreen() {
               />
             </View>
 
-            <View style={[styles.formGroup, styles.flex1]}>
+            {/* Uncomment if needed for salary */}
+            {/* <View style={[styles.formGroup, styles.flex1]}>
               <Text style={styles.label}>Salary Range</Text>
               <TextInput
                 placeholder="e.g., 3-5 LPA"
@@ -333,124 +362,143 @@ export default function PostJobsScreen() {
                 value={form.salary}
                 onChangeText={(text) => handleChange("salary", text)}
               />
+            </View> */}
+          </View>
+
+          {/* Additional Jobs Section */}
+          <View style={{ marginVertical: 20 }}>
+            <Text style={[styles.sectionTitle, { marginBottom: 12 }]}>Additional Job Positions</Text>
+              {form.additional_jobs?.map((job: AdditionalJob, idx: number) => (
+                <View key={idx} style={{ marginBottom: 16, borderWidth: 1, borderColor: '#e0e0e0', padding: 12, borderRadius: 8 }}>
+                  <TextInput
+                    placeholder="Job Title"
+                    style={[styles.input, { marginBottom: 10 }]}
+                    value={job.job_title}
+                    onChangeText={(text) => handleAdditionalJobChange(idx, "job_title", text)}
+                  />
+                  <TextInput
+                    placeholder="Vacancy"
+                    style={[styles.input, { marginBottom: 10 }]}
+                    keyboardType="numeric"
+                    value={job.vacancy.toString()}
+                    onChangeText={(text) => handleAdditionalJobChange(idx, "vacancy", text)}
+                  />
+                  <TextInput
+                    placeholder="Experience"
+                    style={[styles.input, { marginBottom: 10 }]}
+                    value={job.experience}
+                    onChangeText={(text) => handleAdditionalJobChange(idx, "experience", text)}
+                  />
+                  <TouchableOpacity
+                    style={[styles.submitBtn, { backgroundColor: "#EF4444" }]}
+                    onPress={() => handleRemoveAdditionalJob(idx)}
+                  >
+                    <Text style={styles.submitText}>Remove</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+              {(form.additional_jobs?.length ?? 0) < 5 && (
+                <TouchableOpacity style={[styles.submitBtn, { backgroundColor: "#2563EB" }]} onPress={handleAddAdditionalJob}>
+                  <Text style={styles.submitText}>Add Another Job Position</Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
+          
+          {/* Company Information Section */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Company Information</Text>
+            
+            {/* Company Name & Address */}
+            <View style={[styles.row, isSmallScreen && styles.column]}>
+              <View style={[styles.formGroup, styles.flex1]}>
+                <Text style={styles.label}>Company Name <Text style={styles.required}>*</Text></Text>
+                <TextInput
+                  placeholder="e.g., TCS"
+                  placeholderTextColor="#9CA3AF"
+                  style={[
+                    styles.input,
+                    errors.companyName && styles.inputError,
+                  ]}
+                  value={form.companyName}
+                  onChangeText={(text) => handleChange("companyName", text)}
+                />
+              </View>
 
-          {/* Job Description */}
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>
-              Job Description <Text style={styles.required}>*</Text>
-            </Text>
-            <TextInput
-              placeholder="Describe the role, qualifications, and required skills..."
-              placeholderTextColor="#9CA3AF"
-              style={[
-                styles.input,
-                styles.textarea,
-                errors.jobDescription && styles.inputError,
-              ]}
-              multiline
-              numberOfLines={6}
-              value={form.jobDescription}
-              onChangeText={(text) => handleChange("jobDescription", text)}
-            />
+              <View style={[styles.formGroup, styles.flex1]}>
+                <Text style={styles.label}>Company Location</Text>
+                <TextInput
+                  placeholder="e.g., Coimbatore, Tamil Nadu"
+                  placeholderTextColor="#9CA3AF"
+                  style={styles.input}
+                  value={form.companyAddress}
+                  onChangeText={(text) => handleChange("companyAddress", text)}
+                />
+              </View>
+            </View>
+            
+            {/* Company Email & Phone */}
+            <View style={[styles.row, isSmallScreen && styles.column]}>
+              <View style={[styles.formGroup, styles.flex1]}>
+                <Text style={styles.label}>Company Email</Text>
+                <TextInput
+                  placeholder="e.g., careers@company.com"
+                  placeholderTextColor="#9CA3AF"
+                  style={[
+                    styles.input,
+                  ]}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  value={form.companyEmail}
+                  onChangeText={(text) => handleChange("companyEmail", text)}
+                />
+              </View>
+
+              <View style={[styles.formGroup, styles.flex1]}>
+                <Text style={styles.label}>Company Phone</Text>
+                <TextInput
+                  placeholder="e.g., +91 98765 43210"
+                  placeholderTextColor="#9CA3AF"
+                  style={styles.input}
+                  keyboardType="phone-pad"
+                  value={form.companyPhone}
+                  onChangeText={(text) => handleChange("companyPhone", text)}
+                />
+              </View>
+            </View>
           </View>
-        </View>
-
-        {/* Company Information Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Company Information</Text>
-
-          {/* Company Name & Address */}
-          <View style={[styles.row, isSmallScreen && styles.column]}>
-            <View style={[styles.formGroup, styles.flex1]}>
-              <Text style={styles.label}>Company Name</Text>
-              <TextInput
-                placeholder="e.g., TCS"
+          
+          {/* Additional Details Section */}
+          {/* <View style={styles.section}> */}
+            {/* <Text style={styles.sectionTitle}>Additional Details</Text> */}
+            
+            {/* Application Deadline */}
+            {/* <View style={styles.formGroup}> */}
+              {/* <Text style={styles.label}>Application Deadline</Text> */}
+              {/* <TextInput
+                placeholder="e.g., 2025-12-31"
                 placeholderTextColor="#9CA3AF"
                 style={styles.input}
-                value={form.companyName}
-                onChangeText={(text) => handleChange("companyName", text)}
+                value={form.applicationDeadline}
+                onChangeText={(text) => handleChange("applicationDeadline", text)}
               />
-            </View>
-
-            <View style={[styles.formGroup, styles.flex1]}>
-              <Text style={styles.label}>Company Location</Text>
+              <Text style={styles.helperText}>Format: YYYY-MM-DD</Text> */}
+            {/* </View> */}
+            
+            {/* Additional Info */}
+            {/* <View style={styles.formGroup}> */}
+              {/* <Text style={styles.label}>Additional Information</Text>
               <TextInput
-                placeholder="e.g., Coimbatore, Tamil Nadu"
+                placeholder="Interview process, benefits, contact details, etc."
                 placeholderTextColor="#9CA3AF"
-                style={styles.input}
-                value={form.companyAddress}
-                onChangeText={(text) => handleChange("companyAddress", text)}
-              />
-            </View>
-          </View>
-
-          {/* Company Email & Phone */}
-          <View style={[styles.row, isSmallScreen && styles.column]}>
-            <View style={[styles.formGroup, styles.flex1]}>
-              <Text style={styles.label}>
-                Company Email <Text style={styles.required}>*</Text>
-              </Text>
-              <TextInput
-                placeholder="e.g., careers@company.com"
-                placeholderTextColor="#9CA3AF"
-                style={[
-                  styles.input,
-                  errors.companyEmail && styles.inputError,
-                ]}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                value={form.companyEmail}
-                onChangeText={(text) => handleChange("companyEmail", text)}
-              />
-            </View>
-
-            <View style={[styles.formGroup, styles.flex1]}>
-              <Text style={styles.label}>Company Phone</Text>
-              <TextInput
-                placeholder="e.g., +91 98765 43210"
-                placeholderTextColor="#9CA3AF"
-                style={styles.input}
-                keyboardType="phone-pad"
-                value={form.companyPhone}
-                onChangeText={(text) => handleChange("companyPhone", text)}
-              />
-            </View>
-          </View>
-        </View>
-
-        {/* Additional Details Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Additional Details</Text>
-
-          {/* Application Deadline */}
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Application Deadline</Text>
-            <TextInput
-              placeholder="e.g., 2025-12-31"
-              placeholderTextColor="#9CA3AF"
-              style={styles.input}
-              value={form.applicationDeadline}
-              onChangeText={(text) => handleChange("applicationDeadline", text)}
-            />
-            <Text style={styles.helperText}>Format: YYYY-MM-DD</Text>
-          </View>
-
-          {/* Additional Info */}
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Additional Information</Text>
-            <TextInput
-              placeholder="Interview process, benefits, contact details, etc."
-              placeholderTextColor="#9CA3AF"
-              style={[styles.input, styles.textarea]}
-              multiline
-              numberOfLines={4}
-              value={form.additionalInfo}
-              onChangeText={(text) => handleChange("additionalInfo", text)}
-            />
-          </View>
-        </View>
+                style={[styles.input, styles.textarea]}
+                multiline
+                numberOfLines={4}
+                value={form.additionalInfo}
+                onChangeText={(text) => handleChange("additionalInfo", text)}
+              /> */}
+            {/* </View> */}
+          {/* </View> */}
 
         {/* Action Buttons */}
         <View style={[styles.row, isSmallScreen && styles.column, styles.buttonGroup]}>
@@ -483,17 +531,20 @@ export default function PostJobsScreen() {
         title="Select Job Category"
         selectedValue={form.category}
       />
-
-      <SelectionModal
+      
+      {/* <SelectionModal
         isVisible={isJobTypeModalVisible}
         data={jobTypes}
-        onSelect={(value) => handleChange("jobType", value)}
+        onSelect={(value) => {
+          handleChange("jobType", value);
+          setJobTypeModalVisible(false);
+        }}
         onClose={() => setJobTypeModalVisible(false)}
         title="Select Job Type"
         selectedValue={form.jobType}
-      />
-    </KeyboardAvoidingView>
-  );
+      /> */}
+      </KeyboardAvoidingView>
+  );
 }
 
 const styles = StyleSheet.create({

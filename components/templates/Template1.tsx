@@ -1,853 +1,464 @@
-import { JobPostFormData } from '@/constants/jobTemplates';
+import { JobPostFormData } from "@/constants/jobTemplates";
 
-export function generateTemplate1Html({ formData, backgroundColor, textColor, primaryColor, secondaryColor, fontFamily }: { formData: JobPostFormData; backgroundColor: string; textColor: string; primaryColor: string; secondaryColor: string; fontFamily: string; }): string {
+export function generateTemplate1Html({ formData }: { formData: JobPostFormData }): string {
   if (!formData) return '<h1>Loading...</h1>';
 
+  // Vibrant elegant bright color palette with left border removed
+  const backgroundColor = '#FAF9F6';      // Soft warm cream background
+  const primaryColor = '#FF6B6B';         // Vibrant coral red (primary accents)
+  const secondaryColor = '#4ECDC4';       // Fresh teal (secondary accents)
+  const textColor = '#2E3A59';            // Deep but bright navy blue for text
+  const fontFamily = "'Poppins', sans-serif";
+
+  // Calculate counts and scaling
+  const mainJobCount = formData.job_title ? 1 : 0;
+  const additionalJobCount = formData.additional_jobs?.length || 0;
+  const totalJobs = mainJobCount + additionalJobCount;
+  const scaleFactor =
+    totalJobs <= 1 ? 1 : totalJobs >= 6 ? 0.6 : 1 - (totalJobs - 1) * 0.08;
+
+  // Font sizes
+  const jobTitleFontSize = (36 * scaleFactor).toFixed(2);
+  const jobReqFontSize = (15 * scaleFactor).toFixed(2);
+  const nosFontSize = (20 * scaleFactor).toFixed(2);
+  const companyNameFontSize = (42 * scaleFactor).toFixed(2);
+  const contactFontSize = (18 * scaleFactor).toFixed(2);
+  const phoneFontSize = (28 * scaleFactor).toFixed(2);
+  const footerFontSize = (22 * scaleFactor).toFixed(2);
+
+  // Margins and gaps
+  const marginHeader = 90 - (totalJobs - 1) * 12 > 25 ? 90 - (totalJobs - 1) * 12 : 25;
+  const marginJobSection = 80 - (totalJobs - 1) * 14 > 18 ? 80 - (totalJobs - 1) * 14 : 18;
+  const gapBetweenJobs = 18 * scaleFactor;
+  const gapFooterToContact = 35 * scaleFactor;
+  const contactHeight = 70 * scaleFactor;
+
   return `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <style>
-          @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&family=Sora:wght@600;800&family=Outfit:wght@500;700;900&family=Poppins:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700;900&family=Space+Grotesk:wght@400;500;700&family=Playfair+Display:wght@700;900&family=Roboto+Mono:wght@400;700&display=swap');
-
-          @page {
-            size: A4;
-            margin: 0;
-          }
-
-          * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-          }
-
-          html, body {
-            width: 100%;
-            height: 100%; /* Fixed height for A4 */
-            margin: 0;
-            display: flex;
-            justify-content:center;
-            align-items:center;
-            padding: 0;
-            overflow: hidden; /* Prevent overflow on the main page */
-          }
-
-          body {
-            font-family: ${fontFamily};
-            line-height: 1.5;
-            overflow: hidden; /* Ensure body content is contained */
-          }
-
-          .container {
-            width: 210mm;
-            height: 297mm; /* Fixed height for A4 */
-            margin: 0;
-            position: relative;
-            background: ${backgroundColor};
-            display: flex; /* Use flexbox to manage content distribution */
-            flex-direction: column;
-            overflow: hidden;
-          }
-
-          /* Asymmetric split background */
-          .bg-layer {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-          }
-
-          .bg-section-1 {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 45%;
-            height: 100%;
-            background: linear-gradient(165deg, ${primaryColor} 0%, ${primaryColor}DD 100%);
-          }
-
-          .bg-section-2 {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 55%;
-            height: 100%;
-            background: ${backgroundColor};
-          }
-
-          /* Curved divider between sections */
-          .curve-divider {
-            position: absolute;
-            left: 40%;
-            top: 0;
-            width: 15%;
-            height: 100%;
-            background: linear-gradient(90deg, ${primaryColor} 0%, transparent 100%);
-            clip-path: ellipse(50% 100% at 0% 50%);
-            opacity: 0.3;
-          }
-
-          /* Large decorative microphone - left side */
-          .mic-decoration-left {
-            position: absolute;
-            bottom: -60px;
-            left: -40px;
-            font-size: 280px;
-            opacity: 0.12;
-            transform: rotate(-25deg);
-            z-index: 1;
-          }
-
-          /* Medium microphone - top right */
-          .mic-decoration-right {
-            position: absolute;
-            top: -50px;
-            right: 40px;
-            font-size: 180px;
-            opacity: 0.08;
-            transform: rotate(35deg);
-            z-index: 1;
-          }
-
-          /* Organic blob shapes */
-          body {
-            font-family: ${fontFamily};
-            line-height: 1.5;
-            overflow: hidden; /* Ensure body content is contained */
-          }
-
-          .container {
-            width: 210mm;
-            height: 297mm; /* Fixed height for A4 */
-            margin: 0;
-            position: relative;
-            background: ${backgroundColor};
-            display: flex; /* Use flexbox to manage content distribution */
-            flex-direction: column;
-            overflow: hidden;
-          }
-
-          /* Asymmetric split background */
-          .bg-layer {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-          }
-
-          .bg-section-1 {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 45%;
-            height: 100%;
-            background: linear-gradient(165deg, ${primaryColor} 0%, ${primaryColor}DD 100%);
-          }
-
-          .bg-section-2 {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 55%;
-            height: 100%;
-            background: ${backgroundColor};
-          }
-
-          /* Curved divider between sections */
-          .curve-divider {
-            position: absolute;
-            left: 40%;
-            top: 0;
-            width: 15%;
-            height: 100%;
-            background: linear-gradient(90deg, ${primaryColor} 0%, transparent 100%);
-            clip-path: ellipse(50% 100% at 0% 50%);
-            opacity: 0.3;
-          }
-
-          /* Large decorative microphone - left side */
-          .mic-decoration-left {
-            position: absolute;
-            bottom: -60px;
-            left: -40px;
-            font-size: 280px;
-            opacity: 0.12;
-            transform: rotate(-25deg);
-            z-index: 1;
-          }
-
-          /* Medium microphone - top right */
-          .mic-decoration-right {
-            position: absolute;
-            top: -50px;
-            right: 40px;
-            font-size: 180px;
-            opacity: 0.08;
-            transform: rotate(35deg);
-            z-index: 1;
-          }
-
-          /* Organic blob shapes */
-          .blob-1 {
-            position: absolute;
-            top: 15%;
-            right: 10%;
-            width: 150px;
-            height: 150px;
-            background: ${secondaryColor};
-            border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%;
-            opacity: 0.15;
-            z-index: 1;
-          }
-
-          .blob-2 {
-            position: absolute;
-            bottom: 20%;
-            left: 8%;
-            width: 100px;
-            height: 100px;
-            background: ${backgroundColor};
-            border-radius: 48% 52% 68% 32% / 42% 58% 42% 58%;
-            opacity: 0.25;
-            z-index: 1;
-          }
-
-          .blob-3 {
-            position: absolute;
-            top: 40%;
-            right: 5%;
-            width: 120px;
-            height: 120px;
-            background: ${secondaryColor};
-            border-radius: 35% 65% 72% 28% / 64% 36% 64% 36%;
-            opacity: 0.1;
-            z-index: 1;
-          }
-
-          /* Mesh gradient overlay */
-          .mesh-gradient {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: 
-              radial-gradient(at 20% 30%, ${secondaryColor}26 0px, transparent 50%),
-              radial-gradient(at 80% 70%, ${primaryColor}1F 0px, transparent 50%),
-              radial-gradient(at 50% 50%, ${secondaryColor}14 0px, transparent 50%);
-            z-index: 1;
-          }
-
-          /* Content wrapper */
-          .content-wrapper {
-            position: relative;
-            z-index: 2;
-            height: 100%;
-            display: flex;
-          }
-
-          /* Left panel - Primary color section */
-          .left-panel {
-            width: 42%;
-            padding: 45px 35px;
-            display: flex;
-            flex-direction: column;
-            color: ${backgroundColor};
-            position: relative;
-          }
-
-          /* Badge with animation */
-          .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: ${backgroundColor}40;
-            backdrop-filter: blur(10px);
-            border: 2px solid ${backgroundColor}66;
-            color: ${backgroundColor};
-            padding: 10px 22px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 30px;
-            width: fit-content;
-          }
-
-          .pulse-dot {
-            width: 10px;
-            height: 10px;
-            background: ${secondaryColor};
-            border-radius: 50%;
-            animation: pulse-glow 2s infinite;
-          }
-
-          @keyframes pulse-glow {
-            0%, 100% { 
-              transform: scale(1);
-              opacity: 1;
-            }
-            50% { 
-              transform: scale(1.3);
-              opacity: 0.7;
-            }
-          }
-
-          /* Job title section */
-          .title-section {
-            margin-bottom: 35px;
-          }
-
-          .job-title-main {
-            font-family: ${fontFamily};
-            font-size: 48px;
-            font-weight: 800;
-            line-height: 1.1;
-            color: ${backgroundColor};
-            margin-bottom: 20px;
-            letter-spacing: -1.5px;
-            text-shadow: 2px 4px 12px ${textColor}33;
-            max-height: 120px;
-            overflow: hidden;
-            text-transform: none;
-          }
-
-          .company-info {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            background: ${textColor}26;
-            backdrop-filter: blur(8px);
-            padding: 14px 20px;
-            border-radius: 16px;
-            border: 1px solid ${backgroundColor}33;
-          }
-
-          .company-avatar {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, ${secondaryColor}, ${secondaryColor}CC);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: 900;
-            color: ${backgroundColor};
-            flex-shrink: 0;
-          }
-
-          .company-name {
-            font-size: 19px;
-            font-weight: 700;
-            color: ${backgroundColor};
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-          }
-
-          /* Key highlights - vertical pills */
-          .highlights-section {
-            margin-top: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-          }
-
-          .highlight-pill {
-            background: ${backgroundColor}33;
-            backdrop-filter: blur(10px);
-            padding: 16px 20px;
-            border-radius: 16px;
-            border: 1px solid ${backgroundColor}4D;
-          }
-
-          .highlight-pill {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-          }
-
-          .highlight-icon {
-            font-size: 28px;
-            flex-shrink: 0;
-          }
-
-          .highlight-content {
-            flex: 1;
-          }
-
-          .highlight-label {
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            opacity: 0.8;
-            margin-bottom: 4px;
-          }
-
-          .highlight-value {
-            font-size: 17px;
-            font-weight: 800;
-            line-height: 1.2;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-          }
-
-          /* Right panel - Light section */
-          .right-panel {
-            flex: 1;
-            padding: 45px 40px;
-            display: flex;
-            flex-direction: column;
-          }
-
-          /* Top stats row */
-          .stats-row {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 30px;
-          }
-
-          .stat-box {
-            flex: 1;
-            background: ${backgroundColor === '#FFFFFF' || backgroundColor === '#FBF8F3' ? '#FFFFFF' : backgroundColor + '1A'};
-            padding: 18px 16px;
-            border-radius: 18px;
-            text-align: center;
-            box-shadow: 0 4px 24px ${primaryColor}14;
-            border: 2px solid ${primaryColor}26;
-            position: relative;
-            overflow: hidden;
-          }
-
-          .stat-box::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, ${primaryColor}, ${secondaryColor});
-          }
-
-          .stat-emoji {
-            font-size: 28px;
-            display: block;
-            margin-bottom: 8px;
-          }
-
-          .stat-label {
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 1.3px;
-            text-transform: uppercase;
-            color: ${primaryColor};
-            margin-bottom: 6px;
-          }
-
-          .stat-value {
-            font-size: 18px;
-            font-weight: 800;
-            color: ${textColor};
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-          }
-
-          /* Content sections */
-          .content-sections {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            overflow-y: auto; /* Allow scrolling within content sections if needed */
-            max-height: calc(100% - 200px); /* Adjust based on surrounding elements' height */
-            padding-bottom: 20px; /* Add some padding at the bottom */
-          }
-
-          .content-card {
-            background: ${backgroundColor === '#FFFFFF' || backgroundColor === '#FBF8F3' ? '#FFFFFF' : backgroundColor + '1A'};
-            padding: 26px;
-            border-radius: 22px;
-            box-shadow: 0 6px 32px ${textColor}0F;
-            border: 2px solid ${secondaryColor}1A;
-          }
-
-          .card-header {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 16px;
-            padding-bottom: 14px;
-            border-bottom: 2px solid ${primaryColor}26;
-          }
-
-          .card-icon-wrapper {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, ${primaryColor}, ${primaryColor}DD);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 4px 16px ${primaryColor}40;
-          }
-
-          .card-title {
-            font-family: ${fontFamily};
-            font-size: 22px;
-            font-weight: 800;
-            color: ${textColor};
-            letter-spacing: -0.5px;
-          }
-
-          .card-content {
-            font-size: 13.5px;
-            line-height: 1.75;
-            color: ${textColor};
-          }
-
-          .description-block {
-            max-height: 150px; /* Keep existing max-height */
-            overflow-y: auto; /* Allow scrolling for description if it overflows */
-            text-overflow: ellipsis; /* Keep ellipsis for single line overflow */
-          }
-
-          /* Info grid */
-          .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-          }
-
-          .info-item {
-            background: linear-gradient(135deg, ${secondaryColor}26, ${primaryColor}1A);
-            padding: 16px 18px;
-            border-radius: 14px;
-            border-left: 4px solid ${primaryColor};
-          }
-
-          .info-label {
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 1.3px;
-            text-transform: uppercase;
-            color: ${primaryColor};
-            margin-bottom: 6px;
-          }
-
-          .info-value {
-            font-size: 16px;
-            font-weight: 700;
-            color: ${textColor};
-            line-height: 1.3;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-          }
-
-          /* Bottom action section */
-          .action-section {
-            background: linear-gradient(135deg, ${textColor}, ${textColor}F0);
-            margin: 0 -40px -45px;
-            padding: 32px 40px;
-            border-radius: 28px 28px 0 0;
-            position: relative;
-            overflow: hidden;
-          }
-
-          .action-section::before {
-            content: '💼';
-            position: absolute;
-            font-size: 140px;
-            opacity: 0.04;
-            top: 50%;
-            right: 30px;
-            transform: translateY(-50%) rotate(-15deg);
-          }
-
-          .action-title {
-            font-family: ${fontFamily};
-            font-size: 24px;
-            font-weight: 800;
-            color: ${backgroundColor};
-            text-align: center;
-            margin-bottom: 18px;
-            letter-spacing: -0.5px;
-          }
-
-          .contact-items {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-          }
-
-          .contact-item {
-            background: ${backgroundColor}14;
-            backdrop-filter: blur(10px);
-            padding: 16px 12px;
-            border-radius: 14px;
-            text-align: center;
-            border: 1px solid ${backgroundColor}26;
-          }
-
-          .contact-emoji {
-            font-size: 26px;
-            display: block;
-            margin-bottom: 8px;
-          }
-
-          .contact-label {
-            font-size: 9px;
-            font-weight: 700;
-            letter-spacing: 1.3px;
-            text-transform: uppercase;
-            color: ${backgroundColor}B3;
-            margin-bottom: 6px;
-          }
-
-          .contact-value {
-            font-size: 13px;
-            font-weight: 600;
-            color: ${backgroundColor};
-            line-height: 1.3;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            padding: 0 4px;
-          }
-
-          .cta-button {
-            background: linear-gradient(135deg, ${primaryColor}, ${primaryColor}DD);
-            color: ${backgroundColor};
-            text-align: center;
-            padding: 20px;
-            border-radius: 16px;
-            font-family: ${fontFamily};
-            font-size: 20px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            box-shadow: 0 8px 32px ${primaryColor}66;
-            position: relative;
-            overflow: hidden;
-          }
-
-          .cta-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, ${backgroundColor}4D, transparent);
-            animation: slide-shine 3s infinite;
-          }
-
-          @keyframes slide-shine {
-            to { left: 100%; }
-          }
-
-          .cta-subtitle {
-            font-size: 12px;
-            font-weight: 600;
-            margin-top: 6px;
-            opacity: 0.9;
-            letter-spacing: 0.5px;
-          }
-
-          @media print {
-            html, body {
-              width: 210mm;
-              height: 297mm;
-              margin: 0;
-              padding: 0;
-              overflow: hidden; /* Ensure no overflow in print */
-            }
-            .container {
-              width: 210mm;
-              height: 297mm;
-              page-break-after: avoid;
-              page-break-inside: avoid;
-              overflow: hidden; /* Ensure container content is contained */
-            }
-            .content-sections {
-              max-height: none; /* Remove max-height for print to allow content to flow */
-              overflow: visible; /* Allow content to be visible in print */
-            }
-            .description-block {
-              max-height: none; /* Remove max-height for print */
-              overflow: visible; /* Allow content to be visible in print */
-            }
-          }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <!-- Background layers -->
-          <div class="bg-layer">
-            <div class="bg-section-1"></div>
-            <div class="bg-section-2"></div>
-            <div class="curve-divider"></div>
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
+
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      @media print {
+        html, body {
+          background-color: ${backgroundColor} !important;
+          color: ${textColor} !important;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+        .container {
+          background-color: ${backgroundColor} !important;
+          box-shadow: none !important;
+          page-break-inside: avoid !important;
+        }
+        .we-are-hiring {
+          color: ${textColor} !important;
+          page-break-inside: avoid !important;
+        }
+        .we-are {
+          color: ${primaryColor} !important;
+        }
+        .job-item {
+          background-color: #FFF5D6 !important; /* Soft warm gold */
+          border: 2px solid ${primaryColor} !important;
+          /* border-left removed */
+          color: ${textColor} !important;
+          page-break-inside: avoid !important;
+        }
+        .company-section {
+          background-color: ${secondaryColor}22 !important;
+          border-color: ${secondaryColor} !important;
+          page-break-inside: avoid !important;
+          color: ${textColor} !important;
+        }
+        .app-section {
+          background-color: ${primaryColor}22 !important;
+          color: #FFFFFF !important;
+          page-break-inside: avoid !important;
+          page-break-before: avoid !important;
+          page-break-after: avoid !important;
+          box-shadow: none !important;
+        }
+        .main-content, .job-positions-section, .contact-row {
+          page-break-inside: avoid !important;
+        }
+        * {
+          text-shadow: none !important;
+          filter: none !important;
+          background-color: transparent !important;
+        }
+      }
+
+      html, body {
+        width: 100%;
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: ${backgroundColor};
+        font-family: ${fontFamily};
+        color: ${textColor};
+      }
+
+      .container {
+        width: 210mm;
+        max-height: 297mm;
+        min-height: auto;
+        background: #FCFBF8;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 0 15px rgba(255,107,107,0.4);
+        padding: 40px 50px;
+        height: 100vh;
+        justify-content: center;
+        border-radius: 15px;
+      }
+.main-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;    /* center children vertically */
+  flex-grow: 1;               /* fill container height */
+}
+      .megaphone-icon {
+        position: absolute;
+        top: 30px;
+        left: 40px;
+        width: 200px;
+        height: 150px;
+        z-index: 10;
+        filter: drop-shadow(0 0 0.3rem ${primaryColor});
+      }
+
+      .megaphone-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .header-section {
+        text-align: center;
+        margin-bottom: ${marginHeader}px;
+      }
+
+      .we-are-hiring {
+        font-family: ${fontFamily};
+        font-weight: 900;
+        font-size: 70px;
+        color: ${primaryColor};
+        text-transform: uppercase;
+        letter-spacing: 6px;
+        line-height: 1;
+        margin-bottom: 0;
+      }
+      .we-are-hiring .we-are {
+        color: ${secondaryColor};
+      }
+      .we-are-hiring .title {
+        font-size: 30px;
+        font-weight: 700;
+        margin-top: 15px;
+        color: ${textColor};
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.4;
+      }
+
+      .job-positions-section {
+        margin-bottom: ${marginJobSection}px;
+      }
+
+      .section-title {
+        font-size: 28px;
+        font-weight: 800;
+        color: ${primaryColor};
+        text-transform: uppercase;
+        margin-bottom: 23px;
+        letter-spacing: 3px;
+        border-bottom: 4px solid ${primaryColor};
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+
+      .job-item {
+        background-color: #FFF5D6;
+        border: 2px solid ${primaryColor};
+        /* border-left removed */
+        border-radius: 12px;
+        padding: ${25 * scaleFactor}px ${30 * scaleFactor}px;
+        margin-bottom: ${gapBetweenJobs}px;
+        text-align: left;
+        color: ${textColor};
+        position: relative;
+        box-shadow: 0 0 6px ${secondaryColor}99;
+      }
+
+      .job-item::before {
+        content: "✔";
+        font-size: ${jobTitleFontSize}px;
+        font-weight: 900;
+        color: ${primaryColor};
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      .job-title {
+        font-size: ${jobTitleFontSize}px;
+        font-weight: 900;
+        color: ${textColor};
+        text-transform: uppercase;
+        margin-left: 40px;
+        margin-bottom: ${12 * scaleFactor}px;
+        letter-spacing: 3px;
+        line-height: 1.2;
+      }
+
+      .nos {
+        font-size: ${nosFontSize}px;
+        text-transform: lowercase;
+        margin-left: 8px;
+        color: ${secondaryColor};
+        font-weight: 700;
+      }
+
+      .job-requirements {
+        font-size: ${jobReqFontSize}px;
+        font-weight: 500;
+        color: ${textColor};
+        line-height: 1.8;
+        opacity: 0.9;
+        margin-left: 40px;
+        max-width: 70%;
+      }
+
+      .company-section {
+        background-color: ${secondaryColor}33;
+        border-top: 4px solid ${secondaryColor};
+        border-bottom: 4px solid ${secondaryColor};
+        padding: ${20 * scaleFactor}px 0;
+        margin-bottom: ${gapFooterToContact}px;
+        min-height: ${contactHeight}px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: ${20 * scaleFactor}px;
+        color: ${textColor};
+        border-radius: 12px;
+        box-shadow: 0 0 8px ${secondaryColor}88;
+      }
+
+      .company-name {
+        font-size: ${companyNameFontSize}px;
+        font-weight: 900;
+        color: ${primaryColor};
+        text-transform: uppercase;
+        margin-bottom: ${20 * scaleFactor}px;
+        letter-spacing: 4px;
+      }
+
+      .contact-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: ${30 * scaleFactor}px;
+        flex-wrap: wrap;
+        width: 100%;
+        max-width: 700px;
+      }
+
+      .contact-item {
+        display: flex;
+        align-items: center;
+        gap: ${10 * scaleFactor}px;
+        font-size: ${contactFontSize}px;
+        font-weight: 600;
+        min-width: 220px;
+        justify-content: center;
+        text-align: center;
+        white-space: nowrap;
+        color: ${textColor};
+      }
+
+      .icon {
+        font-size: ${22 * scaleFactor}px;
+      }
+
+      .phone-number {
+        font-size: ${phoneFontSize}px;
+        font-weight: 900;
+        color: ${primaryColor};
+      }
+
+      .app-section {
+        background-color: ${primaryColor}32;
+        border-radius: 15px;
+        border: 2px solid ${primaryColor};
+        padding: ${18 * scaleFactor}px ${25 * scaleFactor}px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: ${20 * scaleFactor}px;
+        flex-wrap: wrap;
+        font-size: ${footerFontSize}px;
+        color: ${textColor};
+        box-shadow: 0 0 15px ${primaryColor}55;
+      }
+
+      .app-left {
+        display: flex;
+        align-items: center;
+        gap: ${15 * scaleFactor}px;
+      }
+
+      .app-logo {
+        width: ${55 * scaleFactor}px;
+        height: ${55 * scaleFactor}px;
+        background: ${primaryColor};
+        border-radius: 15px;
+        padding: ${8 * scaleFactor}px;
+        box-shadow: 0 0 8px ${secondaryColor}bb;
+      }
+
+      .app-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        filter: none;
+      }
+
+      .app-name {
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        color: ${textColor};
+      }
+
+      .app-right {
+        display: flex;
+        gap: ${12 * scaleFactor}px;
+      }
+
+      .store-badge {
+        display: flex;
+        align-items: center;
+        gap: ${8 * scaleFactor}px;
+        background: ${primaryColor}44;
+        padding: ${10 * scaleFactor}px ${15 * scaleFactor}px;
+        border-radius: 10px;
+        border: 1px solid ${primaryColor}aa;
+        box-shadow: 0 0 8px ${primaryColor}77;
+      }
+
+      .store-icon {
+        width: ${28 * scaleFactor}px;
+        height: ${28 * scaleFactor}px;
+        background: ${secondaryColor};
+        border-radius: 7px;
+        padding: ${4 * scaleFactor}px;
+        box-shadow: 0 0 6px ${secondaryColor}88;
+      }
+
+      .store-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        filter: none;
+      }
+
+      .store-text {
+        font-weight: 700;
+        color: ${textColor};
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="megaphone-icon">
+        <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/top-left1.png" alt="Megaphone" />
+      </div>
+
+      <div class="main-content">
+        <!-- Poster Title -->
+        <div class="header-section we-are-hiring">
+          <span class="we-are">WE ARE</span><br>HIRING!
+          <div class="title">${formData.title}</div>
+        </div>
+
+        <!-- Job Positions Section -->
+        <div class="job-positions-section">
+          <div class="section-title">JOB POSITION :</div>
+
+          ${formData.job_title ? `<div class="job-item">
+              <div class="job-title">${formData.job_title}<span> - (${formData.vacancy})</span><span class="nos">nos</span></div>
+              <div class="job-requirements">${formData.experience ? `Experience: ${formData.experience}` : ''}</div>
+          </div>` : ''}
+
+          ${
+            formData.additional_jobs && formData.additional_jobs.length > 0
+              ? formData.additional_jobs.map(
+                  job => `<div class="job-item" style="margin-top: ${gapBetweenJobs}px; padding-left: 12px;">
+                  <div class="job-title">${job.job_title}<span> - (${job.vacancy})</span><span class="nos">nos</span></div>
+                  <div class="job-requirements">${job.experience ? `Experience: ${job.experience}` : ''}</div>
+                </div>`
+                ).join("")
+              : ""
+          }
+        </div>
+
+        <!-- Company Details Section -->
+        <div class="company-section" style="min-height: ${contactHeight}px; margin-bottom: ${gapFooterToContact}px;">
+          ${formData.company_name ? `<div class="company-name">${formData.company_name}</div>` : ''}
+
+          <div class="contact-row">
+            ${formData.company_address ? `<div class="contact-item"><span class="icon">📍</span><span>${formData.company_address}</span></div>` : ''}
+            ${formData.company_phone ? `<div class="contact-item"><span class="icon">📞</span><span class="phone-number">${formData.company_phone}</span></div>` : ''}
+            ${formData.company_email ? `<div class="contact-item"><span class="icon">📧</span><span>${formData.company_email}</span></div>` : ''}
           </div>
+        </div>
 
-          <!-- Decorative elements -->
-          <div class="mic-decoration-left">🎤</div>
-          <div class="mic-decoration-right">🎙️</div>
-          <div class="blob-1"></div>
-          <div class="blob-2"></div>
-          <div class="blob-3"></div>
-          <div class="mesh-gradient"></div>
-
-          <!-- Main content -->
-          <div class="content-wrapper">
-            <!-- Left Panel - Primary Color Section -->
-            <div class="left-panel">
-              <div class="status-badge">
-                <div class="pulse-dot"></div>
-                Open Position
-              </div>
-
-              <div class="title-section">
-                <h1 class="job-title-main">${formData.job_title}</h1>
-                
-                <div class="company-info">
-                  <div class="company-avatar">${formData.company_name.charAt(0)}</div>
-                  <div class="company-name">${formData.company_name}</div>
-                </div>
-              </div>
-
-              <div class="highlights-section">
-                <div class="highlight-pill">
-                  <div class="highlight-icon">💰</div>
-                  <div class="highlight-content">
-                    <div class="highlight-label">Salary Range</div>
-                    <div class="highlight-value">${formData.salary}</div>
-                  </div>
-                </div>
-
-                <div class="highlight-pill">
-                  <div class="highlight-icon">📊</div>
-                  <div class="highlight-content">
-                    <div class="highlight-label">Experience</div>
-                    <div class="highlight-value">${formData.experience}</div>
-                  </div>
-                </div>
-
-                <div class="highlight-pill">
-                  <div class="highlight-icon">💼</div>
-                  <div class="highlight-content">
-                    <div class="highlight-label">Job Type</div>
-                    <div class="highlight-value">${formData.job_type}</div>
-                  </div>
-                </div>
-
-                <div class="highlight-pill">
-                  <div class="highlight-icon">⏰</div>
-                  <div class="highlight-content">
-                    <div class="highlight-label">Apply Before</div>
-                    <div class="highlight-value">${formData.application_deadline}</div>
-                  </div>
-                </div>
-              </div>
+        <!-- Footer / Marketing Section -->
+        <div class="app-section">
+          <div class="app-left">
+            <div class="app-logo">
+              <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/logo.png" alt="Logo" />
             </div>
-
-            <!-- Right Panel - Light Section -->
-            <div class="right-panel">
-              <!-- Stats -->
-              <div class="stats-row">
-                <div class="stat-box">
-                  <span class="stat-emoji">👥</span>
-                  <div class="stat-label">Positions</div>
-                  <div class="stat-value">${formData.vacancy}</div>
-                </div>
-                <div class="stat-box">
-                  <span class="stat-emoji">🏢</span>
-                  <div class="stat-label">Category</div>
-                  <div class="stat-value">${formData.category.split(' ').slice(0, 2).join(' ')}</div>
-                </div>
+            <div class="app-name">SUNDAR JOBS APP</div>
+          </div>
+          <div class="app-right">
+            <div class="store-badge">
+              <div class="store-icon">
+                <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/playstore-icon.png" alt="Play Store" />
               </div>
-
-              <!-- Content cards -->
-              <div class="content-sections">
-                <div class="content-card">
-                  <div class="card-header">
-                    <div class="card-icon-wrapper">📝</div>
-                    <h2 class="card-title">Role Overview</h2>
-                  </div>
-                  <div class="card-content description-block">
-                    ${formData.job_description}
-                  </div>
-                </div>
-
-                ${formData.additional_info ? `
-                <div class="content-card" style="flex: 0 0 auto;">
-                  <div class="card-header">
-                    <div class="card-icon-wrapper">🎁</div>
-                    <h2 class="card-title">Benefits & Perks</h2>
-                  </div>
-                  <div class="card-content" style="max-height: 90px; overflow: hidden;">
-                    ${formData.additional_info}
-                  </div>
-                </div>
-                ` : ''}
-
-                <div class="content-card" style="flex: 0 0 auto;">
-                  <div class="info-grid">
-                    <div class="info-item">
-                      <div class="info-label">Category</div>
-                      <div class="info-value">${formData.category}</div>
-                    </div>
-                    <div class="info-item">
-                      <div class="info-label">Openings</div>
-                      <div class="info-value">${formData.vacancy} Position${formData.vacancy > 1 ? 's' : ''}</div>
-                    </div>
-                  </div>
-                </div>
+              <div class="store-text">Android</div>
+            </div>
+            <div class="store-badge">
+              <div class="store-icon">
+                <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/appstore-icon.png" alt="App Store" />
               </div>
-
-              <!-- Action section -->
-              <div class="action-section">
-                <h3 class="action-title">Ready to Apply?</h3>
-                
-                <div class="contact-items">
-                  <div class="contact-item">
-                    <span class="contact-emoji">📍</span>
-                    <div class="contact-label">Location</div>
-                    <div class="contact-value">${formData.company_address.split(',')[0]}</div>
-                  </div>
-
-                  <div class="contact-item">
-                    <span class="contact-emoji">📧</span>
-                    <div class="contact-label">Email</div>
-                    <div class="contact-value">${formData.company_email}</div>
-                  </div>
-
-                  <div class="contact-item">
-                    <span class="contact-emoji">📞</span>
-                    <div class="contact-label">Phone</div>
-                    <div class="contact-value">${formData.company_phone}</div>
-                  </div>
-
-                  <div class="contact-item">
-                    <span class="contact-emoji">⏰</span>
-                    <div class="contact-label">Deadline</div>
-                    <div class="contact-value">${formData.application_deadline}</div>
-                  </div>
-                </div>
-
-                <div class="cta-button">
-                  Apply Now
-                  <div class="cta-subtitle">Join Our Team Today</div>
-                </div>
-              </div>
+              <div class="store-text">iPhone</div>
             </div>
           </div>
         </div>
-      </body>
-    </html>
+      </div>
+    </div>
+  </body>
+</html>
   `;
 }
