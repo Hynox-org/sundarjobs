@@ -4,7 +4,7 @@ import { JOB_CATEGORIES } from "@/constants/jobCategories";
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { supabase } from "@/lib/supabase";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
@@ -48,43 +48,83 @@ interface FormData {
 }
 
 export default function PostJobsScreen() {
-  const { width } = useWindowDimensions();
-  const isSmallScreen = width < 768;
-  const isMediumScreen = width >= 768 && width < 1024;
+  const { width } = useWindowDimensions();
+  const isSmallScreen = width < 768;
+  const isMediumScreen = width >= 768 && width < 1024;
 
-  const [form, setForm] = useState<FormData>({
-    title: "",
-    jobTitle: "",
-    vacancy: "",
-    // jobType: "",
-    category: "",
-    experience: "",
-    // salary: "",
-    // jobDescription: "",
-    companyName: "",
-    companyAddress: "",
-    companyEmail: "",
-    companyPhone: "",
-    // applicationDeadline: "",
-    // additionalInfo: "",
-    additional_jobs: [],
-  });
+  const [form, setForm] = useState<FormData>({
+    title: "",
+    jobTitle: "",
+    vacancy: "",
+    category: "",
+    experience: "",
+    companyName: "",
+    companyAddress: "",
+    companyEmail: "",
+    companyPhone: "",
+    additional_jobs: [],
+  });
 
-  const [isCategoryModalVisible, setCategoryModalVisible] = useState(false);
-  const [isJobTypeModalVisible, setJobTypeModalVisible] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [isCategoryModalVisible, setCategoryModalVisible] = useState(false);
+  const [isJobTypeModalVisible, setJobTypeModalVisible] = useState(false); // Keep this if jobType is reintroduced
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true); // Add loading state
 
-  useEffect(() => {
-  const fetchUser = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    setUser(user);
-    };
-    fetchUser();
-  }, []);
+  const router = useRouter();
+  const params = useLocalSearchParams();
+  const { jobId } = params;
 
-  const [errors, setErrors] = useState<Partial<Record<keyof FormData, boolean>>>({});
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+
+      if (jobId) {
+        // Fetch job details if jobId is present
+        const { data, error } = await supabase
+          .from("jobs")
+          .select("*")
+          .eq("id", jobId)
+          .single();
+
+        if (error) {
+          console.error("Error fetching job details:", error);
+          if (Platform.OS === "web") {
+            alert("Error fetching job details.");
+          } else {
+            Alert.alert("Error", "Error fetching job details.");
+          }
+          router.replace("/posts"); // Redirect to post new job page on error
+          return;
+        }
+
+        if (data) {
+          setForm({
+            id: data.id,
+            title: data.title,
+            jobTitle: data.job_title,
+            vacancy: data.vacancy?.toString(),
+            category: data.category,
+            experience: data.experience,
+            companyName: data.company_name,
+            companyAddress: data.company_address,
+            companyEmail: data.company_email,
+            companyPhone: data.company_phone,
+            additional_jobs: data.additional_jobs || [],
+            isDraft: data.is_draft,
+          });
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [jobId]);
+
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, boolean>>>({});
 
   // const jobTypes = [
   //   "Full Time",
@@ -188,13 +228,34 @@ export default function PostJobsScreen() {
         is_draft: action === "draft",
       };
 
-      const { data, error } = await supabase.from("jobs").insert([jobData]).select();
+      // Filter out empty additional jobs before saving
+      const filteredAdditionalJobs = jobData.additional_jobs?.filter(job => 
+        job.job_title !== "" || job.vacancy !== 0 || job.experience !== ""
+      ) || [];
+
+      const jobDataToSave = {
+        ...jobData,
+        additional_jobs: filteredAdditionalJobs,
+      };
+
+      let data, error;
+      if (form.id) {
+        // Update existing job
+        ({ data, error } = await supabase
+          .from("jobs")
+          .update(jobDataToSave)
+          .eq("id", form.id)
+          .select());
+      } else {
+        // Insert new job
+        ({ data, error } = await supabase.from("jobs").insert([jobDataToSave]).select());
+      }
 
       if (error) {
         throw error;
       }
 
-      const newJobId = data?.[0]?.id;
+      const newJobId = data?.[0]?.id || form.id; // Use existing form.id if updating, otherwise new ID
       console.log("Job post saved to Supabase with ID:", newJobId);
 
       if (action === "draft") {
@@ -203,7 +264,7 @@ export default function PostJobsScreen() {
         } else {
           Alert.alert("Success", "Job saved as draft!");
         }
-        router.push("/"); // Redirect to home page
+        router.push("/posts/all"); // Redirect to all jobs page to see the saved draft
       } else if (action === "template") {
         if (Platform.OS === "web") {
           alert("Proceeding to template selection!");
@@ -230,7 +291,14 @@ export default function PostJobsScreen() {
   const colorScheme = useColorScheme();
   const backgroundColor = Colors[colorScheme ?? 'light'].background;
   const textColor = Colors[colorScheme ?? 'light'].text;
-  const router = useRouter();
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>Loading job details...</Text>
+      </View>
+    );
+  }
 
   return (
     <KeyboardAvoidingView
@@ -245,8 +313,12 @@ export default function PostJobsScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <ThemedText type="title" style={[styles.heading, { color: textColor }]}>Post a New Job</ThemedText>
-          <ThemedText type="subtitle" style={[styles.subheading, { color: textColor }]}>Fill out the form below to post a job application.</ThemedText>
+          <ThemedText type="title" style={[styles.heading, { color: textColor }]}>
+            {jobId ? "Edit Job Post" : "Post a New Job"}
+          </ThemedText>
+          <ThemedText type="subtitle" style={[styles.subheading, { color: textColor }]}>
+            {jobId ? "Edit the job application details below." : "Fill out the form below to post a job application."}
+          </ThemedText>
         </View>
 
         {/* Job Information Section */}
@@ -727,5 +799,16 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 16,
     letterSpacing: 0.5,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: "#F9FAFB",
+  },
+  loadingText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#374151',
   },
 });

@@ -215,13 +215,11 @@ export default function AllJobsScreen() {
           style={[styles.button, styles.viewButton, { backgroundColor: colors.tint }]}
           onPress={() => {
             router.push({
-              pathname: item.is_draft ? "/posts/templates" : "/posts/preview",
-              params: item.is_draft
-                ? { jobId: item.id }
-                : {
-                    jobId: item.id,
-                    templateId: item.template_id || "default-template"
-                  },
+              pathname: item.is_draft ? "/posts" : "/posts/preview", // Navigate to /posts for drafts
+              params: {
+                jobId: item.id,
+                templateId: item.template_id || "default-template", // Pass templateId even for drafts if needed
+              },
             });
           }}
         >

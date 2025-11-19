@@ -27,18 +27,16 @@ export function generateTemplate5Html({
     totalJobs <= 1 ? 1 : totalJobs >= 6 ? 0.65 : 1 - (totalJobs - 1) * 0.07;
 
   // Font sizes scaled
-  const jobTitleFontSize = (36 * scaleFactor).toFixed(2);
-  const jobReqFontSize = (15 * scaleFactor).toFixed(2);
-  const nosFontSize = (20 * scaleFactor).toFixed(2);
+  const jobTitleFontSize = (32 * scaleFactor).toFixed(2);
+  const jobReqFontSize = (13 * scaleFactor).toFixed(2);
+  const nosFontSize = (18 * scaleFactor).toFixed(2);
 
-  // Margins and gaps
-  const marginHeader =
-    80 - (totalJobs - 1) * 10 > 28 ? 80 - (totalJobs - 1) * 10 : 28;
-  const marginJobSection =
-    70 - (totalJobs - 1) * 10 > 20 ? 70 - (totalJobs - 1) * 10 : 20;
-  const gapBetweenJobs = 18 * scaleFactor;
-  const gapFooterToContact = 35 * scaleFactor;
-  const contactHeight = 70 * scaleFactor;
+  // Compact margins and gaps
+  const marginHeader = 45 - (totalJobs - 1) * 5 > 18 ? 45 - (totalJobs - 1) * 5 : 18;
+  const marginJobSection = 35 - (totalJobs - 1) * 4 > 15 ? 35 - (totalJobs - 1) * 4 : 15;
+  const gapBetweenJobs = 10 * scaleFactor;
+  const gapFooterToContact = 20 * scaleFactor;
+  const contactHeight = 45 * scaleFactor;
 
   return `
 <!DOCTYPE html>
@@ -59,84 +57,56 @@ export function generateTemplate5Html({
       }
 
       @media print {
-  html, body {
-    background-color: ${backgroundColor} !important;
-    color: ${textColor} !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-
-  /* Apply colors to main containers */
-  .container {
-    background-color: ${backgroundColor} !important;
-  }
-
-  /* Preserve your text colors for headings and key sections */
-  .we-are-hiring {
-    color: ${textColor} !important;
-  }
-  .we-are {
-    color: ${primaryColor} !important;
-  }
-  .section-title {
-    color: ${primaryColor} !important;
-  }
-  .job-item {
-    background-color: ${primaryColor}33 !important; /* translucent */
-    border-color: ${primaryColor} !important;
-    color: ${textColor} !important;
-  }
-  .job-title {
-    color: ${textColor} !important;
-  }
-  .job-requirements {
-    color: ${textColor} !important;
-  }
-  .company-section {
-    background-color: ${primaryColor}10 !important; /* translucent bg */
-    border-top: 3px solid ${primaryColor} !important;
-    border-bottom: 3px solid ${primaryColor} !important;
-    color: ${textColor} !important;
-  }
-  .company-name {
-    color: ${primaryColor} !important;
-  }
-  .contact-item {
-    color: ${textColor} !important;
-  }
-  .app-section {
-    background-color: ${textColor} !important;
-    color: #FFFFFF !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-    page-break-before: avoid !important;
-    page-break-after: avoid !important;
-    box-shadow: none !important;
-  }
-  .app-left, .app-right {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-  /* To avoid splitting sections across pages */
-  .main-content,
-  .job-positions-section,
-  .company-section,
-  .app-section {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-  /* Prevent page breaks before/after footer if needed */
-  .app-section {
-    page-break-before: avoid !important;
-    page-break-after: avoid !important;
-  }
-  /* Remove text-shadow/filter effects for clarity */
-  * {
-    text-shadow: none !important;
-    filter: none !important;
-  }
-}
-
+        html, body {
+          background-color: ${backgroundColor} !important;
+          color: ${textColor} !important;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+        .container {
+          background-color: ${backgroundColor} !important;
+        }
+        .we-are-hiring {
+          color: ${textColor} !important;
+        }
+        .we-are {
+          color: ${primaryColor} !important;
+        }
+        .section-title {
+          color: ${primaryColor} !important;
+        }
+        .job-item {
+          background-color: ${primaryColor}33 !important;
+          border-color: ${primaryColor} !important;
+          color: ${textColor} !important;
+        }
+        .job-title {
+          color: ${textColor} !important;
+        }
+        .job-requirements {
+          color: ${textColor} !important;
+        }
+        .company-section {
+          background-color: ${primaryColor}10 !important;
+          border-top: 3px solid ${primaryColor} !important;
+          border-bottom: 3px solid ${primaryColor} !important;
+          color: ${textColor} !important;
+        }
+        .company-name {
+          color: ${primaryColor} !important;
+        }
+        .contact-item {
+          color: ${textColor} !important;
+        }
+        .app-section {
+          background-color: ${textColor} !important;
+          color: #FFFFFF !important;
+          page-break-inside: avoid !important;
+        }
+        * {
+          filter: none !important;
+        }
+      }
 
       html,
       body {
@@ -152,10 +122,6 @@ export function generateTemplate5Html({
         color: ${textColor};
       }
 
-      body {
-        font-family: ${fontFamily};
-      }
-
       .container {
         width: 210mm;
         max-height: 297mm;
@@ -164,35 +130,36 @@ export function generateTemplate5Html({
         position: relative;
         display: flex;
         flex-direction: column;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        padding: 40px 50px;
+        padding: 25px 35px;
         justify-content: space-between;
-        height: 95vh;
-        border-radius: 15px;
+        height: 100vh;
+        border: 1px solid ${primaryColor}33;
       }
 
-      /* Megaphone Icon */
+      /* Megaphone Icon - smaller and less intrusive */
       .megaphone-icon {
         position: absolute;
-        top: 30px;
-        left: 40px;
-        width: 200px;
-        height: 150px;
+        top: 20px;
+        left: 25px;
+        width: 120px;
+        height: 90px;
         z-index: 10;
+        opacity: 0.85;
       }
 
       .megaphone-icon img {
         width: 100%;
         height: 100%;
         object-fit: contain;
+        display: none;
       }
 
       /* Main Content */
       .main-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;    /* center children vertically */
-  flex-grow: 1;               /* fill container height */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        flex-grow: 1;
         position: relative;
         z-index: 5;
       }
@@ -204,11 +171,11 @@ export function generateTemplate5Html({
       }
 
       .we-are-hiring {
-        font-size: 70px;
+        font-size: 56px;
         font-weight: 900;
         color: ${textColor};
         text-transform: uppercase;
-        letter-spacing: 5px;
+        letter-spacing: 3px;
         line-height: 1;
       }
 
@@ -216,15 +183,13 @@ export function generateTemplate5Html({
         color: ${primaryColor};
       }
 
-      /* Title below WE ARE HIRING */
       .we-are-hiring .title {
-        font-size: 28px;
+        font-size: 22px;
         font-weight: 600;
         color: ${textColor};
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-        line-height: 1.3;
+        max-width: 550px;
+        margin: 10px auto 0;
+        line-height: 1.2;
       }
 
       /* Section 2: Job Positions */
@@ -233,33 +198,34 @@ export function generateTemplate5Html({
       }
 
       .section-title {
-        font-size: 26px;
+        font-size: 20px;
         font-weight: 700;
         color: ${primaryColor};
         text-transform: uppercase;
-        margin-bottom: 20px;
+        margin-bottom: 12px;
         letter-spacing: 2px;
-        border-bottom: 3px solid ${primaryColor};
+        border-bottom: 2px solid ${primaryColor};
+        padding-bottom: 6px;
         display: inline-block;
       }
 
       .job-item {
         background: ${primaryColor}15;
         border: 2px solid ${primaryColor};
-        border-left: 8px solid ${primaryColor};
-        border-radius: 10px;
-        padding: ${25 * scaleFactor}px ${30 * scaleFactor}px;
+        border-left: 5px solid ${primaryColor};
+        border-radius: 8px;
+        padding: ${15 * scaleFactor}px ${20 * scaleFactor}px;
         margin-bottom: ${gapBetweenJobs}px;
         text-align: center;
       }
 
       .job-title {
         font-size: ${jobTitleFontSize}px;
-        font-weight: 900;
+        font-weight: 800;
         color: ${textColor};
         text-transform: uppercase;
-        margin-bottom: ${12 * scaleFactor}px;
-        letter-spacing: 2px;
+        margin-bottom: ${8 * scaleFactor}px;
+        letter-spacing: 1px;
         line-height: 1.1;
         display: inline-block;
       }
@@ -267,62 +233,75 @@ export function generateTemplate5Html({
       .nos {
         font-size: ${nosFontSize}px;
         text-transform: lowercase;
-        margin-left: 6px;
+        margin-left: 5px;
       }
 
       .job-requirements {
         font-size: ${jobReqFontSize}px;
         font-weight: 500;
         color: ${textColor};
-        line-height: 1.7;
-        opacity: 0.85;
+        line-height: 1.5;
+        opacity: 0.8;
         text-align: center;
         margin: 0 auto;
-        max-width: 60%;
+        max-width: 65%;
       }
 
       /* Section 3: Company Info */
       .company-section {
         background: ${primaryColor}10;
-        border-top: 3px solid ${primaryColor};
-        border-bottom: 3px solid ${primaryColor};
+        border-top: 2px solid ${primaryColor};
+        border-bottom: 2px solid ${primaryColor};
+        padding: ${15 * scaleFactor}px 0;
         margin-bottom: ${gapFooterToContact}px;
         min-height: ${contactHeight}px;
       }
 
       .company-name {
-        font-size: 42px;
+        font-size: ${32 * scaleFactor}px;
         font-weight: 900;
         color: ${primaryColor};
         text-transform: uppercase;
         text-align: center;
-        letter-spacing: 3px;
+        letter-spacing: 2px;
+        margin-bottom: ${10 * scaleFactor}px;
       }
 
       .contact-row {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 30px;
-        margin-bottom: 10px;
+        gap: 20px;
         flex-wrap: wrap;
       }
 
       .contact-item {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        gap: 10px;
-        font-size: 16px;
+        gap: 4px;
+        font-size: 13px;
+        font-weight: 600;
+        color: ${textColor};
+        text-align: center;
+      }
+
+      .contact-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: ${primaryColor};
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .contact-value {
+        font-size: 13px;
         font-weight: 600;
         color: ${textColor};
       }
 
-      .icon {
-        font-size: 22px;
-      }
-
       .phone-number {
-        font-size: 28px;
+        font-size: ${20 * scaleFactor}px;
         font-weight: 900;
         color: ${primaryColor};
       }
@@ -330,27 +309,27 @@ export function generateTemplate5Html({
       /* Section 4: Footer / Marketing */
       .app-section {
         background: ${textColor};
-        border-radius: 10px;
-        padding: 18px 25px;
+        border-radius: 8px;
+        padding: 12px 20px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 20px;
+        gap: 15px;
         flex-wrap: wrap;
       }
 
       .app-left {
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 12px;
       }
 
       .app-logo {
-        width: 55px;
-        height: 55px;
+        width: ${40 * scaleFactor}px;
+        height: ${40 * scaleFactor}px;
         background: #FFFFFF;
-        border-radius: 10px;
-        padding: 8px;
+        border-radius: 8px;
+        padding: 6px;
       }
 
       .app-logo img {
@@ -360,7 +339,7 @@ export function generateTemplate5Html({
       }
 
       .app-name {
-        font-size: 22px;
+        font-size: ${18 * scaleFactor}px;
         font-weight: 900;
         color: #FFFFFF;
         text-transform: uppercase;
@@ -369,25 +348,24 @@ export function generateTemplate5Html({
 
       .app-right {
         display: flex;
-        gap: 12px;
+        gap: 10px;
       }
 
       .store-badge {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         background: rgba(255, 255, 255, 0.15);
-        padding: 10px 15px;
-        border-radius: 8px;
+        padding: 8px 12px;
+        border-radius: 6px;
         border: 1px solid rgba(255, 255, 255, 0.2);
       }
 
       .store-icon {
-        width: 28px;
-        height: 28px;
+        width: ${20 * scaleFactor}px;
+        height: ${20 * scaleFactor}px;
         background: #FFFFFF;
-        border-radius: 5px;
-        padding: 4px;
+        border-radius: 4px;
       }
 
       .store-icon img {
@@ -397,7 +375,7 @@ export function generateTemplate5Html({
       }
 
       .store-text {
-        font-size: 11px;
+        font-size: ${10 * scaleFactor}px;
         font-weight: 700;
         color: #FFFFFF;
         text-transform: uppercase;
@@ -416,7 +394,7 @@ export function generateTemplate5Html({
         <div class="header-section">
           <div class="we-are-hiring">
             <span class="we-are">WE ARE</span><br>HIRING!
-            <div class="title">${formData.title}</div>
+            ${formData.title ? `<div class="title">${formData.title}</div>` : ''}
           </div>
         </div>
 
@@ -427,7 +405,7 @@ export function generateTemplate5Html({
           ${formData.job_title ? `
             <div class="job-item">
               <div class="job-title">${formData.job_title}<span> - (${formData.vacancy})</span><span class="nos">nos</span></div>
-              <div class="job-requirements">${formData.experience ? `Experience: ${formData.experience}` : ''}</div>
+              ${formData.experience ? `<div class="job-requirements">Experience: ${formData.experience}</div>` : ''}
             </div>
           ` : ''}
 
@@ -436,9 +414,9 @@ export function generateTemplate5Html({
               ? formData.additional_jobs
                   .map(
                     (job) => `
-            <div class="job-item" style="margin-top: ${gapBetweenJobs}px; border-left: 8px solid ${primaryColor}; padding-left: 12px;">
+            <div class="job-item">
               <div class="job-title">${job.job_title}<span> - (${job.vacancy})</span><span class="nos">nos</span></div>
-              <div class="job-requirements">${job.experience ? `Experience: ${job.experience}` : ''}</div>
+              ${job.experience ? `<div class="job-requirements">Experience: ${job.experience}</div>` : ''}
             </div>
             `
                   )
@@ -448,13 +426,28 @@ export function generateTemplate5Html({
         </div>
 
         <!-- 3. Company Details Section -->
-        <div class="company-section" style="min-height: ${contactHeight}px; margin-bottom: ${gapFooterToContact}px;">
+        <div class="company-section">
           ${formData.company_name ? `<div class="company-name">${formData.company_name}</div>` : ''}
 
           <div class="contact-row">
-            ${formData.company_address ? `<div class="contact-item"><span class="icon">📍</span><span>${formData.company_address}</span></div>` : ''}
-            ${formData.company_phone ? `<div class="contact-item"><span class="icon">📞</span><span class="phone-number">${formData.company_phone}</span></div>` : ''}
-            ${formData.company_email ? `<div class="contact-item"><span class="icon">📧</span><span>${formData.company_email}</span></div>` : ''}
+            ${formData.company_address ? `
+              <div class="contact-item">
+                <div class="contact-label">Address</div>
+                <div class="contact-value">${formData.company_address}</div>
+              </div>
+            ` : ''}
+            ${formData.company_phone ? `
+              <div class="contact-item">
+                <div class="contact-label">Phone</div>
+                <div class="phone-number">${formData.company_phone}</div>
+              </div>
+            ` : ''}
+            ${formData.company_email ? `
+              <div class="contact-item">
+                <div class="contact-label">Email</div>
+                <div class="contact-value">${formData.company_email}</div>
+              </div>
+            ` : ''}
           </div>
         </div>
 
