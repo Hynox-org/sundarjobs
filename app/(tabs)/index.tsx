@@ -50,7 +50,7 @@ export default function HomeScreen() {
           <BusinessSectorCard sector={item} onPress={handleCardPress} />
         )}
         keyExtractor={(item) => item.id}
-        numColumns={2}
+        numColumns={3}
         contentContainerStyle={styles.cardListContainer}
         columnWrapperStyle={styles.cardListColumnWrapper}
       />

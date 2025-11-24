@@ -41,7 +41,7 @@ export function BusinessSectorCard({ sector, onPress }: BusinessSectorCardProps)
       styles.card,
     ]}>
       <ThemedView style={styles.iconContainer}>
-        <SvgIcon svg={sector.icon} width={100} height={100} color="#007AFF" />
+        <SvgIcon svg={sector.icon} width={100} height={40} color="#007AFF" />
       </ThemedView>
       <Animated.View style={{ opacity: fadeAnim }}>
         <ThemedText style={styles.cardText}>
@@ -54,8 +54,8 @@ export function BusinessSectorCard({ sector, onPress }: BusinessSectorCardProps)
 
 const styles = StyleSheet.create({
   card: {
-    width: '45%', // Adjust as needed for spacing
-    aspectRatio: 1, // Makes the card square
+    width: '29%', // Adjust as needed for spacing
+    aspectRatio: 0.75, // This makes the card square
     margin: 8,
     borderRadius: 10,
     borderWidth: 1,
@@ -70,11 +70,11 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   iconContainer: {
-    marginBottom: 8,
+    marginBottom: 5,  
     backgroundColor: 'transparent',
   },
   cardText: {
-    fontSize: 16,
+    fontSize: 10,
     fontWeight: '600',
     textAlign: 'center',
   },
