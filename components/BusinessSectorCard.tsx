@@ -1,50 +1,66 @@
 import { BusinessSector } from '@/constants/businessSectors';
-import React, { useState, useEffect, useRef } from 'react';
-import { Pressable, StyleSheet, Animated } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Animated, Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import { SvgIcon } from './SvgIcon';
 import { ThemedText } from './themed-text';
-import { ThemedView } from './themed-view';
 
 interface BusinessSectorCardProps {
   sector: BusinessSector;
   onPress: (sector: BusinessSector) => void;
 }
 
+// Dynamic Layout Calculation for 3 Columns
+const { width } = Dimensions.get('window');
+const SCREEN_PADDING = 10; // Matches HomeScreen padding
+const COLUMN_GAP = 10; // Matches HomeScreen gap
+// Formula: (Screen Width - Outer Padding - (Gap * 2)) / 3 columns
+const CARD_WIDTH = (width - (SCREEN_PADDING * 2) - (COLUMN_GAP * 2)) / 3;
+
 export function BusinessSectorCard({ sector, onPress }: BusinessSectorCardProps) {
   const [displayEnglish, setDisplayEnglish] = useState(true);
-  const fadeAnim = useRef(new Animated.Value(1)).current; // Initial opacity 1
+  const fadeAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     const interval = setInterval(() => {
       Animated.timing(fadeAnim, {
         toValue: 0,
-        duration: 500, // Fade out duration
+        duration: 500,
         useNativeDriver: true,
       }).start(() => {
         setDisplayEnglish((prev) => !prev);
         Animated.timing(fadeAnim, {
           toValue: 1,
-          duration: 500, // Fade in duration
+          duration: 500,
           useNativeDriver: true,
         }).start();
       });
-    }, 3000); // Switch every 3 seconds (2s display + 1s transition)
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [fadeAnim]);
 
   return (
-    <Pressable onPress={() => onPress(sector)} style={({ pressed }) => [
-      {
-        backgroundColor: pressed ? '#f0f0f0' : '#fff',
-      },
-      styles.card,
-    ]}>
-      <ThemedView style={styles.iconContainer}>
-        <SvgIcon svg={sector.icon} width={100} height={100} color="#007AFF" />
-      </ThemedView>
-      <Animated.View style={{ opacity: fadeAnim }}>
-        <ThemedText style={styles.cardText}>
+    <Pressable
+      onPress={() => onPress(sector)}
+      style={({ pressed }) => [
+        {
+          backgroundColor: pressed ? '#f0f0f0' : '#fff',
+          transform: [{ scale: pressed ? 0.98 : 1 }],
+        },
+        styles.card,
+      ]}
+    >
+      <View style={styles.iconWrapper}>
+        {/* Increased icon size for better visibility */}
+        <SvgIcon svg={sector.icon} width={75} height={75} color="#3CB371" />
+      </View>
+
+      <Animated.View style={{ opacity: fadeAnim, width: '100%' }}>
+        <ThemedText
+          style={styles.cardText}
+          numberOfLines={2}
+          ellipsizeMode="tail"
+        >
           {displayEnglish ? sector.name : sector.name_ta}
         </ThemedText>
       </Animated.View>
@@ -54,28 +70,37 @@ export function BusinessSectorCard({ sector, onPress }: BusinessSectorCardProps)
 
 const styles = StyleSheet.create({
   card: {
-    width: '45%', // Adjust as needed for spacing
-    aspectRatio: 1, // Makes the card square
-    margin: 8,
-    borderRadius: 10,
+    width: CARD_WIDTH,
+    // Taller aspect ratio (0.75) creates a vertical rectangle to fit content better
+    aspectRatio: 0.75, 
+    marginVertical: 4,
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: '#EAECF0', // Softer border color
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center', // Distribute space evenly
+    paddingHorizontal: 4,
+    paddingVertical: 12,
+    
+    // Clean shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  iconWrapper: {
+    marginBottom: 12, // Space between icon and text
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2,
-  },
-  iconContainer: {
-    marginBottom: 8,
-    backgroundColor: 'transparent',
+    height: 60, // Fixed height for alignment
   },
   cardText: {
-    fontSize: 16,
+    fontSize: 11, // Readable size for 3-column grid
     fontWeight: '600',
     textAlign: 'center',
+    lineHeight: 15, // Tighter line height for multi-line text
+    color: '#333',
   },
 });

@@ -1,41 +1,20 @@
-import { StyleSheet, View, FlatList, Alert, Platform, Image, TouchableOpacity, Text, Modal } from 'react-native';
-import { ThemedText } from '@/components/themed-text';
+import { BusinessSectorCard } from '@/components/BusinessSectorCard';
 import { ThemedView } from '@/components/themed-view';
 import { BUSINESS_SECTORS, BusinessSector } from '@/constants/businessSectors';
-import { BusinessSectorCard } from '@/components/BusinessSectorCard';
-import { useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useIsFocused } from '@react-navigation/native';
-import { useRouter } from 'expo-router'; // Import useRouter
+import { useRouter } from 'expo-router';
+import { FlatList, StyleSheet } from 'react-native';
 
+// (JobPostFormData interface kept as reference, though not used in render)
 interface JobPostFormData {
   id?: string;
   title: string;
-  jobTitle: string;
-  vacancy: string;
-  jobType: string;
-  category: string;
-  experience: string;
-  salary: string;
-  jobDescription: string;
-  companyName: string;
-  companyAddress: string;
-  companyEmail: string;
-  companyPhone: string;
-  applicationDeadline: string;
-  additionalInfo: string;
-  isDraft?: boolean;
-  templateId?: string;
-  templateStyle?: string;
-  isPosted?: boolean;
-  posterUrl?: string;
+  // ... other fields
 }
 
 export default function HomeScreen() {
-  const router = useRouter(); // Initialize useRouter
+  const router = useRouter();
 
   const handleCardPress = (sector: BusinessSector) => {
-    // Navigate to the new page with the category as a parameter
     router.push({
       pathname: "/jobs/[category]" as any,
       params: { category: sector.name },
@@ -50,9 +29,10 @@ export default function HomeScreen() {
           <BusinessSectorCard sector={item} onPress={handleCardPress} />
         )}
         keyExtractor={(item) => item.id}
-        numColumns={2}
+        numColumns={3} // Changed to 3 columns
         contentContainerStyle={styles.cardListContainer}
         columnWrapperStyle={styles.cardListColumnWrapper}
+        showsVerticalScrollIndicator={false}
       />
     </ThemedView>
   );
@@ -61,17 +41,16 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // paddingTop: 20,
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
-  title: {
-    marginBottom: 20,
-  },
   cardListContainer: {
-    paddingHorizontal: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 5, // Reduced padding to give columns more room
+    gap: 10, // Adds gap between rows
   },
   cardListColumnWrapper: {
-    justifyContent: 'space-around',
+    justifyContent: 'flex-start', // Align items to start
+    gap: 10, // Adds gap between columns
   },
 });

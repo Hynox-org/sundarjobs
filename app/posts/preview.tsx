@@ -46,7 +46,9 @@ interface JobPostFormData {
   additional_info: string;
   is_draft?: boolean;
   template_id?: string;
+  template_style?: string; // Added to match category page
   poster_url?: string; // New field to store the URL of the uploaded poster
+  additional_jobs?: { job_title: string; vacancy: number; experience: string }[]; // Added to match category page, experience is now required
 }
 
 export default function PreviewScreen() {
@@ -214,46 +216,67 @@ export default function PreviewScreen() {
       Alert.alert("Error", "Job data not available.");
       return;
     }
-    try {
-      const jobDetails = `
-🌟 *New Job Opportunity!* 🌟
 
-*Job Title:* ${formData.job_title}
-*Category:* ${formData.category}
-*Description:* ${formData.title || "N/A"}
-*Job Type:* ${formData.job_type || "N/A"}
-*Vacancy:* ${formData.vacancy || "N/A"}
-*Experience:* ${formData.experience || "N/A"}
-*Salary:* ${formData.salary || "N/A"}
-*Job Description:* ${formData.job_description || "N/A"}
-*Company Name:* ${formData.company_name || "N/A"}
-*Company Address:* ${formData.company_address || "N/A"}
-*Company Email:* ${formData.company_email || "N/A"}
-*Company Phone:* ${formData.company_phone || "N/A"}
-*Application Deadline:* ${formData.application_deadline || "N/A"}
-*Additional Info:* ${formData.additional_info || "N/A"}
+    const item = formData; // Use formData as 'item' for consistent logic with category page
 
-💼 *View more details:* ${
-        formData.poster_url ||
-        `https://sundarjobs.com/posts/preview?jobId=${formData.id}&templateId=${
-          formData.template_id || ""
-        }`
-      }
+    const viewDetailsUrl =
+      item.poster_url ||
+      `https://sundarjobs.com/posts/preview?jobId=${item.id}&templateId=${
+        item.template_id || ""
+      }&templateStyle=${item.template_style || ""}`;
 
-🚀 *Find more jobs like this on SundarJobs!*
-      `;
-      await Share.share(
-        {
-          message: jobDetails,
-        },
-        {
-          dialogTitle: "Share Job Post",
-        }
-      );
-    } catch (error: any) {
-      Alert.alert("Share Error", error.message);
-      console.log(error);
+    let fullShareMessage = "";
+
+    // Main Job Title with vacancy and experience
+    fullShareMessage += `${item.job_title} - ${item.vacancy} No`;
+    if (item.experience) {
+      fullShareMessage += `\n(${item.experience} Experience)`;
     }
+    fullShareMessage += "\n";
+
+    // Additional Jobs - Each on separate lines with proper formatting
+    if (item.additional_jobs && item.additional_jobs.length > 0) {
+      item.additional_jobs.forEach((adj) => {
+        fullShareMessage += `\n${adj.job_title} - ${adj.vacancy} No`;
+        if (adj.experience) {
+          fullShareMessage += `\n(${adj.experience} Experience)`;
+        }
+      });
+      fullShareMessage += "\n";
+    }
+
+    // Company Address
+    if (item.company_address) {
+      fullShareMessage += `\n${item.company_address}`;
+    }
+
+    // Contact Information
+    if (item.company_email) {
+      fullShareMessage += `\nSend Your Resume Thru Mail:\n${item.company_email}`;
+    }
+
+    if (item.company_phone) {
+      fullShareMessage += `\nCall us : ${item.company_phone}`;
+    }
+
+    // View Details URL (if available)
+    if (viewDetailsUrl) {
+      fullShareMessage += `\n\n🔗 ${viewDetailsUrl}`;
+    }
+
+    // Static Footer Links
+    fullShareMessage += `\n\n🔥🔥👇👇🔥🔥`;
+    fullShareMessage += `\nFollow Our WhatsApp Channel( What's App la Follow Up பண்ணுற Option வந்துருச்சு )`;
+    fullShareMessage += `\n\nhttps://whatsapp.com/channel/0029Va9NPxE2v1Iz9yMDVL3r`;
+    fullShareMessage += `\n\nDownload App - Play Store Sankar Jobs https://play.google.com/store/apps/details?id=com.sankarjobs.app&hl=en_IN`;
+    fullShareMessage += `\n\nDownload Apple App Store: https://apps.apple.com/in/app/sankar-jobs/id6741199664`;
+    fullShareMessage += `\n\nOur Website\nhttp://www.sundarjobs.com`;
+    fullShareMessage += `\n\nPlz share Your Friends 🙏`;
+
+    Share.share(
+      { message: fullShareMessage },
+      { dialogTitle: "Share Job Opportunity" }
+    );
   };
 
   const handlePostJob = async () => {

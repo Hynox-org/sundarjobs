@@ -2,12 +2,12 @@ import FullScreenMenu from '@/components/FullScreenMenu';
 import { HapticTab } from '@/components/haptic-tab';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { supabase } from '@/lib/supabase'; // Import supabase
 import { Ionicons } from '@expo/vector-icons';
+import { Session } from '@supabase/supabase-js'; // Import Session type
 import { Tabs, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Easing, Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { supabase } from '@/lib/supabase'; // Import supabase
-import { Session } from '@supabase/supabase-js'; // Import Session type
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -126,13 +126,13 @@ export default function TabLayout() {
           header: () => (
             <View style={{ flexDirection: 'column', backgroundColor: Colors[colorScheme ?? 'light'].background }}>
               <View style={styles.headerContainer}>
-                <View style={styles.headerLeft}>
+                <TouchableOpacity onPress={() => router.navigate('/')} style={styles.headerLeft}>
                   <Image
                     source={require('@/assets/images/logo.png')}
                     style={styles.logo}
                   />
                   <Text style={[styles.headerTitle, { color: textColor }]}>SundarJobs</Text>
-                </View>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={handleMenuPress}>
                   <Ionicons name="menu" size={30} color={textColor} />
                 </TouchableOpacity>
