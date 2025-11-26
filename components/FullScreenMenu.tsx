@@ -89,7 +89,7 @@ export default function FullScreenMenu({ isVisible, onClose, onMenuItemPress }: 
         { name: 'Post Jobs', icon: 'briefcase', screen: 'posts' }
       );
       menuLinks.push(
-        { name: 'All Jobs', icon: 'list', screen: 'posts/all' }
+        { name: 'All Jobs', icon: 'list', screen: 'jobs/all' }
       );
     }
     menuLinks.push({ name: 'Logout', icon: 'log-out', screen: 'logout' });

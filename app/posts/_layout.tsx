@@ -62,13 +62,13 @@ export default function PostJobsLayout() {
           header: () => (
             <View style={{ flexDirection: 'column', backgroundColor: backgroundColor }}>
               <View style={styles.headerContainer}>
-                <View style={styles.headerLeft}>
+              <TouchableOpacity onPress={() => router.navigate('/')} style={styles.headerLeft}>
                   <Image
                     source={require('@/assets/images/logo.png')}
                     style={styles.logo}
                   />
                   <Text style={[styles.headerTitle, { color: textColor }]}>SundarJobs</Text>
-                </View>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={handleMenuPress}>
                   <Ionicons name="menu" size={30} color={textColor} />
                 </TouchableOpacity>

@@ -1,9 +1,9 @@
-import React from 'react';
-import { Stack, useRouter } from 'expo-router';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Ionicons } from '@expo/vector-icons';
+import { Stack, useRouter } from 'expo-router';
+import React from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function JobsLayout() {
   const router = useRouter();
@@ -26,11 +26,13 @@ export default function JobsLayout() {
                   <Ionicons name="arrow-back" size={24} color={textColor} />
                 </TouchableOpacity>
                 <View style={styles.headerTitleContainer}>
-                  <Image
-                    source={require('@/assets/images/logo.png')}
-                    style={styles.logo}
-                  />
-                  <Text style={[styles.headerTitle, { color: textColor }]}>Jobs in {category}</Text>
+                  <TouchableOpacity onPress={() => router.navigate('/')}>
+                    <Image
+                      source={require('@/assets/images/logo.png')}
+                      style={styles.logo}
+                    />
+                  </TouchableOpacity>
+                  <Text style={[styles.headerTitle, { color: textColor }]}>{category} Jobs</Text>
                 </View>
               </View>
             );
