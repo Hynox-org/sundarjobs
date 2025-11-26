@@ -423,6 +423,7 @@ export function generateTemplate1Html({ formData }: { formData: JobPostFormData 
           ${formData.company_name && `<div class="company-name">${formData.company_name}</div>`}
 
           <div class="contact-row">
+            <div class="contact-label">Contact use through</div>
             ${formData.company_address ? `<div class="contact-item"><span>${formData.company_address}</span></div>` : ''}
             ${formData.company_phone ? `<div class="contact-item"><span class="phone-number">${formData.company_phone}</span></div>` : ''}
             ${formData.company_email ? `<div class="contact-item"><span>${formData.company_email}</span></div>` : ''}

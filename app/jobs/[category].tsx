@@ -16,6 +16,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  RefreshControl,
 } from 'react-native';
 import { WebView } from 'react-native-webview';
 
@@ -66,7 +67,15 @@ export default function CategoryJobsScreen() {
   const router = useRouter();
 
   const colors = Colors.light;
+const [refreshing, setRefreshing] = useState(false);
 
+const onRefresh = async () => {
+  setRefreshing(true);
+  // Optionally reset to first page
+  setCurrentPage(1);
+  await fetchJobsByCategory();
+  setRefreshing(false);
+};
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -220,7 +229,7 @@ export default function CategoryJobsScreen() {
 
   // Company Address
   if (item.company_address) {
-    fullShareMessage += `\n${item.company_address}`;
+    fullShareMessage += `\n location:${item.company_address}`;
   }
 
   // Contact Information
@@ -481,12 +490,20 @@ export default function CategoryJobsScreen() {
   return (
     <View style={[styles.mainContainer, { backgroundColor: Palette.background }]}>
       <FlatList
-        data={jobs}
+        data={jobs}  
         renderItem={renderJobItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
         ListFooterComponent={totalPages > 1 ? renderPagination : null}
+        refreshControl={
+    <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      colors={[Palette.primary]}
+      tintColor={Palette.primary}
+    />
+  }
       />
     </View>
   );

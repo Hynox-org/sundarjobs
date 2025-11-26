@@ -108,7 +108,7 @@ export default function PostJobsScreen() {
             jobTitle: data.job_title,
             vacancy: data.vacancy?.toString(),
             category: data.category,
-            experience: data.experience,
+            experience: data.experience?.toString(),
             companyName: data.company_name,
             companyAddress: data.company_address,
             companyEmail: data.company_email,
@@ -198,6 +198,11 @@ export default function PostJobsScreen() {
       return;
     }
 
+    if(!form.companyPhone && !form.companyEmail && !form.companyAddress){
+      Alert.alert("fill at least anyone -  Company Info","Please provide company email, phone, and address.");
+      return;
+    }
+    
     if (!user) {
       if (Platform.OS === "web") {
         alert("You must be logged in to post a job.");
@@ -413,12 +418,13 @@ export default function PostJobsScreen() {
                 Experience Required <Text style={styles.required}>*</Text>
               </Text>
               <TextInput
-                placeholder="e.g., Fresher or 2-5 years"
-                placeholderTextColor="#9CA3AF"
+                placeholder="e.g., 2-5 years"
+                placeholderTextColor="#9CA3AF"   
                 style={[
                   styles.input,
                   errors.experience && styles.inputError,
                 ]}
+                keyboardType="numeric"
                 value={form.experience}
                 onChangeText={(text) => handleChange("experience", text)}
               />
@@ -459,6 +465,7 @@ export default function PostJobsScreen() {
                     placeholder="Experience"
                     style={[styles.input, { marginBottom: 10 }]}
                     value={job.experience}
+                    keyboardType="numeric"
                     onChangeText={(text) => handleAdditionalJobChange(idx, "experience", text)}
                   />
                   <TouchableOpacity

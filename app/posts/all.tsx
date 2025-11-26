@@ -14,7 +14,8 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
+  RefreshControl,
 } from 'react-native';
 
 interface Job {
@@ -48,20 +49,42 @@ export default function AllJobsScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const colors = Colors.light;
   const router = useRouter();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
+  const initialize = async () => {
+    setLoading(true);
+    await fetchJobs();
+    setLoading(false);
+  };
+  initialize();
+}, []);
+
     const fetchJobs = async () => {
-      setLoading(true);
       try {
         const {
           data: { user },
         } = await supabase.auth.getUser();
-
+        let admin = false;
+        if (user) {
+          // Fetch user profile to get role
+          const { data: profile, error: profileError } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', user.id)
+            .single();
+          if (profileError) throw profileError;
+          admin = profile?.role === 'admin';
+          setIsAdmin(admin);
+        }
         let query = supabase
           .from('jobs')
           .select('id, title, job_title, vacancy, job_type, category, experience, salary, job_description, company_name, company_address, company_email, company_phone, application_deadline, additional_info, poster_url, is_draft, user_id, template_id, template_style');
-
-        if (user) {
+        if (admin) {
+          query = query;
+        }
+        else if (user) {
           query = query.or(`is_draft.eq.false,user_id.eq.${user.id}`);
         } else {
           query = query.eq('is_draft', false);
@@ -75,13 +98,14 @@ export default function AllJobsScreen() {
       } catch (error: any) {
         console.error('Failed to fetch jobs:', error.message);
         Alert.alert('Error', 'Failed to fetch jobs.');
-      } finally {
-        setLoading(false);
       }
     };
 
-    fetchJobs();
-  }, []);
+  const onRefresh = async () => {
+  setRefreshing(true);
+  await fetchJobs();
+  setRefreshing(false);
+};
 
   useEffect(() => {
     if (searchQuery === '') {
@@ -125,7 +149,31 @@ export default function AllJobsScreen() {
     }, {
       dialogTitle: 'Share Job Post',
     });
-  };
+};
+  const handleDelete = async (jobId: string) => {
+    Alert.alert(
+      'Delete Job',
+      'Are you sure you want to delete this job?',
+      [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete', style: 'destructive', onPress: async () => {
+          try {
+            const { error } = await supabase
+              .from('jobs')
+              .delete()
+              .eq('id', jobId);
+            if (error) throw error;
+            setJobs(prev => prev.filter(job => job.id !== jobId));
+            setFilteredJobs(prev => prev.filter(job => job.id !== jobId));
+          } catch (error: any) {
+            Alert.alert('Error', 'Failed to delete job.');
+          }
+        }
+      }
+    ]
+  );
+};
 
   if (loading) {
     return (
@@ -212,7 +260,7 @@ export default function AllJobsScreen() {
       </View>
       <View style={styles.actions}>
         <TouchableOpacity
-          style={[styles.button, styles.viewButton, { backgroundColor: colors.tint }]}
+          style={[styles.button, { backgroundColor: '#FBB13C' }]}
           onPress={() => {
             router.push({
               pathname: item.is_draft ? "/posts" : "/posts/preview", // Navigate to /posts for drafts
@@ -224,15 +272,24 @@ export default function AllJobsScreen() {
           }}
         >
           <Ionicons name="eye-outline" size={16} color="white" />
-          <Text style={styles.buttonText}>View</Text>
+          {/* <Text style={styles.buttonText}>View</Text> */}
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => handleShare(item)}
           style={[styles.button, styles.shareButton]}
         >
           <FontAwesome name="whatsapp" size={16} color="#25D366" />
           <Text style={[styles.buttonText, { color: '#25D366' }]}>Share</Text>
+        </TouchableOpacity> */}
+        {isAdmin && (
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: '#EF4444' }]}
+          onPress={() => handleDelete(item.id)}
+        >
+          <Ionicons name="trash-outline" size={16} color="white" />
+          {/* <Text style={styles.buttonText}>Delete</Text> */}
         </TouchableOpacity>
+      )}
       </View>
     </View>
   );
@@ -261,6 +318,14 @@ export default function AllJobsScreen() {
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[Colors.light.tint]}
+            tintColor={Colors.light.tint}
+          />
+        }
       />
     </ThemedView>
   );
@@ -388,18 +453,18 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   viewButton: {
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#FBB13C',
   },
   shareButton: {
     backgroundColor: '#F0FDF4',
     borderWidth: 1,
     borderColor: '#BBF7D0',
   },
-  buttonText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
+  // buttonText: {
+  //   fontSize: 13,
+  //   fontWeight: '600',
+  //   color: '#FFFFFF',
+  // },
   separator: {
     height: 1,
     backgroundColor: '#F3F4F6',

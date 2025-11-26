@@ -222,17 +222,17 @@ export default function PreviewScreen() {
     const viewDetailsUrl =
       item.poster_url ||
       `https://sundarjobs.com/posts/preview?jobId=${item.id}&templateId=${
-        item.template_id || ""
-      }&templateStyle=${item.template_style || ""}`;
+        item.template_id || ''
+      }&templateStyle=${item.template_style || ''}`;
 
-    let fullShareMessage = "";
+    let fullShareMessage = '';
 
     // Main Job Title with vacancy and experience
     fullShareMessage += `${item.job_title} - ${item.vacancy} No`;
     if (item.experience) {
       fullShareMessage += `\n(${item.experience} Experience)`;
     }
-    fullShareMessage += "\n";
+    fullShareMessage += '\n';
 
     // Additional Jobs - Each on separate lines with proper formatting
     if (item.additional_jobs && item.additional_jobs.length > 0) {
@@ -247,7 +247,7 @@ export default function PreviewScreen() {
 
     // Company Address
     if (item.company_address) {
-      fullShareMessage += `\n${item.company_address}`;
+      fullShareMessage += `\n location:${item.company_address}`;
     }
 
     // Contact Information
@@ -667,7 +667,7 @@ export default function PreviewScreen() {
         <TouchableOpacity
           style={styles.actionButton}
           onPress={shareOnWhatsApp}
-          disabled={formData.is_draft}
+          // disabled={formData.is_draft}
         >
           <Ionicons
             name="logo-whatsapp"

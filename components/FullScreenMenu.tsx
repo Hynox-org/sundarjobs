@@ -89,9 +89,12 @@ export default function FullScreenMenu({ isVisible, onClose, onMenuItemPress }: 
         { name: 'Post Jobs', icon: 'briefcase', screen: 'posts' }
       );
       menuLinks.push(
-        { name: 'All Jobs', icon: 'list', screen: 'jobs/all' }
+        { name: 'Your Posts', icon: 'folder', screen: 'posts/all' }
       );
     }
+     menuLinks.push(
+        { name: 'All Jobs', icon: 'list', screen: 'jobs/all' }
+      );
     menuLinks.push({ name: 'Logout', icon: 'log-out', screen: 'logout' });
   } else {
     menuLinks.push({ name: 'Login/Register', icon: 'log-in', screen: 'auth/authenticate' });
