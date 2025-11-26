@@ -122,11 +122,11 @@ const fontFamily = "'Poppins', sans-serif";
       .megaphone-icon {
         position: absolute;
         top: 10%;
-        right: 40px;
-        width: 180px;
-        height: 140px;
+        right: 10%;
+        width: 160px;
+        height: 180px;
         z-index: 10;
-        opacity: 0.9;
+        opacity: 0.95;
       }
 
       .megaphone-icon img {
@@ -134,6 +134,7 @@ const fontFamily = "'Poppins', sans-serif";
         height: 100%;
         object-fit: contain;
         filter: brightness(1.2) saturate(1.3);
+        transform: scaleX(-1);
       }
 
       .accent-bar {
@@ -387,7 +388,7 @@ const fontFamily = "'Poppins', sans-serif";
       <div class="accent-bar"></div>
       
       <div class="megaphone-icon">
-        <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/bottom-right2.png" alt="Megaphone" />
+        <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/top-left1.png" alt="Megaphone" />
       </div>
 
       <div class="main-content">
