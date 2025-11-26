@@ -3,7 +3,7 @@ import { HTML_TEMPLATES, HtmlTemplate } from '@/constants/jobTemplates';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { supabase } from '@/lib/supabase';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Alert, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
@@ -165,6 +165,25 @@ const styles = StyleSheet.create({
   flex1: {
     flex: 1,
   },
+  templateSelectionActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 10,
+  },
+  randomButton: {
+    backgroundColor: '#1E90FF', // A distinct color for the random button
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  randomButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
 });
 
 export default function TemplatesScreen() {
@@ -233,6 +252,21 @@ export default function TemplatesScreen() {
     }
   }, [jobId, selectedTemplate, router]);
 
+  const handleRandomSelectTemplate = useCallback((jobPost: FormData) => {
+    if (HTML_TEMPLATES.length > 0) {
+      const randomIndex = Math.floor(Math.random() * HTML_TEMPLATES.length);
+      const randomTemplate = HTML_TEMPLATES[randomIndex];
+      setSelectedTemplate({ postId: jobPost.id!, template: randomTemplate });
+    } else {
+      console.warn("No templates available for random selection.");
+      if (Platform.OS === "web") {
+        alert("No templates available for random selection.");
+      } else {
+        Alert.alert("No Templates", "No templates available for random selection.");
+      }
+    }
+  }, []);
+
   const handleSaveTemplate = useCallback(async (action: "draft" | "preview") => {
     if (!jobId || !selectedTemplate) {
       console.warn("Please select a template before saving or proceeding.");
@@ -286,7 +320,7 @@ export default function TemplatesScreen() {
         alert("Error saving template details.");
       } else {
         Alert.alert("Error", "Error saving template details.");
-      } 
+      }
     }
   }, [jobId, selectedTemplate, router]);
 
@@ -310,33 +344,51 @@ export default function TemplatesScreen() {
 
               <View style={styles.templateSelectionContainer}>
                 <ThemedText type="defaultSemiBold" style={styles.templateSelectionTitle}>Choose a Template:</ThemedText>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.templateScroll}>
-  {HTML_TEMPLATES.map((template: HtmlTemplate) => {
-    const isSelected = selectedTemplate?.postId === post.id && selectedTemplate?.template.id === template.id;
+                <View style={styles.templateSelectionActions}>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.templateScroll}>
+                    {(() => {
+                      const templates = [...HTML_TEMPLATES];
+                      if (selectedTemplate && selectedTemplate.postId === post.id) {
+                        const selectedIndex = templates.findIndex(t => t.id === selectedTemplate.template.id);
+                        if (selectedIndex > -1) {
+                          const [sTemplate] = templates.splice(selectedIndex, 1);
+                          templates.unshift(sTemplate);
+                        }
+                      }
+                      return templates.map((template: HtmlTemplate) => {
+                        const isSelected = selectedTemplate?.postId === post.id && selectedTemplate?.template.id === template.id;
 
-    return (
-      <TouchableOpacity
-        key={template.id}
-        style={[
-          styles.templateOption,
-          {
-            backgroundColor: isSelected ? '#2563EB' : '#FFFFFF',
-            borderColor: isSelected ? '#2563EB' : '#E5E7EB',
-            borderWidth: isSelected ? 2 : 1,
-          }
-        ]}
-        onPress={() => handleSelectTemplate(template, post)}
-      >
-        <ThemedText style={[
-          styles.templateOptionText, 
-          { color: isSelected ? '#FFFFFF' : '#374151' }
-        ]}>
-          {template.name}
-        </ThemedText>
-      </TouchableOpacity>
-    );
-  })}
-</ScrollView>
+                        return (
+                          <TouchableOpacity
+                            key={template.id}
+                            style={[
+                              styles.templateOption,
+                              {
+                                backgroundColor: isSelected ? '#2563EB' : '#FFFFFF',
+                                borderColor: isSelected ? '#2563EB' : '#E5E7EB',
+                                borderWidth: isSelected ? 2 : 1,
+                              }
+                            ]}
+                            onPress={() => handleSelectTemplate(template, post)}
+                          >
+                            <ThemedText style={[
+                              styles.templateOptionText,
+                              { color: isSelected ? '#FFFFFF' : '#374151' }
+                            ]}>
+                              {template.name}
+                            </ThemedText>
+                          </TouchableOpacity>
+                        );
+                      });
+                    })()}
+                  </ScrollView>
+                  <TouchableOpacity
+                    style={styles.randomButton}
+                    onPress={() => handleRandomSelectTemplate(post)}
+                  >
+                    <ThemedText style={styles.randomButtonText}>Random Select</ThemedText>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           ))
