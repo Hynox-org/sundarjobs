@@ -3,29 +3,32 @@ import { JobPostFormData } from "@/constants/jobTemplates";
 export function generateTemplate4Html({ formData }: { formData: JobPostFormData }): string {
   if (!formData) return '<h1>Loading...</h1>';
 
-  // Light theme with vibrant accent colors
-  const backgroundColor = '#FFFFFF';      // Pure white
-  const primaryColor = '#FF6B35';         // Vibrant coral orange
-  const secondaryColor = '#004E89';       // Deep blue
-  const accentColor = '#FFC93C';          // Bright yellow
-  const textColor = '#2D3142';            // Dark charcoal
-  const lightGray = '#F7F9FC';            // Very light blue-gray
-  const fontFamily = "'Poppins', sans-serif";
+  // Dark theme color palette
+const backgroundColor = '#FFF9F5';      // Cream white
+const primaryColor = '#FF6B35';         // Coral orange
+const secondaryColor = '#FFC93C';       // Golden yellow
+const accentColor = '#F95F62';          // Pink-red
+const textColor = '#2D3748';            // Charcoal
+const cardBg = '#FFFFFF';               // Pure white
+const fontFamily = "'Poppins', sans-serif";
 
-  // Calculate totals & scale factor
+
+  // Calculate counts and scaling
   const mainJobCount = formData.job_title ? 1 : 0;
   const additionalJobCount = formData.additional_jobs?.length || 0;
   const totalJobs = mainJobCount + additionalJobCount;
-  const scaleFactor = totalJobs <= 1 ? 1 : totalJobs >= 6 ? 0.6 : 1 - (totalJobs - 1) * 0.08;
+  const scaleFactor =
+    totalJobs <= 1 ? 1 : totalJobs >= 6 ? 0.6 : 1 - (totalJobs - 1) * 0.08;
 
-  // Font sizes scaled
+  // Font sizes - INCREASED for better readability
   const jobTitleFontSize = (32 * scaleFactor).toFixed(2);
-  const jobReqFontSize = (14 * scaleFactor).toFixed(2);
+  const jobReqFontSize = (18 * scaleFactor).toFixed(2); // Increased from 14
   const nosFontSize = (18 * scaleFactor).toFixed(2);
   const companyNameFontSize = (38 * scaleFactor).toFixed(2);
   const contactFontSize = (16 * scaleFactor).toFixed(2);
   const phoneFontSize = (24 * scaleFactor).toFixed(2);
   const footerFontSize = (20 * scaleFactor).toFixed(2);
+  const titleSubtextFontSize = (32 * scaleFactor).toFixed(2); // New - increased from 26
 
   // Margins and gaps
   const marginHeader = 70 - (totalJobs - 1) * 10 > 25 ? 70 - (totalJobs - 1) * 10 : 25;
@@ -63,6 +66,25 @@ export function generateTemplate4Html({ formData }: { formData: JobPostFormData 
           background-color: ${backgroundColor} !important;
           page-break-inside: avoid !important;
         }
+        .job-item {
+          background-color: ${cardBg} !important;
+          border-color: ${primaryColor} !important;
+          color: ${textColor} !important;
+          page-break-inside: avoid !important;
+        }
+        .company-section {
+          background-color: ${cardBg} !important;
+          page-break-inside: avoid !important;
+          color: ${textColor} !important;
+        }
+        .app-section {
+          background-color: ${primaryColor} !important;
+          color: ${backgroundColor} !important;
+          page-break-inside: avoid !important;
+        }
+        * {
+          filter: none !important;
+        }
       }
 
       html, body {
@@ -72,7 +94,6 @@ export function generateTemplate4Html({ formData }: { formData: JobPostFormData 
         display: flex;
         justify-content: center;
         align-items: center;
-        background: ${lightGray};
         font-family: ${fontFamily};
         color: ${textColor};
       }
@@ -86,9 +107,9 @@ export function generateTemplate4Html({ formData }: { formData: JobPostFormData 
         display: flex;
         flex-direction: column;
         padding: 50px 60px;
-        justify-content: center;
         height: 100vh;
-        border: 1px solid #E5E7EB;
+        justify-content: center;
+        border: 2px solid #2D3142;
       }
 
       .main-content {
@@ -98,122 +119,101 @@ export function generateTemplate4Html({ formData }: { formData: JobPostFormData 
         flex-grow: 1;
       }
 
-      /* Megaphone Icon */
       .megaphone-icon {
         position: absolute;
-        top: 35px;
-        left: 45px;
-        width: 170px;
-        height: 130px;
+        top: 10%;
+        right: 40px;
+        width: 180px;
+        height: 140px;
         z-index: 10;
-        opacity: 0.95;
+        opacity: 0.9;
       }
 
       .megaphone-icon img {
         width: 100%;
         height: 100%;
         object-fit: contain;
-        display: none;
+        filter: brightness(1.2) saturate(1.3);
       }
 
-      /* Decorative colored blocks */
-      .color-block-top {
+      .accent-bar {
         position: absolute;
         top: 0;
-        right: 0;
-        width: 220px;
-        height: 12px;
-        background: ${primaryColor};
-        z-index: 1;
-      }
-
-      .color-block-bottom {
-        position: absolute;
-        bottom: 0;
         left: 0;
-        width: 280px;
-        height: 12px;
-        background: ${secondaryColor};
-        z-index: 1;
+        right: 0;
+        height: 8px;
+        background: linear-gradient(90deg, ${primaryColor} 0%, ${secondaryColor} 50%, ${accentColor} 100%);
       }
 
-      /* Header Section */
       .header-section {
-        text-align: center;
+        text-align: left;
         margin-bottom: ${marginHeader}px;
-        z-index: 2;
-        position: relative;
+        border-left: 6px solid ${primaryColor};
+        padding-left: 25px;
       }
 
       .we-are-hiring {
+        font-family: ${fontFamily};
+        font-weight: 800;
         font-size: 64px;
-        font-weight: 900;
         color: ${textColor};
         text-transform: uppercase;
-        letter-spacing: 3px;
+        letter-spacing: -2px;
         line-height: 1.1;
+        margin-bottom: 15px;
       }
 
-      .we-are {
+      .we-are-hiring .highlight {
         color: ${primaryColor};
+        display: block;
       }
 
       .we-are-hiring .title {
-        font-size: 26px;
+        font-size: ${titleSubtextFontSize}px; /* Increased size */
         font-weight: 600;
         margin-top: 18px;
         color: ${textColor};
         line-height: 1.4;
         text-transform: none;
         letter-spacing: 0;
-        opacity: 0.8;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
+        opacity: 0.9; /* Increased from 0.85 */
       }
 
-      /* Job Positions Section */
       .job-positions-section {
         margin-bottom: ${marginJobSection}px;
       }
 
       .section-title {
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 700;
         color: ${backgroundColor};
         text-transform: uppercase;
-        margin-bottom: 22px;
-        letter-spacing: 3px;
-        background: ${secondaryColor};
-        padding: 12px 20px;
+        margin-bottom: 20px;
+        letter-spacing: 2px;
+        background: ${primaryColor};
+        padding: 10px 18px;
         display: inline-block;
-        border-radius: 6px;
+        border-radius: 4px;
       }
 
       .job-item {
-        background: ${lightGray};
+        background-color: ${cardBg};
         border: 2px solid ${primaryColor};
-        border-radius: 10px;
+        border-radius: 8px;
         padding: ${22 * scaleFactor}px ${28 * scaleFactor}px;
         margin-bottom: ${gapBetweenJobs}px;
         text-align: left;
         color: ${textColor};
         position: relative;
+        border-left: 5px solid ${primaryColor};
       }
 
-      .job-item::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        width: 6px;
-        background: ${primaryColor};
-        border-radius: 10px 0 0 10px;
+      .job-item:nth-child(odd) {
+        border-left-color: ${secondaryColor};
       }
 
-      .job-item:nth-child(even)::before {
-        background: ${secondaryColor};
+      .job-item:nth-child(3n) {
+        border-left-color: ${accentColor};
       }
 
       .job-title {
@@ -226,15 +226,15 @@ export function generateTemplate4Html({ formData }: { formData: JobPostFormData 
         line-height: 1.3;
         display: flex;
         align-items: baseline;
-        gap: 10px;
+        gap: 8px;
         flex-wrap: wrap;
       }
 
       .vacancy-badge {
         font-size: ${nosFontSize}px;
-        background: ${accentColor};
-        color: ${textColor};
-        padding: 5px 14px;
+        background: ${primaryColor};
+        color: ${backgroundColor};
+        padding: 4px 12px;
         border-radius: 20px;
         font-weight: 700;
         text-transform: lowercase;
@@ -242,16 +242,15 @@ export function generateTemplate4Html({ formData }: { formData: JobPostFormData 
       }
 
       .job-requirements {
-        font-size: ${jobReqFontSize}px;
+        font-size: ${jobReqFontSize}px; /* Increased size */
         font-weight: 500;
         color: ${textColor};
         line-height: 1.7;
-        opacity: 0.7;
+        opacity: 0.85; /* Increased from 0.75 */
       }
 
-      /* Company Info Section */
       .company-section {
-        background: ${lightGray};
+        background-color: ${cardBg};
         padding: ${22 * scaleFactor}px ${28 * scaleFactor}px;
         margin-bottom: ${gapFooterToContact}px;
         min-height: ${contactHeight}px;
@@ -260,17 +259,15 @@ export function generateTemplate4Html({ formData }: { formData: JobPostFormData 
         align-items: center;
         gap: ${18 * scaleFactor}px;
         color: ${textColor};
-        border-radius: 10px;
-        border: 2px solid #E5E7EB;
-        border-top: 4px solid ${secondaryColor};
+        border-radius: 8px;
+        border: 2px solid #3A3F52;
       }
 
       .company-name {
         font-size: ${companyNameFontSize}px;
         font-weight: 900;
-        color: ${primaryColor};
+        color: ${secondaryColor};
         text-transform: uppercase;
-        // margin-bottom: ${12 * scaleFactor}px;
         letter-spacing: 2px;
       }
 
@@ -278,34 +275,31 @@ export function generateTemplate4Html({ formData }: { formData: JobPostFormData 
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: ${40 * scaleFactor}px;
+        gap: ${20 * scaleFactor}px;
         flex-wrap: wrap;
         width: 100%;
       }
 
       .contact-item {
         display: flex;
-        flex-direction: column;
         align-items: center;
-        gap: ${6 * scaleFactor}px;
+        gap: ${8 * scaleFactor}px;
         font-size: ${contactFontSize}px;
         font-weight: 600;
         color: ${textColor};
-        text-align: center;
       }
 
       .contact-label {
-        font-size: ${12 * scaleFactor}px;
-        font-weight: 700;
-        color: ${secondaryColor};
+        font-size: ${14 * scaleFactor}px;
+        color: ${primaryColor};
+        font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.5px;
       }
 
-      .contact-value {
-        font-size: ${contactFontSize}px;
-        font-weight: 600;
-        color: ${textColor};
+      .icon {
+        font-size: ${20 * scaleFactor}px;
+        color: ${primaryColor};
       }
 
       .phone-number {
@@ -314,10 +308,9 @@ export function generateTemplate4Html({ formData }: { formData: JobPostFormData 
         color: ${primaryColor};
       }
 
-      /* Footer / Marketing Section */
       .app-section {
-        background: ${secondaryColor};
-        border-radius: 10px;
+        background-color: ${primaryColor};
+        border-radius: 8px;
         padding: ${20 * scaleFactor}px ${30 * scaleFactor}px;
         display: flex;
         align-items: center;
@@ -337,8 +330,8 @@ export function generateTemplate4Html({ formData }: { formData: JobPostFormData 
       .app-logo {
         width: ${50 * scaleFactor}px;
         height: ${50 * scaleFactor}px;
-        background: ${backgroundColor};
-        border-radius: 10px;
+        background: white;
+        border-radius: 8px;
         padding: ${8 * scaleFactor}px;
       }
 
@@ -349,10 +342,9 @@ export function generateTemplate4Html({ formData }: { formData: JobPostFormData 
       }
 
       .app-name {
-        font-weight: 900;
+        font-weight: 800;
         text-transform: uppercase;
-        letter-spacing: 2px;
-        color: ${backgroundColor};
+        letter-spacing: 1px;
       }
 
       .app-right {
@@ -364,18 +356,17 @@ export function generateTemplate4Html({ formData }: { formData: JobPostFormData 
         display: flex;
         align-items: center;
         gap: ${8 * scaleFactor}px;
-        background: rgba(255,255,255,0.2);
+        background: rgba(26,29,41,0.3);
         padding: ${10 * scaleFactor}px ${16 * scaleFactor}px;
-        border-radius: 8px;
-        border: 1px solid rgba(255,255,255,0.3);
+        border-radius: 6px;
+        border: 1px solid rgba(26,29,41,0.5);
       }
 
       .store-icon {
         width: ${24 * scaleFactor}px;
         height: ${24 * scaleFactor}px;
         background: ${backgroundColor};
-        border-radius: 6px;
-        padding: ${4 * scaleFactor}px;
+        border-radius: 5px;
       }
 
       .store-icon img {
@@ -386,7 +377,6 @@ export function generateTemplate4Html({ formData }: { formData: JobPostFormData 
 
       .store-text {
         font-weight: 700;
-        color: ${backgroundColor};
         text-transform: uppercase;
         font-size: ${14 * scaleFactor}px;
       }
@@ -394,82 +384,61 @@ export function generateTemplate4Html({ formData }: { formData: JobPostFormData 
   </head>
   <body>
     <div class="container">
-      <div class="color-block-top"></div>
-      <div class="color-block-bottom"></div>
+      <div class="accent-bar"></div>
       
       <div class="megaphone-icon">
-        <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/top-left1.png" alt="Megaphone" />
+        <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/bottom-right2.png" alt="Megaphone" />
       </div>
 
       <div class="main-content">
-
-        <!-- 1. Poster Title -->
+        <!-- Poster Title -->
         <div class="header-section">
           <div class="we-are-hiring">
-            <span class="we-are">WE ARE</span><br>HIRING!
-            ${formData.title ? `<div class="title">${formData.title}</div>` : ''}
+            <span class="highlight">WE ARE</span>
+            HIRING
           </div>
+          ${formData.title ? `<div class="title">${formData.title}</div>` : ''}
         </div>
 
-        <!-- 2. Job Positions Section -->
+        <!-- Job Positions Section -->
         <div class="job-positions-section">
           <div class="section-title">OPEN POSITIONS</div>
 
-          ${formData.job_title ? `
-            <div class="job-item">
+          ${formData.job_title ? `<div class="job-item">
               <div class="job-title">
                 <span>${formData.job_title}</span>
                 <span class="vacancy-badge">${formData.vacancy} positions</span>
               </div>
-              ${formData.experience ? `<div class="job-requirements">Experience: ${formData.experience}</div>` : ''}
-            </div>
-          ` : ''}
+              ${formData.experience ? `<div class="job-requirements">Required: ${formData.experience} years of relevant experience</div>` : ''}
+          </div>` : ''}
 
-          ${formData.additional_jobs && formData.additional_jobs.length > 0
-            ? formData.additional_jobs
-                .map(
-                  (job) => `
-            <div class="job-item">
-              <div class="job-title">
-                <span>${job.job_title}</span>
-                <span class="vacancy-badge">${job.vacancy} positions</span>
-              </div>
-              ${job.experience ? `<div class="job-requirements">Experience: ${job.experience}</div>` : ''}
-            </div>
-            `
-                )
-                .join('')
-            : ''
+          ${
+            formData.additional_jobs && formData.additional_jobs.length > 0
+              ? formData.additional_jobs.map(
+                  (job, index) => `<div class="job-item">
+                  <div class="job-title">
+                    <span>${job.job_title}</span>
+                    <span class="vacancy-badge">${job.vacancy} positions</span>
+                  </div>
+                  ${job.experience ? `<div class="job-requirements">Required: ${job.experience} years of relevant experience</div>` : ''}
+                </div>`
+                ).join("")
+              : ""
           }
         </div>
 
-        <!-- 3. Company Details Section -->
+        <!-- Company Details Section -->
         <div class="company-section">
           ${formData.company_name ? `<div class="company-name">${formData.company_name}</div>` : ''}
 
           <div class="contact-row">
-            ${formData.company_address ? `
-              <div class="contact-item">
-                <div class="contact-label">Address</div>
-                <div class="contact-value">${formData.company_address}</div>
-              </div>
-            ` : ''}
-            ${formData.company_phone ? `
-              <div class="contact-item">
-                <div class="contact-label">Phone</div>
-                <div class="phone-number">${formData.company_phone}</div>
-              </div>
-            ` : ''}
-            ${formData.company_email ? `
-              <div class="contact-item">
-                <div class="contact-label">Email</div>
-                <div class="contact-value">${formData.company_email}</div>
-              </div>
-            ` : ''}
+            ${formData.company_address ? `<div class="contact-item"><span class="contact-label">Visit Us:</span> <span>${formData.company_address}</span></div>` : ''}
+            ${formData.company_phone ? `<div class="contact-item"><span class="contact-label">Call Us:</span> <span class="phone-number">${formData.company_phone}</span></div>` : ''}
+            ${formData.company_email ? `<div class="contact-item"><span class="contact-label">Email Us:</span> <span>${formData.company_email}</span></div>` : ''}
           </div>
         </div>
 
-        <!-- 4. Footer / Marketing -->
+        <!-- Footer / Marketing Section -->
         <div class="app-section">
           <div class="app-left">
             <div class="app-logo">
@@ -492,7 +461,6 @@ export function generateTemplate4Html({ formData }: { formData: JobPostFormData 
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </body>

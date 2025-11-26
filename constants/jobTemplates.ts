@@ -57,5 +57,57 @@ export const HTML_TEMPLATES: HtmlTemplate[] = [
   {
     id: "template-7",
     name: "Template 7",
+  },
+  {
+    id: "template-8",
+    name: "Template 8",
+  },
+  {
+    id: "template-9",
+    name: "Template 9",
+  },
+  {
+    id: "template-10",
+    name: "Template 10",
+  },
+  {
+    id: "template-11",
+    name: "Template 11",
+  },
+  {
+    id: "template-12",
+    name: "Template 12",
+  },
+  {
+    id: "template-13",
+    name: "Template 13",
+  },
+  {
+    id: "template-14",
+    name: "Template 14",
+  },
+  {
+    id: "template-15",
+    name: "Template 15",
+  },
+  {
+    id: "template-16",
+    name: "Template 16",
+  },
+  {
+    id: "template-17",
+    name: "Template 17",
+  },
+  {
+    id: "template-18",
+    name: "Template 18",
+  },
+  {
+    id: "template-19",
+    name: "Template 19",
+  },
+  {
+    id: "template-20",
+    name: "Template 20",
   }
 ];

@@ -3,14 +3,15 @@ import { JobPostFormData } from "@/constants/jobTemplates";
 export function generateTemplate2Html({ formData }: { formData: JobPostFormData }): string {
   if (!formData) return '<h1>Loading...</h1>';
 
-  // Clean dark theme with vibrant accents
-  const backgroundColor = '#0D1117';      // Deep charcoal
-  const primaryColor = '#FF6B35';         // Vibrant orange
-  const secondaryColor = '#00D9FF';       // Bright cyan
-  const accentColor = '#A855F7';          // Purple accent
-  const textColor = '#E6EDF3';            // Light gray-blue
-  const cardBg = '#1C2128';               // Slightly lighter dark
-  const fontFamily = "'Poppins', sans-serif";
+  // Clean dark theme with vibrant accents - SOLID COLORS ONLY
+  const backgroundColor = '#FFF5F9';
+const primaryColor = '#E63946';
+const secondaryColor = '#F4A6B2';
+const accentColor = '#FFB3C1';
+const textColor = '#1D1D1F';
+const cardBg = '#FFFFFF';
+const fontFamily = "'Poppins', sans-serif";
+
 
   // Calculate job counts and scaling
   const mainJobCount = formData.job_title ? 1 : 0;
@@ -75,7 +76,7 @@ export function generateTemplate2Html({ formData }: { formData: JobPostFormData 
           color: ${textColor} !important;
         }
         .app-section {
-          background: linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%) !important;
+          background: ${primaryColor} !important;
           color: ${backgroundColor} !important;
           page-break-inside: avoid !important;
         }
@@ -119,7 +120,7 @@ export function generateTemplate2Html({ formData }: { formData: JobPostFormData 
       /* Megaphone Icon */
       .megaphone-icon {
         position: absolute;
-        top: 5%;
+        top: 10%;
         left: 10%;
         width: 160px;
         height: 180px;
@@ -134,14 +135,15 @@ export function generateTemplate2Html({ formData }: { formData: JobPostFormData 
         filter: brightness(1.3) saturate(1.2);
       }
 
-      /* Diagonal accent stripe */
+      /* Diagonal accent stripe - SOLID COLOR */
       .accent-stripe {
         position: absolute;
         top: 0;
         right: 0;
         width: 250px;
         height: 250px;
-        background: linear-gradient(135deg, ${primaryColor}20 0%, ${secondaryColor}20 100%);
+        background: ${secondaryColor};
+        opacity: 0.15;
         clip-path: polygon(100% 0, 100% 100%, 0 0);
         z-index: 1;
       }
@@ -195,7 +197,7 @@ export function generateTemplate2Html({ formData }: { formData: JobPostFormData 
         text-transform: uppercase;
         margin-bottom: 22px;
         letter-spacing: 3px;
-        background: linear-gradient(90deg, ${primaryColor} 0%, ${secondaryColor} 100%);
+        background: ${primaryColor};
         padding: 12px 20px;
         display: inline-block;
         border-radius: 6px;
@@ -203,8 +205,7 @@ export function generateTemplate2Html({ formData }: { formData: JobPostFormData 
 
       .job-item {
         background-color: ${cardBg};
-        border: 2px solid transparent;
-        border-image: linear-gradient(90deg, ${primaryColor}, ${secondaryColor}) 1;
+        border: 2px solid ${primaryColor};
         border-radius: 0;
         padding: ${22 * scaleFactor}px ${28 * scaleFactor}px;
         margin-bottom: ${gapBetweenJobs}px;
@@ -220,11 +221,11 @@ export function generateTemplate2Html({ formData }: { formData: JobPostFormData 
         top: 0;
         bottom: 0;
         width: 5px;
-        background: linear-gradient(180deg, ${primaryColor} 0%, ${secondaryColor} 100%);
+        background: ${primaryColor};
       }
 
       .job-item:nth-child(even)::after {
-        background: linear-gradient(180deg, ${secondaryColor} 0%, ${accentColor} 100%);
+        background: ${secondaryColor};
       }
 
       .job-title {
@@ -243,7 +244,7 @@ export function generateTemplate2Html({ formData }: { formData: JobPostFormData 
 
       .vacancy-badge {
         font-size: ${nosFontSize}px;
-        background: linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%);
+        background: ${primaryColor};
         color: ${backgroundColor};
         padding: 5px 14px;
         border-radius: 25px;
@@ -279,7 +280,7 @@ export function generateTemplate2Html({ formData }: { formData: JobPostFormData 
       .company-name {
         font-size: ${companyNameFontSize}px;
         font-weight: 900;
-        color: white;
+        color: ${secondaryColor};
         text-transform: uppercase;
         letter-spacing: 2px;
       }
@@ -313,9 +314,9 @@ export function generateTemplate2Html({ formData }: { formData: JobPostFormData 
         color: ${primaryColor};
       }
 
-      /* Footer / Marketing Section */
+      /* Footer / Marketing Section - SOLID COLOR */
       .app-section {
-        background: linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%);
+        background: ${primaryColor};
         border-radius: 10px;
         padding: ${20 * scaleFactor}px ${30 * scaleFactor}px;
         display: flex;
@@ -393,7 +394,7 @@ export function generateTemplate2Html({ formData }: { formData: JobPostFormData 
       <div class="accent-stripe"></div>
       
       <div class="megaphone-icon">
-        <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/top-left1.png" alt="Megaphone" />
+        <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/bottom-right2.png" alt="Megaphone" />
       </div>
 
       <div class="main-content">
@@ -447,22 +448,10 @@ export function generateTemplate2Html({ formData }: { formData: JobPostFormData 
               : ""
           }
 
-          <div class="contact-row">
-            ${
-              formData.company_address
-                ? `<div class="contact-item"><span>${formData.company_address}</span></div>`
-                : ""
-            }
-            ${
-              formData.company_phone
-                ? `<div class="contact-item"><span class="phone-number">${formData.company_phone}</span></div>`
-                : ""
-            }
-            ${
-              formData.company_email
-                ? `<div class="contact-item"><span>${formData.company_email}</span></div>`
-                : ""
-            }
+         <div class="contact-row">
+            ${formData.company_address ? `<div class="contact-item"><span class="contact-label">Visit Us:</span> <span>${formData.company_address}</span></div>` : ''}
+            ${formData.company_phone ? `<div class="contact-item"><span class="contact-label">Call Us:</span> <span class="phone-number">${formData.company_phone}</span></div>` : ''}
+            ${formData.company_email ? `<div class="contact-item"><span class="contact-label">Email Us:</span> <span>${formData.company_email}</span></div>` : ''}
           </div>
         </div>
 

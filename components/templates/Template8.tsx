@@ -1,14 +1,13 @@
 import { JobPostFormData } from "@/constants/jobTemplates";
 
-export function generateTemplate5Html({ formData }: { formData: JobPostFormData }): string {
+export function generateTemplate8Html({ formData }: { formData: JobPostFormData }): string {
   if (!formData) return '<h1>Loading...</h1>';
 
-  // Dark theme color palette
-  const backgroundColor = '#F0F7FF';      // Pale blue
-const primaryColor = '#0EA5E9';         // Ocean blue
-const secondaryColor = '#06B6D4';       // Cyan
-const accentColor = '#8B5CF6';          // Purple
-const textColor = '#1E293B';            // Deep navy
+  const backgroundColor = '#F8FAFB';      // Soft white
+const primaryColor = '#2D9CDB';         // Sky blue
+const secondaryColor = '#27AE60';       // Fresh green
+const accentColor = '#F2994A';          // Warm orange
+const textColor = '#2C3E50';            // Dark slate
 const cardBg = '#FFFFFF';               // Pure white
 const fontFamily = "'Poppins', sans-serif";
 

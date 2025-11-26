@@ -4,13 +4,15 @@ export function generateTemplate1Html({ formData }: { formData: JobPostFormData 
   if (!formData) return '<h1>Loading...</h1>';
 
   // Dark theme color palette
-  const backgroundColor = '#1A1D29';      // Deep navy background
-  const primaryColor = '#FFD93D';         // Bright yellow
-  const secondaryColor = '#6BCF7F';       // Fresh green
-  const accentColor = '#FF6B9D';          // Pink accent
-  const textColor = '#F8F9FA';            // Off-white text
-  const cardBg = '#252936';               // Lighter dark for cards
-  const fontFamily = "'Poppins', sans-serif";
+const backgroundColor = '#FAF7F4';
+const primaryColor = '#A67C52';
+const secondaryColor = '#8B5E3C';
+const accentColor = '#D4A574';
+const textColor = '#2C1810';
+const cardBg = '#FFFFFF';
+const fontFamily = "'Poppins', sans-serif";
+
+
 
   // Calculate counts and scaling
   const mainJobCount = formData.job_title ? 1 : 0;
@@ -19,14 +21,15 @@ export function generateTemplate1Html({ formData }: { formData: JobPostFormData 
   const scaleFactor =
     totalJobs <= 1 ? 1 : totalJobs >= 6 ? 0.6 : 1 - (totalJobs - 1) * 0.08;
 
-  // Font sizes
+  // Font sizes - INCREASED for better readability
   const jobTitleFontSize = (32 * scaleFactor).toFixed(2);
-  const jobReqFontSize = (14 * scaleFactor).toFixed(2);
+  const jobReqFontSize = (18 * scaleFactor).toFixed(2); // Increased from 14
   const nosFontSize = (18 * scaleFactor).toFixed(2);
   const companyNameFontSize = (38 * scaleFactor).toFixed(2);
   const contactFontSize = (16 * scaleFactor).toFixed(2);
   const phoneFontSize = (24 * scaleFactor).toFixed(2);
   const footerFontSize = (20 * scaleFactor).toFixed(2);
+  const titleSubtextFontSize = (32 * scaleFactor).toFixed(2); // New - increased from 26
 
   // Margins and gaps
   const marginHeader = 70 - (totalJobs - 1) * 10 > 25 ? 70 - (totalJobs - 1) * 10 : 25;
@@ -134,7 +137,6 @@ export function generateTemplate1Html({ formData }: { formData: JobPostFormData 
         filter: brightness(1.2) saturate(1.3);
       }
 
-      /* Top accent bar */
       .accent-bar {
         position: absolute;
         top: 0;
@@ -168,14 +170,14 @@ export function generateTemplate1Html({ formData }: { formData: JobPostFormData 
       }
 
       .we-are-hiring .title {
-        font-size: 26px;
+        font-size: ${titleSubtextFontSize}px; /* Increased size */
         font-weight: 600;
         margin-top: 18px;
         color: ${textColor};
         line-height: 1.4;
         text-transform: none;
         letter-spacing: 0;
-        opacity: 0.85;
+        opacity: 0.9; /* Increased from 0.85 */
       }
 
       .job-positions-section {
@@ -241,11 +243,11 @@ export function generateTemplate1Html({ formData }: { formData: JobPostFormData 
       }
 
       .job-requirements {
-        font-size: ${jobReqFontSize}px;
+        font-size: ${jobReqFontSize}px; /* Increased size */
         font-weight: 500;
         color: ${textColor};
         line-height: 1.7;
-        opacity: 0.75;
+        opacity: 0.85; /* Increased from 0.75 */
       }
 
       .company-section {
@@ -274,7 +276,7 @@ export function generateTemplate1Html({ formData }: { formData: JobPostFormData 
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: ${35 * scaleFactor}px;
+        gap: ${20 * scaleFactor}px;
         flex-wrap: wrap;
         width: 100%;
       }
@@ -286,6 +288,14 @@ export function generateTemplate1Html({ formData }: { formData: JobPostFormData 
         font-size: ${contactFontSize}px;
         font-weight: 600;
         color: ${textColor};
+      }
+
+      .contact-label {
+        font-size: ${14 * scaleFactor}px;
+        color: ${primaryColor};
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
 
       .icon {
@@ -378,7 +388,7 @@ export function generateTemplate1Html({ formData }: { formData: JobPostFormData 
       <div class="accent-bar"></div>
       
       <div class="megaphone-icon">
-        <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/top-left1.png" alt="Megaphone" />
+        <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/bottom-right2.png" alt="Megaphone" />
       </div>
 
       <div class="main-content">
@@ -400,7 +410,7 @@ export function generateTemplate1Html({ formData }: { formData: JobPostFormData 
                 <span>${formData.job_title}</span>
                 <span class="vacancy-badge">${formData.vacancy} positions</span>
               </div>
-              ${formData.experience ? `<div class="job-requirements">Experience: ${formData.experience} years of experience required for this role.</div>` : ''}
+              ${formData.experience ? `<div class="job-requirements">Required: ${formData.experience} years of relevant experience</div>` : ''}
           </div>` : ''}
 
           ${
@@ -411,7 +421,7 @@ export function generateTemplate1Html({ formData }: { formData: JobPostFormData 
                     <span>${job.job_title}</span>
                     <span class="vacancy-badge">${job.vacancy} positions</span>
                   </div>
-                  ${job.experience ? `<div class="job-requirements">Experience: ${job.experience}  years of experience required for this role.</div>` : ''}
+                  ${job.experience ? `<div class="job-requirements">Required: ${job.experience} years of relevant experience</div>` : ''}
                 </div>`
                 ).join("")
               : ""
@@ -420,13 +430,12 @@ export function generateTemplate1Html({ formData }: { formData: JobPostFormData 
 
         <!-- Company Details Section -->
         <div class="company-section">
-          ${formData.company_name && `<div class="company-name">${formData.company_name}</div>`}
+          ${formData.company_name ? `<div class="company-name">${formData.company_name}</div>` : ''}
 
           <div class="contact-row">
-            <div class="contact-label">Contact use through</div>
-            ${formData.company_address ? `<div class="contact-item"><span>${formData.company_address}</span></div>` : ''}
-            ${formData.company_phone ? `<div class="contact-item"><span class="phone-number">${formData.company_phone}</span></div>` : ''}
-            ${formData.company_email ? `<div class="contact-item"><span>${formData.company_email}</span></div>` : ''}
+            ${formData.company_address ? `<div class="contact-item"><span class="contact-label">Visit Us:</span> <span>${formData.company_address}</span></div>` : ''}
+            ${formData.company_phone ? `<div class="contact-item"><span class="contact-label">Call Us:</span> <span class="phone-number">${formData.company_phone}</span></div>` : ''}
+            ${formData.company_email ? `<div class="contact-item"><span class="contact-label">Email Us:</span> <span>${formData.company_email}</span></div>` : ''}
           </div>
         </div>
 

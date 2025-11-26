@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     height: 60, // Fixed height for alignment
   },
   cardText: {
-    fontSize: 11, // Readable size for 3-column grid
+    fontSize: 14, // Readable size for 3-column grid
     fontWeight: '600',
     textAlign: 'center',
     lineHeight: 15, // Tighter line height for multi-line text
