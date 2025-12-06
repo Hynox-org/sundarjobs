@@ -60,6 +60,8 @@ export function generateTemplate15Html({ formData }: { formData: JobPostFormData
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+        -webkit-user-select: none;
+        user-select: none;
       }
 
       @media print {
@@ -608,11 +610,11 @@ export function generateTemplate15Html({ formData }: { formData: JobPostFormData
             ${formData.company_email ? `<p class="company-email">${formData.company_email}</p>` : ''}
           </div>
           
-          <div class="contact-body">
+          ${totalJobs < 5 ? `<div class="contact-body">
           <div class="apply-cta">
               🚀 Apply Now & Start Your Career Journey
             </div>
-          </div>
+          </div>` : ''}
         </div>
       </div>
 

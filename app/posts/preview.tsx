@@ -18,13 +18,19 @@ import {
   ActivityIndicator,
   Alert,
   Dimensions,
-  ScrollView,
   Share,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import {
+  Gesture,
+  GestureDetector,
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
+import { runOnJS } from "react-native-reanimated";
 import ViewShot from "react-native-view-shot";
 import WebView from "react-native-webview";
 
@@ -63,6 +69,8 @@ export default function PreviewScreen() {
   const [webViewKey, setWebViewKey] = useState(0);
   const router = useRouter();
   const viewShotRef = useRef<ViewShot>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
+  const startZoom = useRef(1);
 
   const colorScheme = useColorScheme();
   const isDark = false;
@@ -185,6 +193,7 @@ export default function PreviewScreen() {
 
   const handleResetZoom = () => {
     setZoom(1);
+    scrollViewRef.current?.scrollTo({ x: 0, y: 0, animated: true });
   };
 
   const sharePdf = async () => {
@@ -192,9 +201,9 @@ export default function PreviewScreen() {
       const htmlContent =
         formData && selectedTemplate
           ? generateHtmlTemplate({
-              formData,
-              template: selectedTemplate,
-            })
+            formData,
+            template: selectedTemplate,
+          })
           : "<h1>Loading...</h1>";
       if (!htmlContent) {
         Alert.alert("Error", "Job post content not ready");
@@ -221,8 +230,7 @@ export default function PreviewScreen() {
 
     const viewDetailsUrl =
       item.poster_url ||
-      `https://sundarjobs.com/posts/preview?jobId=${item.id}&templateId=${
-        item.template_id || ''
+      `https://sundarjobs.com/posts/preview?jobId=${item.id}&templateId=${item.template_id || ''
       }&templateStyle=${item.template_style || ''}`;
 
     let fullShareMessage = '';
@@ -412,305 +420,328 @@ export default function PreviewScreen() {
   const htmlContent =
     formData && selectedTemplate
       ? generateHtmlTemplate({
-          formData: formData,
-          template: selectedTemplate,
-        })
+        formData: formData,
+        template: selectedTemplate,
+      })
       : "<h1>Loading...</h1>";
 
-  return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {isPostingJob && (
-        <BlurView
-          intensity={90}
-          tint={isDark ? "dark" : "light"}
-          style={StyleSheet.absoluteFill}
-        >
-          <View
-            style={[
-              styles.centeredContainer,
-              { backgroundColor: "transparent" },
-            ]}
-          >
-            <ActivityIndicator size="large" color={colors.tint} />
-            <Text style={[styles.loadingText, { color: colors.secondaryText }]}>
-              Posting job...
-            </Text>
-          </View>
-        </BlurView>
-      )}
+  const pinchGesture = Gesture.Pinch()
+    .onStart(() => {
+      startZoom.current = zoom;
+    })
+    .onUpdate((e) => {
+      const newZoom = startZoom.current * e.scale;
+      const clamped = Math.min(Math.max(newZoom, 0.5), 2.0);
+      runOnJS(setZoom)(clamped);
+    });
 
-      {/* Top Control Bar */}
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <View
         style={[
-          styles.topControls,
-          {
-            backgroundColor: colors.cardBackground,
-            borderBottomColor: colors.border,
-          },
+          styles.container,
+          { backgroundColor: colors.background },
         ]}
       >
-        <View style={styles.zoomControls}>
-          <TouchableOpacity
-            style={[
-              styles.zoomButton,
-              {
-                backgroundColor: colors.background,
-                borderColor: colors.border,
-              },
-            ]}
-            onPress={handleZoomOut}
+        {isPostingJob && (
+          <BlurView
+            intensity={90}
+            tint={isDark ? "dark" : "light"}
+            style={StyleSheet.absoluteFill}
           >
-            <Ionicons name="remove-outline" size={20} color={colors.tint} />
-          </TouchableOpacity>
-          <Text style={[styles.zoomText, { color: colors.text }]}>
-            {Math.round(zoom * 100)}%
+            <View
+              style={[
+                styles.centeredContainer,
+                { backgroundColor: "transparent" },
+              ]}
+            >
+              <ActivityIndicator size="large" color={colors.tint} />
+              <Text style={[styles.loadingText, { color: colors.secondaryText }]}>
+                Posting job...
+              </Text>
+            </View>
+          </BlurView>
+        )}
+
+        {/* Top Control Bar */}
+        <View
+          style={[
+            styles.topControls,
+            {
+              backgroundColor: colors.cardBackground,
+              borderBottomColor: colors.border,
+            },
+          ]}
+        >
+          <View style={styles.zoomControls}>
+            <TouchableOpacity
+              style={[
+                styles.zoomButton,
+                {
+                  backgroundColor: colors.background,
+                  borderColor: colors.border,
+                },
+              ]}
+              onPress={handleZoomOut}
+            >
+              <Ionicons name="remove-outline" size={20} color={colors.tint} />
+            </TouchableOpacity>
+            <Text style={[styles.zoomText, { color: colors.text }]}>
+              {Math.round(zoom * 100)}%
+            </Text>
+            <TouchableOpacity
+              style={[
+                styles.zoomButton,
+                {
+                  backgroundColor: colors.background,
+                  borderColor: colors.border,
+                },
+              ]}
+              onPress={handleZoomIn}
+            >
+              <Ionicons name="add-circle" size={20} color={colors.tint} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.zoomButton,
+                {
+                  backgroundColor: colors.background,
+                  borderColor: colors.border,
+                },
+              ]}
+              onPress={handleResetZoom}
+            >
+              <Text style={[styles.zoomResetText, { color: colors.text }]}>
+                1x
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={[styles.quotationTitle, { color: colors.text }]}>
+            {formData.job_title}
           </Text>
-          <TouchableOpacity
-            style={[
-              styles.zoomButton,
-              {
-                backgroundColor: colors.background,
-                borderColor: colors.border,
-              },
-            ]}
-            onPress={handleZoomIn}
+        </View>
+
+        {/* PDF Viewer with Blur + Login Overlay */}
+        <View
+          style={[
+            styles.pdfContainer,
+            { backgroundColor: colors.background, flex: 1 },
+          ]}
+        >
+          <ScrollView
+            ref={scrollViewRef}
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContent}
+            scrollEventThrottle={16}
+            scrollEnabled={isAuthenticated}
           >
-            <Ionicons name="add-circle" size={20} color={colors.tint} />
+            <GestureDetector gesture={pinchGesture}>
+              <View style={[styles.pdfWrapper, { transform: [{ scale: zoom }] }]}>
+                {htmlContent ? (
+                  <>
+
+                    <WebView
+                      key={webViewKey}
+                      originWhitelist={["*"]}
+                      source={{ html: htmlContent }}
+                      style={styles.webView}
+                      scalesPageToFit={true}
+                      javaScriptEnabled={true}
+                      domStorageEnabled={true}
+                      scrollEnabled={false}
+                      pinchGestureEnabled={false}
+                      startInLoadingState={true}
+                      renderLoading={() => (
+                        <View style={styles.loadingOverlay}>
+                          <ActivityIndicator size="small" color={colors.tint} />
+                        </View>
+                      )}
+                      onError={(error) => console.log("WebView error:", error)}
+                    />
+                    {/* Transparent overlay to capture gestures */}
+                    <View style={StyleSheet.absoluteFill} />
+
+                    {/* Blur + Login Prompt */}
+                    {!isAuthenticated && (
+                      <>
+                        <BlurView
+                          intensity={90}
+                          tint={isDark ? "dark" : "light"}
+                          style={StyleSheet.absoluteFill}
+                        />
+                        <View
+                          style={[
+                            StyleSheet.absoluteFill,
+                            {
+                              justifyContent: "center",
+                              alignItems: "center",
+                              padding: 24,
+                            },
+                          ]}
+                        >
+                          <Ionicons
+                            name="lock-closed"
+                            size={56}
+                            color={colors.secondaryText}
+                            style={{ marginBottom: 16 }}
+                          />
+                          <Text
+                            style={{
+                              color: colors.text,
+                              fontSize: 18,
+                              fontWeight: "600",
+                              textAlign: "center",
+                              marginBottom: 8,
+                            }}
+                          >
+                            Login to View Preview
+                          </Text>
+                          <TouchableOpacity
+                            style={{
+                              backgroundColor: colors.tint,
+                              paddingHorizontal: 28,
+                              paddingVertical: 14,
+                              borderRadius: 10,
+                            }}
+                            onPress={handleLoginRedirect}
+                          >
+                            <Text
+                              style={{
+                                color: "#fff",
+                                fontWeight: "600",
+                                fontSize: 16,
+                              }}
+                            >
+                              Login Now
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      </>
+                    )}
+                  </>
+                ) : null}
+              </View>
+            </GestureDetector>
+
+            {isAuthenticated && isAdmin && (
+              <>
+                {/* Post Job Button - BELOW Preview */}
+                <View style={{ paddingTop: 20, paddingBottom: 10 }}>
+                  <TouchableOpacity
+                    style={[
+                      {
+                        backgroundColor:
+                          isAuthenticated && isAdmin && formData.is_draft
+                            ? colors.tint
+                            : "#ccc", // Only enable if authenticated AND admin
+                        paddingVertical: 14,
+                        paddingHorizontal: 15,
+                        borderRadius: 10,
+                        alignItems: "center",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        gap: 8,
+                      },
+                    ]}
+                    onPress={handlePostJob} // Call handlePostJob
+                    disabled={!isAuthenticated || !isAdmin || !formData.is_draft} // Disable if not authenticated, not admin, or already posted
+                  >
+                    <Ionicons name="paper-plane" size={20} color="#fff" />
+                    <Text
+                      style={{ color: "#fff", fontWeight: "600", fontSize: 16 }}
+                    >
+                      {isAuthenticated && isAdmin && formData.is_draft
+                        ? "Post Job"
+                        : !formData.is_draft
+                          ? "Job Posted"
+                          : "Request to Post"}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
+          </ScrollView>
+        </View>
+
+        {/* Bottom Action Bar (No Request to Post) */}
+        <View
+          style={[
+            styles.bottomActions,
+            {
+              backgroundColor: colors.cardBackground,
+              borderTopColor: colors.border,
+            },
+          ]}
+        >
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={sharePdf}
+          // disabled={formData.is_draft}
+          >
+            <Ionicons
+              name="document-text-outline"
+              size={22}
+              color={
+                isAuthenticated && isAdmin && !formData.is_draft
+                  ? colors.tint
+                  : colors.secondaryText
+              }
+            />
+            <Text
+              style={[
+                styles.actionButtonText,
+                {
+                  color:
+                    isAuthenticated && isAdmin ? colors.secondaryText : "#888",
+                },
+              ]}
+            >
+              Share PDF
+            </Text>
           </TouchableOpacity>
+
           <TouchableOpacity
-            style={[
-              styles.zoomButton,
-              {
-                backgroundColor: colors.background,
-                borderColor: colors.border,
-              },
-            ]}
-            onPress={handleResetZoom}
+            style={styles.actionButton}
+            onPress={shareOnWhatsApp}
+          // disabled={formData.is_draft}
           >
-            <Text style={[styles.zoomResetText, { color: colors.text }]}>
-              1x
+            <Ionicons
+              name="logo-whatsapp"
+              size={22}
+              color={
+                isAuthenticated && isAdmin && !formData.is_draft
+                  ? colors.tint
+                  : colors.secondaryText
+              }
+            />
+            <Text
+              style={[
+                styles.actionButtonText,
+                {
+                  color:
+                    isAuthenticated && isAdmin ? colors.secondaryText : "#888",
+                },
+              ]}
+            >
+              WhatsApp
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.actionButton} onPress={handleBack}>
+            <Ionicons
+              name="close-circle"
+              size={22}
+              color={colors.secondaryText}
+            />
+            <Text
+              style={[styles.actionButtonText, { color: colors.secondaryText }]}
+            >
+              Close
             </Text>
           </TouchableOpacity>
         </View>
-        <Text style={[styles.quotationTitle, { color: colors.text }]}>
-          {formData.job_title}
-        </Text>
       </View>
-
-      {/* PDF Viewer with Blur + Login Overlay */}
-      <View
-        style={[
-          styles.pdfContainer,
-          { backgroundColor: colors.background, flex: 1 },
-        ]}
-      >
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          scrollEventThrottle={16}
-          scrollEnabled={isAuthenticated}
-        >
-          <View style={[styles.pdfWrapper, { transform: [{ scale: zoom }] }]}>
-            {htmlContent ? (
-              <>
-                <WebView
-                  key={webViewKey}
-                  originWhitelist={["*"]}
-                  source={{ html: htmlContent }}
-                  style={styles.webView}
-                  scalesPageToFit={true}
-                  javaScriptEnabled={true}
-                  domStorageEnabled={true}
-                  scrollEnabled={false}
-                  pinchGestureEnabled={false}
-                  startInLoadingState={true}
-                  renderLoading={() => (
-                    <View style={styles.loadingOverlay}>
-                      <ActivityIndicator size="small" color={colors.tint} />
-                    </View>
-                  )}
-                  onError={(error) => console.log("WebView error:", error)}
-                />
-
-                {/* Blur + Login Prompt */}
-                {!isAuthenticated && (
-                  <>
-                    <BlurView
-                      intensity={90}
-                      tint={isDark ? "dark" : "light"}
-                      style={StyleSheet.absoluteFill}
-                    />
-                    <View
-                      style={[
-                        StyleSheet.absoluteFill,
-                        {
-                          justifyContent: "center",
-                          alignItems: "center",
-                          padding: 24,
-                        },
-                      ]}
-                    >
-                      <Ionicons
-                        name="lock-closed"
-                        size={56}
-                        color={colors.secondaryText}
-                        style={{ marginBottom: 16 }}
-                      />
-                      <Text
-                        style={{
-                          color: colors.text,
-                          fontSize: 18,
-                          fontWeight: "600",
-                          textAlign: "center",
-                          marginBottom: 8,
-                        }}
-                      >
-                        Login to View Preview
-                      </Text>
-                      <TouchableOpacity
-                        style={{
-                          backgroundColor: colors.tint,
-                          paddingHorizontal: 28,
-                          paddingVertical: 14,
-                          borderRadius: 10,
-                        }}
-                        onPress={handleLoginRedirect}
-                      >
-                        <Text
-                          style={{
-                            color: "#fff",
-                            fontWeight: "600",
-                            fontSize: 16,
-                          }}
-                        >
-                          Login Now
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  </>
-                )}
-              </>
-            ) : null}
-          </View>
-
-          {isAuthenticated && isAdmin && (
-            <>
-              {/* Post Job Button - BELOW Preview */}
-              <View style={{ paddingTop: 20, paddingBottom: 10 }}>
-                <TouchableOpacity
-                  style={[
-                    {
-                      backgroundColor:
-                        isAuthenticated && isAdmin && formData.is_draft
-                          ? colors.tint
-                          : "#ccc", // Only enable if authenticated AND admin
-                      paddingVertical: 14,
-                      paddingHorizontal: 15,
-                      borderRadius: 10,
-                      alignItems: "center",
-                      flexDirection: "row",
-                      justifyContent: "center",
-                      gap: 8,
-                    },
-                  ]}
-                  onPress={handlePostJob} // Call handlePostJob
-                  disabled={!isAuthenticated || !isAdmin || !formData.is_draft} // Disable if not authenticated, not admin, or already posted
-                >
-                  <Ionicons name="paper-plane" size={20} color="#fff" />
-                  <Text
-                    style={{ color: "#fff", fontWeight: "600", fontSize: 16 }}
-                  >
-                    {isAuthenticated && isAdmin && formData.is_draft
-                      ? "Post Job"
-                      : !formData.is_draft
-                      ? "Job Posted"
-                      : "Request to Post"}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </>
-          )}
-        </ScrollView>
-      </View>
-
-      {/* Bottom Action Bar (No Request to Post) */}
-      <View
-        style={[
-          styles.bottomActions,
-          {
-            backgroundColor: colors.cardBackground,
-            borderTopColor: colors.border,
-          },
-        ]}
-      >
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={sharePdf}
-          // disabled={formData.is_draft}
-        >
-          <Ionicons
-            name="document-text-outline"
-            size={22}
-            color={
-              isAuthenticated && isAdmin && !formData.is_draft
-                ? colors.tint
-                : colors.secondaryText
-            }
-          />
-          <Text
-            style={[
-              styles.actionButtonText,
-              {
-                color:
-                  isAuthenticated && isAdmin ? colors.secondaryText : "#888",
-              },
-            ]}
-          >
-            Share PDF
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={shareOnWhatsApp}
-          // disabled={formData.is_draft}
-        >
-          <Ionicons
-            name="logo-whatsapp"
-            size={22}
-            color={
-              isAuthenticated && isAdmin && !formData.is_draft
-                ? colors.tint
-                : colors.secondaryText
-            }
-          />
-          <Text
-            style={[
-              styles.actionButtonText,
-              {
-                color:
-                  isAuthenticated && isAdmin ? colors.secondaryText : "#888",
-              },
-            ]}
-          >
-            WhatsApp
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.actionButton} onPress={handleBack}>
-          <Ionicons
-            name="close-circle"
-            size={22}
-            color={colors.secondaryText}
-          />
-          <Text
-            style={[styles.actionButtonText, { color: colors.secondaryText }]}
-          >
-            Close
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </GestureHandlerRootView >
   );
 }
 
