@@ -3,9 +3,11 @@ import { HTML_TEMPLATES, HtmlTemplate } from '@/constants/jobTemplates';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { supabase } from '@/lib/supabase';
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, Dimensions, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface FormData {
   id?: string;
@@ -27,162 +29,238 @@ interface FormData {
   template_id?: string;
 }
 
+const { width } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
-  scrollContainer: {
-    flexGrow: 1,
-    paddingVertical: 20,
-    alignItems: 'center',
+  safeArea: {
+    flex: 1,
   },
   container: {
-    width: '100%',
-    maxWidth: 900,
+    flex: 1,
+  },
+  scrollContent: {
     paddingHorizontal: 20,
+    paddingTop: 24,
+    paddingBottom: 20,
+  },
+  header: {
+    marginBottom: 24,
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
+    fontWeight: '800',
+    marginBottom: 8,
+    letterSpacing: -0.5,
   },
   subtitle: {
+    fontSize: 15,
+    lineHeight: 22,
+    opacity: 0.7,
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 60,
+    paddingHorizontal: 40,
+  },
+  emptyStateIcon: {
+    fontSize: 64,
+    marginBottom: 16,
+    opacity: 0.5,
+  },
+  emptyStateText: {
     fontSize: 16,
     textAlign: 'center',
-    paddingHorizontal: 20,
-    marginBottom: 20,
+    opacity: 0.6,
+    lineHeight: 24,
   },
-  noPostsText: {
-    marginTop: 30,
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  jobPostCard: {
-    width: '100%',
+  jobCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 20,
-    marginBottom: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  cardTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 5,
-  },
-  cardSubtitle: {
-    fontSize: 16,
-    color: '#6B7280',
-    marginBottom: 10,
-  },
-  cardDetail: {
-    fontSize: 14,
-    color: '#374151',
-    marginBottom: 4,
-  },
-  templateSelectionContainer: {
-    marginTop: 20,
-    paddingTop: 15,
-    borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
-  },
-  templateSelectionTitle: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  templateScroll: {
-    paddingVertical: 5,
-  },
-  templateOption: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    marginRight: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    minWidth: 100,
-  },
-  templateOptionText: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  previewButton: {
-    marginTop: 20,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  previewButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  buttonGroup: {
-    flexDirection: "column",
-    gap: 16,
-    justifyContent: "space-between",
-  },
-  submitBtn: {
-    backgroundColor: "#2563EB",
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 10,
-    alignItems: "center",
+    marginBottom: 16,
     ...Platform.select({
       ios: {
-        shadowColor: "#2563EB",
+        shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
+        shadowOpacity: 0.08,
+        shadowRadius: 12,
       },
       android: {
         elevation: 4,
       },
-      web: {
-        boxShadow: "0 4px 12px rgba(37, 99, 235, 0.25)",
-        cursor: "pointer",
-        transition: "background-color 0.2s, transform 0.1s",
-      },
     }),
   },
-  draftBtn: {
-    backgroundColor: "#6B7280", // A different color for draft
+  jobCardHeader: {
+    marginBottom: 16,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
   },
-  proceedBtn: {
-    backgroundColor: "#2563EB",
+  jobTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    marginBottom: 6,
+    color: '#111827',
+    lineHeight: 28,
   },
-  submitText: {
-    color: "#FFFFFF",
-    fontWeight: "700",
+  jobSubtitle: {
     fontSize: 16,
-    letterSpacing: 0.5,
+    color: '#6B7280',
+    marginBottom: 12,
+    lineHeight: 22,
   },
-  flex1: {
-    flex: 1,
+  jobDetailsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
   },
-  templateSelectionActions: {
+  detailBadge: {
+    backgroundColor: '#F3F4F6',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  detailBadgeText: {
+    fontSize: 13,
+    color: '#374151',
+    fontWeight: '600',
+  },
+  templateSection: {
+    marginTop: 4,
+  },
+  templateSectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    marginTop: 10,
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  templateTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#111827',
   },
   randomButton: {
-    backgroundColor: '#1E90FF', // A distinct color for the random button
+    backgroundColor: '#EEF2FF',
     paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  randomButtonText: {
+    color: '#4F46E5',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  templateGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  templateChip: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 2,
+    minWidth: 100,
+    alignItems: 'center',
+  },
+  templateChipText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  selectedIndicator: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    width: 20,
+    height: 20,
+    backgroundColor: '#10B981',
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  randomButtonText: {
+  checkmark: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: 12,
+    fontWeight: '900',
+  },
+  // Sticky Footer Styles
+  stickyFooter: {
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: -4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 12,
+      },
+      android: {
+        elevation: 8,
+      },
+    }),
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  button: {
+    flex: 1,
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
+  },
+  draftButton: {
+    backgroundColor: '#F3F4F6',
+    borderWidth: 2,
+    borderColor: '#E5E7EB',
+  },
+  primaryButton: {
+    backgroundColor: '#2563EB',
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+  draftButtonText: {
+    color: '#374151',
+  },
+  primaryButtonText: {
+    color: '#FFFFFF',
+  },
+  selectionInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    marginBottom: 8,
+    gap: 6,
+  },
+  selectionInfoText: {
+    fontSize: 13,
     fontWeight: '600',
+    color: '#10B981',
   },
 });
 
@@ -190,7 +268,7 @@ export default function TemplatesScreen() {
   const [jobPosts, setJobPosts] = useState<FormData[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<{ postId: string; template: HtmlTemplate } | null>(null);
   const router = useRouter();
-  const { jobId } = useLocalSearchParams<{ jobId?: string }>(); // Get jobId from router params
+  const { jobId } = useLocalSearchParams<{ jobId?: string }>();
 
   useEffect(() => {
     const loadJobPosts = async () => {
@@ -223,7 +301,7 @@ export default function TemplatesScreen() {
     };
 
     loadJobPosts();
-  }, [jobId]); // Re-run effect if jobId changes
+  }, [jobId]);
 
   const colorScheme = useColorScheme();
   const backgroundColor = Colors[colorScheme ?? 'light'].background;
@@ -233,48 +311,19 @@ export default function TemplatesScreen() {
     setSelectedTemplate({ postId: jobPost.id!, template });
   }, []);
 
-  const handlePreview = useCallback(() => {
-    if (jobId && selectedTemplate) {
-      router.push({
-        pathname: "/posts/preview",
-        params: {
-          jobId: jobId,
-          templateId: selectedTemplate.template.id,
-        },
-      });
-    } else {
-      console.warn("Please select a template before previewing.");
-      if (Platform.OS === "web") {
-        alert("Please select a template before previewing.");
-      } else {
-        Alert.alert("Selection Required", "Please select a template before previewing.");
-      }
-    }
-  }, [jobId, selectedTemplate, router]);
-
   const handleRandomSelectTemplate = useCallback((jobPost: FormData) => {
     if (HTML_TEMPLATES.length > 0) {
       const randomIndex = Math.floor(Math.random() * HTML_TEMPLATES.length);
       const randomTemplate = HTML_TEMPLATES[randomIndex];
       setSelectedTemplate({ postId: jobPost.id!, template: randomTemplate });
     } else {
-      console.warn("No templates available for random selection.");
-      if (Platform.OS === "web") {
-        alert("No templates available for random selection.");
-      } else {
-        Alert.alert("No Templates", "No templates available for random selection.");
-      }
+      Alert.alert("No Templates", "No templates available for random selection.");
     }
   }, []);
 
   const handleSaveTemplate = useCallback(async (action: "draft" | "preview") => {
     if (!jobId || !selectedTemplate) {
-      console.warn("Please select a template before saving or proceeding.");
-      if (Platform.OS === "web") {
-        alert("Please select a template.");
-      } else {
-        Alert.alert("Selection Required", "Please select a template.");
-      }
+      Alert.alert("Selection Required", "Please select a template first.");
       return;
     }
 
@@ -283,7 +332,7 @@ export default function TemplatesScreen() {
         .from('jobs')
         .update({
           template_id: selectedTemplate.template.id,
-          is_draft: true, // Always keep as draft when saving template details
+          is_draft: true,
         })
         .eq('id', jobId);
 
@@ -291,21 +340,10 @@ export default function TemplatesScreen() {
         throw error;
       }
 
-      console.log(`Job post ${jobId} updated with template and style. Action: ${action}`);
-
       if (action === "draft") {
-        if (Platform.OS === "web") {
-          alert("Job saved as draft with template details!");
-        } else {
-          Alert.alert("Success", "Job saved as draft with template details!");
-        }
-        router.push("/"); // Redirect to home page
+        Alert.alert("Success", "Job saved as draft with template details!");
+        router.push("/");
       } else if (action === "preview") {
-        if (Platform.OS === "web") {
-          alert("Proceeding to preview!");
-        } else {
-          Alert.alert("Success", "Proceeding to preview!");
-        }
         router.push({
           pathname: "/posts/preview",
           params: {
@@ -315,106 +353,156 @@ export default function TemplatesScreen() {
         });
       }
     } catch (e) {
-      console.error("Error updating job post with template details in Supabase:", e);
-      if (Platform.OS === "web") {
-        alert("Error saving template details.");
-      } else {
-        Alert.alert("Error", "Error saving template details.");
-      }
+      console.error("Error updating job post:", e);
+      Alert.alert("Error", "Error saving template details.");
     }
   }, [jobId, selectedTemplate, router]);
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor }} contentContainerStyle={styles.scrollContainer}>
-      <View style={[styles.container, { backgroundColor }]}>
-        <ThemedText type="title" style={[styles.title, { color: textColor }]}>Job Templates</ThemedText>
-        <ThemedText type="subtitle" style={[styles.subtitle, { color: textColor }]}>
-          Select a template and a style to preview your job post.
-        </ThemedText>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor }]} edges={['top']}>
+      <View style={styles.container}>
+        {/* Scrollable Content */}
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Header */}
+          <View style={styles.header}>
+            <ThemedText style={[styles.title, { color: textColor }]}>
+              Choose Template
+            </ThemedText>
+            <ThemedText style={[styles.subtitle, { color: textColor }]}>
+              Select a design template for your job posting
+            </ThemedText>
+          </View>
 
-        {jobPosts.length === 0 ? (
-          <ThemedText style={[styles.noPostsText, { color: textColor }]}>No job posts available. Submit a job to see it here!</ThemedText>
-        ) : (
-          jobPosts.map((post) => (
-            <View key={post.id} style={styles.jobPostCard}>
-              <ThemedText type="defaultSemiBold" style={styles.cardTitle}>{post.title}</ThemedText>
-              <ThemedText style={styles.cardSubtitle}>{post.job_title} at {post.company_name}</ThemedText>
-              <ThemedText style={styles.cardDetail}>Category: {post.category}</ThemedText>
-              <ThemedText style={styles.cardDetail}>Experience: {post.experience}</ThemedText>
+          {/* Empty State */}
+          {jobPosts.length === 0 ? (
+            <View style={styles.emptyState}>
+              <ThemedText style={styles.emptyStateIcon}>📋</ThemedText>
+              <ThemedText style={[styles.emptyStateText, { color: textColor }]}>
+                No job posts available.{'\n'}Submit a job to see it here!
+              </ThemedText>
+            </View>
+          ) : (
+            // Job Post Card
+            jobPosts.map((post) => (
+              <View key={post.id} style={styles.jobCard}>
+                {/* Job Header */}
+                <View style={styles.jobCardHeader}>
+                  <ThemedText style={styles.jobTitle}>{post.title}</ThemedText>
+                  <ThemedText style={styles.jobSubtitle}>
+                    {post.job_title} • {post.company_name}
+                  </ThemedText>
+                  <View style={styles.jobDetailsRow}>
+                    <View style={styles.detailBadge}>
+                      <ThemedText style={styles.detailBadgeText}>
+                        {post.category}
+                      </ThemedText>
+                    </View>
+                    <View style={styles.detailBadge}>
+                      <ThemedText style={styles.detailBadgeText}>
+                        {post.experience} exp
+                      </ThemedText>
+                    </View>
+                    <View style={styles.detailBadge}>
+                      <ThemedText style={styles.detailBadgeText}>
+                        {post.vacancy} positions
+                      </ThemedText>
+                    </View>
+                  </View>
+                </View>
 
-              <View style={styles.templateSelectionContainer}>
-                <ThemedText type="defaultSemiBold" style={styles.templateSelectionTitle}>Choose a Template:</ThemedText>
-                <View style={styles.templateSelectionActions}>
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.templateScroll}>
-                    {(() => {
-                      const templates = [...HTML_TEMPLATES];
-                      if (selectedTemplate && selectedTemplate.postId === post.id) {
-                        const selectedIndex = templates.findIndex(t => t.id === selectedTemplate.template.id);
-                        if (selectedIndex > -1) {
-                          const [sTemplate] = templates.splice(selectedIndex, 1);
-                          templates.unshift(sTemplate);
-                        }
-                      }
-                      return templates.map((template: HtmlTemplate) => {
-                        const isSelected = selectedTemplate?.postId === post.id && selectedTemplate?.template.id === template.id;
+                {/* Template Selection */}
+                <View style={styles.templateSection}>
+                  <View style={styles.templateSectionHeader}>
+                    <ThemedText style={styles.templateTitle}>
+                      Select Template
+                    </ThemedText>
+                    <TouchableOpacity
+                      style={styles.randomButton}
+                      onPress={() => handleRandomSelectTemplate(post)}
+                      activeOpacity={0.7}
+                    >
+                      <Ionicons name="shuffle" size={16} color="#4F46E5" />
+                      <ThemedText style={styles.randomButtonText}>Random</ThemedText>
+                    </TouchableOpacity>
+                  </View>
 
-                        return (
-                          <TouchableOpacity
-                            key={template.id}
-                            style={[
-                              styles.templateOption,
-                              {
-                                backgroundColor: isSelected ? '#2563EB' : '#FFFFFF',
-                                borderColor: isSelected ? '#2563EB' : '#E5E7EB',
-                                borderWidth: isSelected ? 2 : 1,
-                              }
-                            ]}
-                            onPress={() => handleSelectTemplate(template, post)}
-                          >
-                            <ThemedText style={[
-                              styles.templateOptionText,
-                              { color: isSelected ? '#FFFFFF' : '#374151' }
-                            ]}>
-                              {template.name}
-                            </ThemedText>
-                          </TouchableOpacity>
-                        );
-                      });
-                    })()}
-                  </ScrollView>
-                  <TouchableOpacity
-                    style={styles.randomButton}
-                    onPress={() => handleRandomSelectTemplate(post)}
-                  >
-                    <ThemedText style={styles.randomButtonText}>Random Select</ThemedText>
-                  </TouchableOpacity>
+                  <View style={styles.templateGrid}>
+                    {HTML_TEMPLATES.map((template: HtmlTemplate) => {
+                      const isSelected = selectedTemplate?.postId === post.id &&
+                        selectedTemplate?.template.id === template.id;
+
+                      return (
+                        <TouchableOpacity
+                          key={template.id}
+                          style={[
+                            styles.templateChip,
+                            {
+                              backgroundColor: isSelected ? '#EEF2FF' : '#FFFFFF',
+                              borderColor: isSelected ? '#4F46E5' : '#E5E7EB',
+                            }
+                          ]}
+                          onPress={() => handleSelectTemplate(template, post)}
+                          activeOpacity={0.7}
+                        >
+                          <ThemedText style={[
+                            styles.templateChipText,
+                            { color: isSelected ? '#4F46E5' : '#6B7280' }
+                          ]}>
+                            {template.name}
+                          </ThemedText>
+                          {isSelected && (
+                            <View style={styles.selectedIndicator}>
+                              <ThemedText style={styles.checkmark}>✓</ThemedText>
+                            </View>
+                          )}
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
                 </View>
               </View>
-            </View>
-          ))
-        )}
+            ))
+          )}
+        </ScrollView>
 
-        {/* Action Buttons */}
+        {/* Sticky Footer with Action Buttons */}
         {jobPosts.length > 0 && (
-          <View style={[styles.buttonGroup, { marginTop: 20 }]}>
-            <TouchableOpacity
-              style={[styles.submitBtn, styles.draftBtn, styles.flex1]}
-              onPress={() => handleSaveTemplate("draft")}
-              activeOpacity={0.8}
-            >
-              <ThemedText style={styles.submitText}>Save as Draft</ThemedText>
-            </TouchableOpacity>
+          <View style={styles.stickyFooter}>
+            {selectedTemplate && (
+              <View style={styles.selectionInfo}>
+                <ThemedText style={styles.selectionInfoText}>
+                  ✓ {selectedTemplate.template.name} selected
+                </ThemedText>
+              </View>
+            )}
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={[styles.button, styles.draftButton]}
+                onPress={() => handleSaveTemplate("draft")}
+                activeOpacity={0.8}
+              >
+                <ThemedText style={[styles.buttonText, styles.draftButtonText]}>
+                  Save Draft
+                </ThemedText>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.submitBtn, styles.proceedBtn, styles.flex1]}
-              onPress={() => handleSaveTemplate("preview")}
-              activeOpacity={0.8}
-            >
-              <ThemedText style={styles.submitText}>Proceed to Preview</ThemedText>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, styles.primaryButton]}
+                onPress={() => handleSaveTemplate("preview")}
+                activeOpacity={0.8}
+              >
+                <ThemedText style={[styles.buttonText, styles.primaryButtonText]}>
+                  Preview
+                </ThemedText>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
       </View>
-    </ScrollView>
+    </SafeAreaView>
   );
 }
