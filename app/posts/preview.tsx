@@ -285,6 +285,12 @@ export default function PreviewScreen() {
       return;
     }
 
+    console.log("Post Job Data:", JSON.stringify({
+      jobDetails: formData,
+      templateDetails: selectedTemplate,
+      colorDetails: colors
+    }, null, 2));
+
     setIsPostingJob(true);
     try {
       // Generate HTML content

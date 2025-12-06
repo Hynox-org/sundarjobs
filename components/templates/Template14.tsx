@@ -3,43 +3,53 @@ import { JobPostFormData } from "@/constants/jobTemplates";
 export function generateTemplate14Html({ formData }: { formData: JobPostFormData }): string {
   if (!formData) return '<h1>Loading...</h1>';
 
-const backgroundColor = '#FAF9FC';
-const primaryColor = '#7D3CFF';
-const secondaryColor = '#C80E13';
-const accentColor = '#F2D53C';
-const textColor = '#2D1B4E';
-const cardBg = '#FFFFFF';
-const fontFamily = "'Poppins', sans-serif";
+  // Modern vibrant color scheme
+  const primaryColor = '#8338EC';
+  const secondaryColor = '#FFBE0B';
+  const accentColor = '#FB5607';
+  const darkColor = '#1F1135';
+  const lightColor = '#FAEBFA';
+  const fontFamily = "'Inter', sans-serif";
 
-
-  // Calculate job counts and scaling
+  // Calculate scaling with more aggressive reduction
   const mainJobCount = formData.job_title ? 1 : 0;
   const additionalJobCount = formData.additional_jobs?.length || 0;
   const totalJobs = mainJobCount + additionalJobCount;
-  const scaleFactor = totalJobs <= 1 ? 1 : totalJobs >= 6 ? 0.6 : 1 - (totalJobs - 1) * 0.08;
 
-  // Font sizes scaled
-  const jobTitleFontSize = (32 * scaleFactor).toFixed(2);
-  const jobReqFontSize = (14 * scaleFactor).toFixed(2);
-  const nosFontSize = (18 * scaleFactor).toFixed(2);
-  const companyNameFontSize = (38 * scaleFactor).toFixed(2);
-  const contactFontSize = (16 * scaleFactor).toFixed(2);
-  const phoneFontSize = (24 * scaleFactor).toFixed(2);
-  const footerFontSize = (20 * scaleFactor).toFixed(2);
+  // More aggressive scaling factors
+  const scaleFactor = totalJobs <= 1 ? 1.1 :
+    totalJobs === 2 ? 1.05 :
+      totalJobs === 3 ? 1.02 :
+        totalJobs === 4 ? 1.01 :
+          totalJobs === 5 ? 1.00 :
+            totalJobs === 6 ? 0.95 :
+              totalJobs >= 7 ? 0.75 : 0.80;
 
-  // Margins and gaps
-  const marginHeader = 70 - (totalJobs - 1) * 10 > 25 ? 70 - (totalJobs - 1) * 10 : 25;
-  const marginJobSection = 60 - (totalJobs - 1) * 12 > 18 ? 60 - (totalJobs - 1) * 12 : 18;
-  const gapBetweenJobs = 15 * scaleFactor;
-  const gapFooterToContact = 30 * scaleFactor;
-  const contactHeight = 65 * scaleFactor;
+  // Dynamic spacing based on job count
+  const heroHeight = Math.max(180, 280 - (totalJobs - 1) * 20);
+  const mainPadding = Math.max(25, 50 - (totalJobs - 1) * 4);
+  const sectionGap = Math.max(18, 40 - (totalJobs - 1) * 3);
+  const jobGap = Math.max(10, 18 - (totalJobs - 1) * 1.5);
+  const contactPadding = Math.max(20, 35 - (totalJobs - 1) * 2.5);
+  const contactHeaderPadding = Math.max(18, 28 - (totalJobs - 1) * 1.5);
+  const contactCardPadding = Math.max(14, 24 - (totalJobs - 1) * 1.5);
+  const contactGap = Math.max(15, 30 - (totalJobs - 1) * 2);
+  const ctaPadding = Math.max(12, 20 - (totalJobs - 1) * 1.2);
+  const ctaMarginTop = Math.max(12, 25 - (totalJobs - 1) * 2);
+  const footerPadding = Math.max(18, 25 - (totalJobs - 1) * 1);
+
+  // Hero section scaling
+  const heroTitleSize = Math.max(42, 72 - (totalJobs - 1) * 5);
+  const heroSubtitleSize = Math.max(14, 20 - (totalJobs - 1) * 1);
+  const badgeSize = Math.max(10, 13 - (totalJobs - 1) * 0.5);
+  const megaphoneSize = Math.max(100, 160 - (totalJobs - 1) * 10);
 
   return `
 <!DOCTYPE html>
 <html>
   <head>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
       @page {
         size: A4;
@@ -53,34 +63,9 @@ const fontFamily = "'Poppins', sans-serif";
       }
 
       @media print {
-        html, body {
-          background-color: ${backgroundColor} !important;
-          color: ${textColor} !important;
+        html, body, .container {
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
-        }
-        .container {
-          background-color: ${backgroundColor} !important;
-          page-break-inside: avoid !important;
-        }
-        .job-item {
-          background-color: ${cardBg} !important;
-          border-color: ${primaryColor} !important;
-          color: ${textColor} !important;
-          page-break-inside: avoid !important;
-        }
-        .company-section {
-          background-color: ${cardBg} !important;
-          page-break-inside: avoid !important;
-          color: ${textColor} !important;
-        }
-        .app-section {
-          background: ${primaryColor} !important;
-          color: ${backgroundColor} !important;
-          page-break-inside: avoid !important;
-        }
-        * {
-          filter: none !important;
         }
       }
 
@@ -92,394 +77,574 @@ const fontFamily = "'Poppins', sans-serif";
         justify-content: center;
         align-items: center;
         font-family: ${fontFamily};
-        color: ${textColor};
+        background: #E5E5E5;
       }
 
       .container {
         width: 210mm;
-        max-height: 297mm;
-        min-height: auto;
-        background: ${backgroundColor};
+        height: 297mm;
+        background: white;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Hero Section */
+      .hero-section {
+        background: linear-gradient(135deg, ${secondaryColor} 0%, #003366 100%);
+        height: ${heroHeight}px;
         position: relative;
         display: flex;
         flex-direction: column;
-        padding: 50px 60px;
-        height: 100vh;
         justify-content: center;
-        border: 3px solid ${primaryColor};
+        padding: 0 ${mainPadding + 20}px;
+        overflow: hidden;
+        flex-shrink: 0;
       }
 
-      .main-content {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        flex-grow: 1;
-      }
-
-      /* Megaphone Icon */
-      .megaphone-icon {
+      /* Decorative Background Elements */
+      .bg-decoration {
         position: absolute;
-        top: 10%;
-        left: 10%;
-        width: 160px;
-        height: 180px;
-        z-index: 10;
-        opacity: 0.95;
+        border-radius: 50%;
+        opacity: 0.1;
       }
 
-      .megaphone-icon img {
+      .bg-circle-1 {
+        width: ${300 * scaleFactor}px;
+        height: ${300 * scaleFactor}px;
+        background: white;
+        top: ${-150 * scaleFactor}px;
+        right: ${-75 * scaleFactor}px;
+      }
+
+      .bg-circle-2 {
+        width: ${250 * scaleFactor}px;
+        height: ${250 * scaleFactor}px;
+        background: ${primaryColor};
+        bottom: ${-125 * scaleFactor}px;
+        left: ${-60 * scaleFactor}px;
+      }
+
+      .megaphone-wrapper {
+        position: absolute;
+        top: 50%;
+        right: ${mainPadding + 10}px;
+        transform: translateY(-50%);
+        width: ${megaphoneSize}px;
+        height: ${megaphoneSize}px;
+      }
+
+      .megaphone-glow {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 30%, transparent 60%);
+        border-radius: 50%;
+        animation: pulse 3s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.6; }
+        50% { transform: scale(1.1); opacity: 1; }
+      }
+
+      .megaphone-wrapper img {
+        position: relative;
         width: 100%;
         height: 100%;
         object-fit: contain;
-        filter: brightness(1.3) saturate(1.2);
-      }
-
-      /* Diagonal accent stripe - SOLID COLOR */
-      .accent-stripe {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 250px;
-        height: 250px;
-        background: ${secondaryColor};
-        opacity: 0.15;
-        clip-path: polygon(100% 0, 100% 100%, 0 0);
-        z-index: 1;
-      }
-
-      /* Header Section */
-      .header-section {
-        text-align: right;
-        margin-bottom: ${marginHeader}px;
-        border-right: 8px solid ${primaryColor};
-        padding-right: 30px;
+        filter: brightness(0) invert(1);
         z-index: 2;
+      }
+
+      .hero-content {
         position: relative;
+        z-index: 10;
+        max-width: ${450 * scaleFactor}px;
       }
 
-      .we-are-hiring {
-        font-family: ${fontFamily};
-        font-weight: 900;
-        font-size: 68px;
-        color: ${textColor};
-        text-transform: uppercase;
-        letter-spacing: -1px;
-        line-height: 1;
-        margin-bottom: 0;
-      }
-
-      .we-are-hiring .highlight {
-        color: ${primaryColor};
-        display: block;
-      }
-
-      .we-are-hiring .title {
-        font-size: 26px;
-        font-weight: 600;
-        margin-top: 18px;
-        color: ${textColor};
-        line-height: 1.4;
-        text-transform: none;
-        letter-spacing: 0;
-        opacity: 0.85;
-      }
-
-      /* Job Positions Section */
-      .job-positions-section {
-        margin-bottom: ${marginJobSection}px;
-      }
-
-      .section-title {
-        font-size: 13px;
-        font-weight: 700;
-        color: ${backgroundColor};
-        text-transform: uppercase;
-        margin-bottom: 22px;
-        letter-spacing: 3px;
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: ${6 * scaleFactor}px;
         background: ${primaryColor};
-        padding: 12px 20px;
+        color: white;
+        padding: ${8 * scaleFactor}px ${16 * scaleFactor}px;
+        border-radius: ${25 * scaleFactor}px;
+        font-size: ${badgeSize}px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: ${1.2 * scaleFactor}px;
+        margin-bottom: ${20 * scaleFactor}px;
+      }
+
+      .badge::before {
+        content: '●';
+        animation: blink 2s ease-in-out infinite;
+      }
+
+      @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+      }
+
+      .hero-title {
+        font-size: ${heroTitleSize}px;
+        font-weight: 900;
+        color: white;
+        line-height: 0.95;
+        text-transform: uppercase;
+        letter-spacing: ${-1.5 * scaleFactor}px;
+        margin-bottom: ${12 * scaleFactor}px;
+      }
+
+      .hero-title .highlight {
+        color: ${primaryColor};
+      }
+
+      .hero-subtitle {
+        font-size: ${heroSubtitleSize}px;
+        font-weight: 500;
+        color: rgba(255,255,255,0.9);
+        line-height: 1.4;
+      }
+
+      /* Main Content */
+      .main-content {
+        padding: ${mainPadding}px ${mainPadding + 20}px ${mainPadding - 10}px;
+        flex: 1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .section-label {
         display: inline-block;
-        border-radius: 6px;
+        background: ${lightColor};
+        color: ${secondaryColor};
+        padding: ${6 * scaleFactor}px ${14 * scaleFactor}px;
+        border-radius: ${5 * scaleFactor}px;
+        font-size: ${(11 * scaleFactor).toFixed(2)}px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: ${1.2 * scaleFactor}px;
+        margin-bottom: ${(25 * scaleFactor).toFixed(2)}px;
+        border-left: ${3 * scaleFactor}px solid ${primaryColor};
       }
 
-      .job-item {
-        background-color: ${cardBg};
-        border: 2px solid ${primaryColor};
-        border-radius: 0;
-        padding: ${22 * scaleFactor}px ${28 * scaleFactor}px;
-        margin-bottom: ${gapBetweenJobs}px;
-        text-align: left;
-        color: ${textColor};
+      /* Job Cards Grid */
+      .jobs-container {
+        display: grid;
+        gap: ${jobGap}px;
+        margin-bottom: ${sectionGap}px;
+      }
+
+      .job-card {
+        background: white;
+        border: ${1.5 * scaleFactor}px solid #E8E8E8;
+        border-radius: ${12 * scaleFactor}px;
+        padding: ${(20 * scaleFactor).toFixed(2)}px ${(26 * scaleFactor).toFixed(2)}px;
         position: relative;
+        transition: all 0.3s ease;
+        overflow: hidden;
       }
 
-      .job-item::after {
-        content: "";
+      .job-card::before {
+        content: '';
         position: absolute;
         left: 0;
         top: 0;
         bottom: 0;
-        width: 5px;
-        background: ${primaryColor};
+        width: ${5 * scaleFactor}px;
+        background: linear-gradient(180deg, ${primaryColor} 0%, ${accentColor} 100%);
+        transition: width 0.3s ease;
       }
 
-      .job-item:nth-child(even)::after {
+      .job-card:hover::before {
+        width: ${8 * scaleFactor}px;
+      }
+
+      .job-card:nth-child(even)::before {
+        background: linear-gradient(180deg, ${secondaryColor} 0%, #0066AA 100%);
+      }
+
+      .job-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        gap: ${12 * scaleFactor}px;
+        margin-bottom: ${(10 * scaleFactor).toFixed(2)}px;
+      }
+
+      .job-name {
+        font-size: ${(24 * scaleFactor).toFixed(2)}px;
+        font-weight: 800;
+        color: ${darkColor};
+        line-height: 1.25;
+        flex: 1;
+      }
+
+      .positions-badge {
+        background: ${primaryColor};
+        color: white;
+        padding: ${(6 * scaleFactor).toFixed(2)}px ${(14 * scaleFactor).toFixed(2)}px;
+        border-radius: ${(20 * scaleFactor).toFixed(2)}px;
+        font-size: ${(13 * scaleFactor).toFixed(2)}px;
+        font-weight: 800;
+        white-space: nowrap;
+        box-shadow: 0 ${3 * scaleFactor}px ${10 * scaleFactor}px rgba(255,107,53,0.3);
+      }
+
+      .job-card:nth-child(even) .positions-badge {
+        background: ${secondaryColor};
+        box-shadow: 0 ${3 * scaleFactor}px ${10 * scaleFactor}px rgba(0,78,137,0.3);
+      }
+
+      .job-detail {
+        font-size: ${(14 * scaleFactor).toFixed(2)}px;
+        color: #666;
+        font-weight: 500;
+        line-height: 1.5;
+      }
+
+      .job-detail strong {
+        color: ${darkColor};
+        font-weight: 700;
+      }
+
+      /* Contact Section - Dynamically Scaled */
+      .contact-section {
+        background: ${darkColor};
+        border-radius: ${(16 * scaleFactor).toFixed(2)}px;
+        padding: 0;
+        margin-bottom: ${(20 * scaleFactor).toFixed(2)}px;
+        overflow: hidden;
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      .contact-header {
+        background: linear-gradient(135deg, ${primaryColor} 0%, ${accentColor} 100%);
+        padding: ${contactHeaderPadding}px ${(32 * scaleFactor).toFixed(2)}px;
+        text-align: center;
+        position: relative;
+      }
+
+      .contact-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: ${150 * scaleFactor}px;
+        height: 100%;
+        background: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, transparent 70%);
+      }
+
+      .company-title {
+        font-size: ${(38 * scaleFactor).toFixed(2)}px;
+        font-weight: 900;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: ${1.5 * scaleFactor}px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .contact-body {
+        padding: ${contactPadding}px ${(32 * scaleFactor).toFixed(2)}px;
+        background: ${darkColor};
+      }
+
+      .contact-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(${150 * scaleFactor}px, 1fr));
+        gap: ${contactGap}px;
+      }
+
+      .contact-card {
+        background: rgba(255,255,255,0.05);
+        border: ${1.5 * scaleFactor}px solid rgba(255,255,255,0.1);
+        border-radius: ${(12 * scaleFactor).toFixed(2)}px;
+        padding: ${contactCardPadding}px;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .contact-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: ${3 * scaleFactor}px;
+        background: ${primaryColor};
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+      }
+
+      .contact-card:hover {
+        background: rgba(255,255,255,0.08);
+        border-color: rgba(255,255,255,0.2);
+        transform: translateY(-2px);
+      }
+
+      .contact-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .contact-card:nth-child(2)::before {
+        background: ${accentColor};
+      }
+
+      .contact-card:nth-child(3)::before {
         background: ${secondaryColor};
       }
 
-      .job-title {
-        font-size: ${jobTitleFontSize}px;
-        font-weight: 800;
-        color: ${textColor};
-        text-transform: uppercase;
-        margin-bottom: ${10 * scaleFactor}px;
-        letter-spacing: 1px;
-        line-height: 1.3;
-        display: flex;
-        align-items: baseline;
-        gap: 10px;
-        flex-wrap: wrap;
-      }
-
-      .vacancy-badge {
-        font-size: ${nosFontSize}px;
-        background: ${primaryColor};
-        color: ${backgroundColor};
-        padding: 5px 14px;
-        border-radius: 25px;
-        font-weight: 700;
-        text-transform: lowercase;
-        letter-spacing: 0;
-      }
-
-      .job-requirements {
-        font-size: ${jobReqFontSize}px;
-        font-weight: 500;
-        color: ${textColor};
-        line-height: 1.7;
-        opacity: 0.75;
-      }
-
-      /* Company Info Section */
-      .company-section {
-        background-color: ${cardBg};
-        padding: ${22 * scaleFactor}px ${28 * scaleFactor}px;
-        margin-bottom: ${gapFooterToContact}px;
-        min-height: ${contactHeight}px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: ${18 * scaleFactor}px;
-        color: ${textColor};
-        border-radius: 10px;
-        border: 2px solid #30363D;
-        border-top: 3px solid ${secondaryColor};
-      }
-
-      .company-name {
-        font-size: ${companyNameFontSize}px;
-        font-weight: 900;
-        color: ${secondaryColor};
-        text-transform: uppercase;
-        letter-spacing: 2px;
-      }
-
-      .contact-row {
+      .contact-icon-wrapper {
+        width: ${(50 * scaleFactor).toFixed(2)}px;
+        height: ${(50 * scaleFactor).toFixed(2)}px;
+        background: linear-gradient(135deg, ${primaryColor} 0%, ${accentColor} 100%);
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: ${35 * scaleFactor}px;
-        flex-wrap: wrap;
-        width: 100%;
+        margin: 0 auto ${(14 * scaleFactor).toFixed(2)}px;
+        font-size: ${(24 * scaleFactor).toFixed(2)}px;
+        box-shadow: 0 ${(6 * scaleFactor).toFixed(2)}px ${(16 * scaleFactor).toFixed(2)}px rgba(255,107,53,0.3);
       }
 
-      .contact-item {
-        display: flex;
-        align-items: center;
-        gap: ${8 * scaleFactor}px;
-        font-size: ${contactFontSize}px;
-        font-weight: 600;
-        color: ${textColor};
+      .contact-card:nth-child(2) .contact-icon-wrapper {
+        background: linear-gradient(135deg, ${accentColor} 0%, #FFB84D 100%);
+        box-shadow: 0 ${(6 * scaleFactor).toFixed(2)}px ${(16 * scaleFactor).toFixed(2)}px rgba(247,147,30,0.3);
       }
 
-      .icon {
-        font-size: ${20 * scaleFactor}px;
-        color: ${secondaryColor};
+      .contact-card:nth-child(3) .contact-icon-wrapper {
+        background: linear-gradient(135deg, ${secondaryColor} 0%, #0066AA 100%);
+        box-shadow: 0 ${(6 * scaleFactor).toFixed(2)}px ${(16 * scaleFactor).toFixed(2)}px rgba(0,78,137,0.3);
       }
 
-      .phone-number {
-        font-size: ${phoneFontSize}px;
+      .contact-label {
+        font-size: ${(10 * scaleFactor).toFixed(2)}px;
+        color: rgba(255,255,255,0.6);
+        text-transform: uppercase;
+        letter-spacing: ${1 * scaleFactor}px;
+        font-weight: 700;
+        margin-bottom: ${(8 * scaleFactor).toFixed(2)}px;
+      }
+
+      .contact-text {
+        font-size: ${(14 * scaleFactor).toFixed(2)}px;
+        color: white;
+        font-weight: 700;
+        line-height: 1.4;
+        word-break: break-word;
+      }
+
+      .contact-text.phone {
+        font-size: ${(18 * scaleFactor).toFixed(2)}px;
         font-weight: 900;
         color: ${primaryColor};
+        letter-spacing: 0.5px;
       }
 
-      /* Footer / Marketing Section - SOLID COLOR */
-      .app-section {
-        background: ${primaryColor};
-        border-radius: 10px;
-        padding: ${20 * scaleFactor}px ${30 * scaleFactor}px;
+      .apply-cta {
+        background: linear-gradient(135deg, ${primaryColor} 0%, ${accentColor} 100%);
+        color: white;
+        text-align: center;
+        padding: ${ctaPadding}px;
+        margin-top: ${ctaMarginTop}px;
+        border-radius: ${(10 * scaleFactor).toFixed(2)}px;
+        font-size: ${(14 * scaleFactor).toFixed(2)}px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: ${0.8 * scaleFactor}px;
+      }
+
+      /* Footer */
+      .footer {
+        background: ${darkColor};
+        padding: ${footerPadding}px ${mainPadding + 20}px;
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        gap: ${20 * scaleFactor}px;
-        flex-wrap: wrap;
-        font-size: ${footerFontSize}px;
-        color: ${backgroundColor};
+        align-items: center;
+        flex-shrink: 0;
       }
 
-      .app-left {
+      .app-brand {
         display: flex;
         align-items: center;
-        gap: ${15 * scaleFactor}px;
+        gap: ${(14 * scaleFactor).toFixed(2)}px;
       }
 
-      .app-logo {
-        width: ${50 * scaleFactor}px;
-        height: ${50 * scaleFactor}px;
+      .app-icon {
+        width: ${(42 * scaleFactor).toFixed(2)}px;
+        height: ${(42 * scaleFactor).toFixed(2)}px;
         background: white;
-        border-radius: 10px;
-        padding: ${8 * scaleFactor}px;
+        border-radius: ${(10 * scaleFactor).toFixed(2)}px;
+        padding: ${(6 * scaleFactor).toFixed(2)}px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
-      .app-logo img {
+      .app-icon img {
         width: 100%;
         height: 100%;
         object-fit: contain;
       }
 
-      .app-name {
+      .app-details {
+        color: white;
+      }
+
+      .app-title {
+        font-size: ${(17 * scaleFactor).toFixed(2)}px;
         font-weight: 900;
         text-transform: uppercase;
-        letter-spacing: 2px;
+        letter-spacing: ${0.8 * scaleFactor}px;
+        margin-bottom: 2px;
       }
 
-      .app-right {
+      .app-slogan {
+        font-size: ${(10 * scaleFactor).toFixed(2)}px;
+        opacity: 0.7;
+        font-weight: 500;
+      }
+
+      .download-buttons {
         display: flex;
-        gap: ${12 * scaleFactor}px;
+        gap: ${(12 * scaleFactor).toFixed(2)}px;
       }
 
-      .store-badge {
+      .download-btn {
+        background: rgba(255,255,255,0.1);
+        border: ${1.2 * scaleFactor}px solid rgba(255,255,255,0.3);
+        padding: ${(10 * scaleFactor).toFixed(2)}px ${(16 * scaleFactor).toFixed(2)}px;
+        border-radius: ${(8 * scaleFactor).toFixed(2)}px;
         display: flex;
         align-items: center;
-        gap: ${8 * scaleFactor}px;
-        background: rgba(13,17,23,0.3);
-        padding: ${10 * scaleFactor}px ${16 * scaleFactor}px;
-        border-radius: 8px;
-        border: 1px solid rgba(13,17,23,0.5);
+        gap: ${(8 * scaleFactor).toFixed(2)}px;
+        transition: all 0.3s ease;
       }
 
-      .store-icon {
-        width: ${24 * scaleFactor}px;
-        height: ${24 * scaleFactor}px;
-        background: white;
-        border-radius: 6px;
+      .download-btn:hover {
+        background: rgba(255,255,255,0.2);
+        border-color: rgba(255,255,255,0.5);
       }
 
-      .store-icon img {
+      .btn-icon {
+        width: ${(20 * scaleFactor).toFixed(2)}px;
+        height: ${(20 * scaleFactor).toFixed(2)}px;
+      }
+
+      .btn-icon img {
         width: 100%;
         height: 100%;
         object-fit: contain;
       }
 
-      .store-text {
+      .btn-label {
+        color: white;
+        font-size: ${(12 * scaleFactor).toFixed(2)}px;
         font-weight: 700;
-        text-transform: uppercase;
-        font-size: ${14 * scaleFactor}px;
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <div class="accent-stripe"></div>
-      
-      <div class="megaphone-icon">
-        <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/top-left1.png" alt="Megaphone" />
+      <!-- Hero Section -->
+      <div class="hero-section">
+        <div class="bg-decoration bg-circle-1"></div>
+        <div class="bg-decoration bg-circle-2"></div>
+        
+        <div class="megaphone-wrapper">
+          <div class="megaphone-glow"></div>
+          <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/top-left1.png" alt="Hiring" />
+        </div>
+
+        <div class="hero-content">
+          <div class="badge">NOW HIRING</div>
+          <h1 class="hero-title">
+            JOIN<br>
+            <span class="highlight">OUR TEAM</span>
+          </h1>
+          ${formData.title ? `<p class="hero-subtitle">${formData.title}</p>` : ''}
+        </div>
       </div>
 
+      <!-- Main Content -->
       <div class="main-content">
-        <!-- Poster Title -->
-        <div class="header-section">
-          <div class="we-are-hiring">
-            <span class="highlight">WE ARE</span>
-            HIRING
+        <div class="section-label">🎯 Open Positions</div>
+
+        <div class="jobs-container">
+          ${formData.job_title ? `
+          <div class="job-card">
+            <div class="job-top">
+              <div class="job-name">${formData.job_title}</div>
+              <div class="positions-badge">${formData.vacancy} ${formData.vacancy > 1 ? 'Positions' : 'Position'}</div>
+            </div>
+            ${formData.experience ? `<div class="job-detail"><strong>Experience:</strong> ${formData.experience} years required</div>` : ''}
+          </div>` : ''}
+
+          ${formData.additional_jobs && formData.additional_jobs.length > 0 ? formData.additional_jobs.map(job => `
+          <div class="job-card">
+            <div class="job-top">
+              <div class="job-name">${job.job_title}</div>
+              <div class="positions-badge">${job.vacancy} ${job.vacancy > 1 ? 'Positions' : 'Position'}</div>
+            </div>
+            ${job.experience ? `<div class="job-detail"><strong>Experience:</strong> ${job.experience} years required</div>` : ''}
+          </div>`).join('') : ''}
+        </div>
+
+        <!-- Contact Section -->
+        <div class="contact-section">
+          <div class="contact-header">
+            ${formData.company_name ? `<h2 class="company-title">${formData.company_name}</h2>` : ''}
+            ${formData.company_address ? `<p class="company-address">${formData.company_address}</p>` : ''}
+            ${formData.company_phone ? `<p class="company-phone">${formData.company_phone}</p>` : ''}
+            ${formData.company_email ? `<p class="company-email">${formData.company_email}</p>` : ''}
           </div>
-          ${formData.title ? `<div class="title">${formData.title}</div>` : ''}
+          
+          <div class="contact-body">
+          <div class="apply-cta">
+              🚀 Apply Now & Start Your Career Journey
+            </div>
+          </div>
         </div>
+      </div>
 
-        <!-- Job Positions Section -->
-        <div class="job-positions-section">
-          <div class="section-title">OPEN POSITIONS</div>
-
-          ${
-            formData.job_title
-              ? `<div class="job-item">
-                  <div class="job-title">
-                    <span>${formData.job_title}</span>
-                    <span class="vacancy-badge">${formData.vacancy} positions</span>
-                  </div>
-                  ${formData.experience ? `<div class="job-requirements">Experience: ${formData.experience} years of experience required for this role.</div>` : ''}
-                </div>`
-              : ""
-          }
-
-          ${
-            formData.additional_jobs && formData.additional_jobs.length > 0
-              ? formData.additional_jobs
-                  .map(
-                    (job) => `<div class="job-item">
-                        <div class="job-title">
-                          <span>${job.job_title}</span>
-                          <span class="vacancy-badge">${job.vacancy} positions</span>
-                        </div>
-                        ${job.experience ? `<div class="job-requirements">Experience: ${job.experience}  years of experience required for this role.</div>` : ''}
-                      </div>`
-                  )
-                  .join("")
-              : ""
-          }
-        </div>
-
-        <!-- Company Details Section -->
-        <div class="company-section">
-          ${
-            formData.company_name
-              ? `<div class="company-name">${formData.company_name}</div>`
-              : ""
-          }
-
-         <div class="contact-row">
-            ${formData.company_address ? `<div class="contact-item"><span class="contact-label">Visit Us:</span> <span>${formData.company_address}</span></div>` : ''}
-            ${formData.company_phone ? `<div class="contact-item"><span class="contact-label">Call Us:</span> <span class="phone-number">${formData.company_phone}</span></div>` : ''}
-            ${formData.company_email ? `<div class="contact-item"><span class="contact-label">Email Us:</span> <span>${formData.company_email}</span></div>` : ''}
+      <!-- Footer -->
+      <div class="footer">
+        <div class="app-brand">
+          <div class="app-icon">
+            <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/logo.png" alt="SundarJobs" />
+          </div>
+          <div class="app-details">
+            <div class="app-title">SundarJobs</div>
+            <div class="app-slogan">Find Your Dream Career</div>
           </div>
         </div>
 
-        <!-- Footer / Marketing Section -->
-        <div class="app-section">
-          <div class="app-left">
-            <div class="app-logo">
-              <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/logo.png" alt="Logo" />
+        <div class="download-buttons">
+          <div class="download-btn">
+            <div class="btn-icon">
+              <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/playstore-icon.png" alt="Play Store" />
             </div>
-            <div class="app-name">SUNDAR JOBdS APP</div>
+            <div class="btn-label">Android</div>
           </div>
-          <div class="app-right">
-            <div class="store-badge">
-              <div class="store-icon">
-                <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/playstore-icon.png" alt="Play Store" />
-              </div>
-              <div class="store-text">Android</div>
+          <div class="download-btn">
+            <div class="btn-icon">
+              <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/appstore-icon.png" alt="App Store" />
             </div>
-            <div class="store-badge">
-              <div class="store-icon">
-                <img src="https://qjplvfufjesoejmbkwaf.supabase.co/storage/v1/object/public/sundarjobs/poster-assets/appstore-icon.png" alt="App Store" />
-              </div>
-              <div class="store-text">iPhone</div>
-            </div>
+            <div class="btn-label">iPhone</div>
           </div>
         </div>
       </div>
     </div>
   </body>
 </html>
-`;
+  `;
 }
